@@ -1,0 +1,13 @@
+fastapi==0.141.1
+uvicorn==0.53.0
+pydantic-settings==2.15.0
+# File uploads (multipart/form-data).
+python-multipart==0.0.32
+
+# Speech-to-text: OpenAI Whisper models run with the CTranslate2 engine (CPU friendly, no PyTorch).
+faster-whisper==1.2.1
+ctranslate2==4.8.2
+huggingface-hub==1.32.0
+tokenizers==0.23.2
+onnxruntime==1.30.0
+av==18.1.0

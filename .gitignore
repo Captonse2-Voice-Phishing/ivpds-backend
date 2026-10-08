@@ -1,0 +1,18 @@
+# Local environment
+.env
+.env.*
+!.env.example
+
+# Java / Maven
+target/
+*.class
+
+# Python
+__pycache__/
+.pytest_cache/
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.iml

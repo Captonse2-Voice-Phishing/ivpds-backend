@@ -1,0 +1,5 @@
+# Merged over src/main/resources/application.yml for tests only.
+ivpds:
+  security:
+    jwt:
+      secret: test-only-jwt-secret-0123456789-abcdefghijklmnopqrstuvwxyz
