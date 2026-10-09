@@ -44,6 +44,9 @@ OUT = Path("data/processed")
 VI_CONTEXT = Path("tests/data/conversations_vi.jsonl")
 RULE_TUNING = Path("data/rule_tuning_rows.json")
 GENERATED = Path("data/synthetic/vi_generated.jsonl")
+# Kịch bản bổ sung ở đợt 6 (cùng định dạng) và các cuộc gọi viết tay từng cuộc.
+GENERATED_MORE = Path("data/synthetic/vi_generated_more.jsonl")
+HANDWRITTEN = Path("data/synthetic/handwritten_calls.jsonl")
 YOUTUBE_CALLS = RAW / "youtube_calls" / "calls.jsonl"
 ORDINARY_SPEECH = RAW / "vlsp2020_vinai_100h" / "rows.jsonl"
 
@@ -161,7 +164,8 @@ def load_generated() -> list[dict]:
     mở đầu, vì câu mở đầu thường chỉ là lời chào hay nêu vấn đề mà nhân viên thật cũng nói. Với cặp kịch bản cùng
     chủ đề, bản hợp pháp cũng bỏ hai lượt mở đầu dùng chung: cắt rời ra thì không biết chúng thuộc bản nào.
     """
-    rows = [json.loads(line) for line in GENERATED.read_text(encoding="utf-8").splitlines() if line.strip()]
+    rows = [json.loads(line) for path in (GENERATED, GENERATED_MORE) if path.exists()
+            for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
     rng = random.Random(SEED)
     documents = []
     for row in rows:
@@ -191,6 +195,20 @@ def load_generated() -> list[dict]:
             documents.append({**base, "id": f"{row['id']}-s{number}", "short": True, "raw_text": snippet,
                               "speakers": 1, "plain": snippet})
     return documents
+
+
+def load_handwritten() -> list[dict]:
+    """Cuộc gọi do dự án viết tay từng cuộc (không sinh từ mẫu). Trả về danh sách rỗng nếu chưa có file.
+
+    Mỗi cuộc là một transcript liền, không có nhãn người nói. Tất cả vào tập train; phần giữ lại để test nằm ở
+    file khác và không được đọc ở đây.
+    """
+    if not HANDWRITTEN.exists():
+        return []
+    rows = [json.loads(line) for line in HANDWRITTEN.read_text(encoding="utf-8").splitlines() if line.strip()]
+    return [{"source": "ivpds_handwritten_vi", "domain": "call", "raw_label": row["label"], "type": row["group"],
+             "synthetic": True, "rule_tuned": False, "fixed_split": "train", "id": row["id"], "short": False,
+             "raw_text": row["text"], "speakers": 1, "plain": row["text"]} for row in rows]
 
 
 def load_ordinary_speech() -> list[dict]:
@@ -481,13 +499,23 @@ def main() -> int:
         for row in ordinary:
             row["cluster"] = f"vlsp_ordinary_speech-{row['page']}"  # cả trang nằm trong một tập
             assignment[row["id"]] = row["fixed_split"]
-    training_rows = dialogues + generated + real_calls + ordinary
+    handwritten, audit["sources"]["ivpds_handwritten_vi"] = audit_and_clean(load_handwritten()) \
+        if HANDWRITTEN.exists() else ([], {"rows_in_raw_file": 0, "note": "Chưa có (chạy tools.handwritten_calls_build)."})
+    if handwritten:
+        audit["sources"]["ivpds_handwritten_vi"]["note"] = (
+            "Cuộc gọi viết tay từng cuộc bởi dự án; dữ liệu tổng hợp. Một phần năm được giữ lại làm test ở file khác."
+        )
+        for row in handwritten:
+            row["cluster"] = f"ivpds_handwritten_vi-{row['id']}"  # mỗi cuộc viết riêng nên là một cụm riêng
+            assignment[row["id"]] = row["fixed_split"]
+    training_rows = dialogues + generated + real_calls + ordinary + handwritten
 
     audit["leakage"] = {
         "adamtc_scam_dialogues": cross_split_leakage(dialogues, assignment),
         "ivpds_generated_vi": cross_split_leakage(generated, assignment),
         "youtube_calls": cross_split_leakage(real_calls, assignment) if real_calls else None,
         "vlsp_ordinary_speech": cross_split_leakage(ordinary, assignment) if ordinary else None,
+        "ivpds_handwritten_vi": cross_split_leakage(handwritten, assignment) if handwritten else None,
         "generated_scenario_families_in_both_train_and_validation": len(
             {row["type"] for row in generated if row["fixed_split"] == "train"}
             & {row["type"] for row in generated if row["fixed_split"] == "validation"}
@@ -508,7 +536,7 @@ def main() -> int:
             "all": _distribution(selected),
             **{source: _distribution([row for row in selected if row["source"] == source])
                for source in ("adamtc_scam_dialogues", "ivpds_generated_vi", "youtube_calls",
-                              "vlsp_ordinary_speech")},
+                              "vlsp_ordinary_speech", "ivpds_handwritten_vi")},
         }
     # Hội thoại Việt Nam viết tay: 100 cuộc đã dùng khi chỉnh Rule Engine làm tập validation khó (dùng để chọn
     # model, vì tập validation tổng hợp quá dễ), 50 cuộc chưa từng dùng vào việc gì làm tập test.

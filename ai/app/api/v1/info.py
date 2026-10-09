@@ -30,7 +30,8 @@ def info(request: Request, settings: Annotated[Settings, Depends(get_settings)])
             speech_to_text=ComponentStatus.READY if transcriber is not None else ComponentStatus.UNAVAILABLE,
             rule_engine=ComponentStatus.READY,
             nlp_model=ComponentStatus.READY if classifier is not None else ComponentStatus.UNAVAILABLE,
-            risk_engine=ComponentStatus.NOT_IMPLEMENTED,
+            # Risk Engine cần cả hai đầu vào; thiếu NLP Model thì nó không cho ra kết quả.
+            risk_engine=ComponentStatus.READY if classifier is not None else ComponentStatus.UNAVAILABLE,
         ),
         stt_model=transcriber.name if transcriber is not None else None,
         nlp_model=classifier.name if classifier is not None else None,

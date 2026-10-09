@@ -5,7 +5,7 @@ def test_openapi_document_describes_the_api(client):
     document = response.json()
     assert document["info"]["title"] == "IVPDS AI Service"
     assert set(document["paths"]) == {
-        "/health", "/v1/info", "/v1/indicators", "/v1/classifications", "/v1/transcriptions",
+        "/health", "/v1/info", "/v1/indicators", "/v1/classifications", "/v1/risk-assessments", "/v1/transcriptions",
     }
 
 

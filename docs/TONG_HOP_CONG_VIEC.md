@@ -250,3 +250,50 @@ Tóm tắt: 5b giảm báo nhầm trên cuộc gọi tiếng Việt (14/101 xu�
 Bổ sung: đã train thêm 5c (loại, đã xóa) và 5d (`phobert-base-r5d`). Trên 199 cuộc gọi tiếng Việt: đợt 4 bắt 79/80 lừa đảo và báo nhầm 19/119; 5b bắt 72/80 và báo nhầm 7/119; 5d bắt 77/80 và báo nhầm 11/119. Chưa có bản nào vừa bắt đủ như đợt 4 vừa ít báo nhầm như 5b. Model đang chạy vẫn là `phobert-base-r4`.
 
 Quyết định: dùng `phobert-base-r5d`. AI service đã chuyển sang model này (370 test qua, sáu case bắt buộc đã thử qua API thật). Các ca model sót sẽ do Risk Engine ở Phase 10 bù bằng điểm của Rule Engine.
+
+## 9. Phase 10 — Risk Engine (09/10/2026)
+
+Risk Engine ghép kết quả của Rule Engine và NLP Model thành điểm rủi ro 0–100 và mức LOW / MEDIUM / HIGH.
+
+- Mã nguồn: `ai/app/risk.py` (công thức), `ai/app/api/v1/risk_assessments.py` (API), test ở `ai/tests/test_risk.py`.
+- API: `POST /v1/risk-assessments`, gửi `text` hoặc `turns`, trả `riskScore`, `riskLevel`, `confidence`, `indicators` theo contract trong README, kèm `components` để giải thích điểm. Thiếu NLP Model thì trả 503, không tính điểm chỉ từ luật.
+- Công thức (bản 2026.10.1): `điểm = min(100, 70 × xác suất model + Rule Score + Indicator Severity)`.
+  - Rule Score: mỗi dấu hiệu LOW 3, MEDIUM 8, HIGH 15 điểm; tổ hợp "giả danh + đòi hỏi" cộng 25; trần 35.
+  - Indicator Severity: theo dấu hiệu nặng nhất, LOW 3, MEDIUM 8, HIGH 20.
+  - Ngưỡng theo README: 0–29 LOW, 30–59 MEDIUM, 60–100 HIGH.
+- Hệ quả của công thức: model rất chắc chắn thì tự lên HIGH; Rule Engine một mình tối đa 55 điểm (MEDIUM); một dấu hiệu yếu đứng riêng vẫn là LOW.
+- Công cụ đo: `ai/tools/risk_signals_dump.py` (ghi tín hiệu), `ai/tools/risk_evaluate.py` (chấm, ghi `ai/training/reports/risk-engine.json`).
+
+Kết quả trên 199 cuộc gọi tiếng Việt (80 lừa đảo, 119 bình thường), "phát hiện" nghĩa là từ MEDIUM trở lên:
+
+| Cách làm | Lừa đảo bị sót | Bình thường bị báo |
+|---|---|---|
+| Chỉ Rule Engine | 20/80 | 6/119 |
+| Chỉ NLP Model (5d) | 3/80 | 11/119 |
+| Risk Engine | 1/80 | 14/119 (11 HIGH, 3 MEDIUM) |
+
+Trọng số được chọn trên tập validation; bảng trên là các bộ test. Các bộ test này đã được xem nhiều lần trong ngày nên con số có thể lạc quan.
+
+### Kiểm thử lớn sau Phase 10: 2.136 cuộc gọi mới (10/10/2026)
+
+Hai bộ test mới, không dùng để train và không dùng để chọn trọng số:
+
+- `ai/data/extra_tests/generated_test_calls.jsonl`: 1.336 cuộc tự viết (680 lừa đảo, 656 bình thường) từ 34 kịch bản có chủ đề không nằm trong dữ liệu train; sinh bằng `ai/tools/testset_generate_vi.py`.
+- `ai/data/extra_tests/translated_calls_rest.jsonl`: 800 cuộc (400 + 400) là phần còn lại của bộ công khai `shakeleoatmeal/phone-scam-detection-synthetic`, dịch máy sang tiếng Việt bằng `ai/tools/translated_calls_fetch.py rest`.
+
+Kết quả của Risk Engine ("phát hiện" = từ MEDIUM trở lên):
+
+| Bộ | Số cuộc | Đúng | Lừa đảo bị sót | Bình thường bị báo |
+|---|---|---|---|---|
+| Tự viết, tiếng Việt | 1.336 | 99,1% | 1/680 (0,1%) | 11/656 (1,7%) |
+| Dịch máy từ tiếng Anh | 800 | 62,5% | 19/400 (4,8%) | 281/400 (70,2%) |
+| Cả hai bộ mới | 2.136 | 85,4% | 20/1.080 (1,9%) | 292/1.056 (27,7%) |
+| Tất cả bộ test (cũ + mới) | 3.981 | 81,6% | 36/2.000 (1,8%) | 695/1.981 (35,1%) |
+
+Giới hạn: bộ tự viết gồm 40 biến thể cho mỗi kịch bản nên chỉ có 34 kịch bản độc lập, và do cùng người viết với dữ liệu train; bộ dịch máy là kịch bản kiểu Mỹ do máy sinh, bản dịch sai nghĩa nhiều chỗ. Số liệu chi tiết ở `ai/training/reports/risk-engine.json`.
+
+### Đợt huấn luyện 6 (10/10/2026): thêm cuộc gọi viết tay và kịch bản bổ sung
+
+Theo yêu cầu, dữ liệu cũ được giữ nguyên và thêm 427 cuộc gọi viết tay cùng 2.056 hội thoại từ 52 kịch bản mới; tổng 12.255 dòng train. Model `phobert-base-r6` đang chạy trong AI service. So với 5d trên các bộ cuộc gọi tiếng Việt còn độc lập: bắt lừa đảo 172/174 (5d: 169/174), báo nhầm 12/169 (5d: 14/169). Trên bộ dịch máy báo nhầm tăng từ 364 lên 444 trên 500. Chi tiết ở `ai/training/README.md`, mục "Đợt 6"; số liệu Risk Engine với model mới ở `ai/training/reports/risk-engine.json`.
+
+Bộ test `generated_test_calls` (1.336 cuộc) đã chuyển sang huấn luyện nên con số 99,1% báo trước đó không còn dùng để đánh giá model mới.

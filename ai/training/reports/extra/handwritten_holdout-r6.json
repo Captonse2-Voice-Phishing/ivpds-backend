@@ -1,0 +1,510 @@
+{
+  "file": "handwritten_holdout.jsonl",
+  "samples": 106,
+  "phishing": 56,
+  "normal": 50,
+  "deployed_model": "phobert-base-r6",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 106,
+        "accuracy": 0.6887,
+        "phishing": {
+          "precision": 0.96,
+          "recall": 0.4286,
+          "f1": 0.5926
+        },
+        "normal": {
+          "precision": 0.6049,
+          "recall": 0.98,
+          "f1": 0.7481
+        },
+        "macro_f1": 0.6704,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 49,
+          "true_normal_pred_phishing": 1,
+          "true_phishing_pred_normal": 32,
+          "true_phishing_pred_phishing": 24
+        },
+        "false_positives": 1,
+        "false_negatives": 32
+      },
+      "by_group": {
+        "bình thường - bạn bè": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - công việc": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - dịch vụ khác": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - gia đình": {
+          "samples": 10,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - kể chuyện cảnh báo": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - mua bán giao hàng": {
+          "samples": 10,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - nhắc nợ tư vấn": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - trường học y tế": {
+          "samples": 4,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - tổ chức thật": {
+          "samples": 10,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "lừa đảo - du lịch vé": {
+          "samples": 1,
+          "flagged_as_phishing": 0,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả công an": {
+          "samples": 5,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả cơ quan nhà nước": {
+          "samples": 5,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả ngân hàng": {
+          "samples": 5,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả người thân": {
+          "samples": 3,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả nhà mạng": {
+          "samples": 3,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả shipper": {
+          "samples": 4,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả sếp": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả điện nước": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - khóa tài khoản": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - lấy lại tiền": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "PHISHING"
+        },
+        "lừa đảo - trúng thưởng": {
+          "samples": 2,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tình cảm": {
+          "samples": 1,
+          "flagged_as_phishing": 0,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tống tiền": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "PHISHING"
+        },
+        "lừa đảo - từ thiện": {
+          "samples": 2,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - vay online": {
+          "samples": 3,
+          "flagged_as_phishing": 0,
+          "label": "PHISHING"
+        },
+        "lừa đảo - việc làm online": {
+          "samples": 4,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        },
+        "lừa đảo - đầu tư": {
+          "samples": 4,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - đặt bàn đặt phòng": {
+          "samples": 4,
+          "flagged_as_phishing": 0,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "baseline-tfidf-logreg-r6": {
+      "all": {
+        "samples": 106,
+        "accuracy": 0.9245,
+        "phishing": {
+          "precision": 0.9615,
+          "recall": 0.8929,
+          "f1": 0.9259
+        },
+        "normal": {
+          "precision": 0.8889,
+          "recall": 0.96,
+          "f1": 0.9231
+        },
+        "macro_f1": 0.9245,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 48,
+          "true_normal_pred_phishing": 2,
+          "true_phishing_pred_normal": 6,
+          "true_phishing_pred_phishing": 50
+        },
+        "false_positives": 2,
+        "false_negatives": 6
+      },
+      "by_group": {
+        "bình thường - bạn bè": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - công việc": {
+          "samples": 5,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "bình thường - dịch vụ khác": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - gia đình": {
+          "samples": 10,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "bình thường - kể chuyện cảnh báo": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - mua bán giao hàng": {
+          "samples": 10,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - nhắc nợ tư vấn": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - trường học y tế": {
+          "samples": 4,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - tổ chức thật": {
+          "samples": 10,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "lừa đảo - du lịch vé": {
+          "samples": 1,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả công an": {
+          "samples": 5,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả cơ quan nhà nước": {
+          "samples": 5,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả ngân hàng": {
+          "samples": 5,
+          "flagged_as_phishing": 5,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả người thân": {
+          "samples": 3,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả nhà mạng": {
+          "samples": 3,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả shipper": {
+          "samples": 4,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả sếp": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả điện nước": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - khóa tài khoản": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - lấy lại tiền": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - trúng thưởng": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tình cảm": {
+          "samples": 1,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tống tiền": {
+          "samples": 2,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - từ thiện": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - vay online": {
+          "samples": 3,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        },
+        "lừa đảo - việc làm online": {
+          "samples": 4,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - đầu tư": {
+          "samples": 4,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - đặt bàn đặt phòng": {
+          "samples": 4,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "phobert-base-r6": {
+      "all": {
+        "samples": 106,
+        "accuracy": 1.0,
+        "phishing": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "macro_f1": 1.0,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 50,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 56
+        },
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "bình thường - bạn bè": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - công việc": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - dịch vụ khác": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - gia đình": {
+          "samples": 10,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - kể chuyện cảnh báo": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - mua bán giao hàng": {
+          "samples": 10,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - nhắc nợ tư vấn": {
+          "samples": 2,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - trường học y tế": {
+          "samples": 4,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - tổ chức thật": {
+          "samples": 10,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "lừa đảo - du lịch vé": {
+          "samples": 1,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả công an": {
+          "samples": 5,
+          "flagged_as_phishing": 5,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả cơ quan nhà nước": {
+          "samples": 5,
+          "flagged_as_phishing": 5,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả ngân hàng": {
+          "samples": 5,
+          "flagged_as_phishing": 5,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả người thân": {
+          "samples": 3,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả nhà mạng": {
+          "samples": 3,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả shipper": {
+          "samples": 4,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả sếp": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - giả điện nước": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - khóa tài khoản": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - lấy lại tiền": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - trúng thưởng": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tình cảm": {
+          "samples": 1,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tống tiền": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - từ thiện": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - vay online": {
+          "samples": 3,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        },
+        "lừa đảo - việc làm online": {
+          "samples": 4,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - đầu tư": {
+          "samples": 4,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - đặt bàn đặt phòng": {
+          "samples": 4,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        }
+      }
+    }
+  }
+}

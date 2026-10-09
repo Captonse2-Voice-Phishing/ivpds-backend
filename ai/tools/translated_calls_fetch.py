@@ -15,6 +15,9 @@ Anh rồi dịch máy sang tiếng Việt:
 Dịch bằng ``Helsinki-NLP/opus-mt-en-vi`` (Apache-2.0), từng câu một. Kết quả ghi vào
 ``data/extra_tests/translated_calls.jsonl``. Đây là dữ liệu chỉ để test: không được đưa vào huấn luyện.
 
+Thêm tham số ``rest`` để lấy phần còn lại của bộ thứ nhất (các hội thoại không nằm trong 1.000 cuộc đã chọn) và
+ghi vào ``data/extra_tests/translated_calls_rest.jsonl``; phần này cũng chỉ để test.
+
 Giới hạn cần nhớ khi đọc kết quả: nội dung là kịch bản kiểu Mỹ, phần lớn do máy sinh, và bản dịch máy không tự
 nhiên như lời người Việt nói.
 """
@@ -84,6 +87,8 @@ def translate(sentences: list[str], device: str) -> list[str]:
 
 def main() -> int:
     """Tải, chọn mẫu, dịch và ghi bộ test."""
+    rest = len(sys.argv) > 1 and sys.argv[1] == "rest"
+    out = OUT.with_name("translated_calls_rest.jsonl") if rest else OUT
     rng = random.Random(SEED)
     synthetic = []
     for split, total in (("train", 1259), ("validation", 361), ("test", 180)):
@@ -93,12 +98,13 @@ def main() -> int:
     for label in (1, 0):
         pool = [row for row in synthetic if row["label"] == label]
         rng.shuffle(pool)
-        for number, row in enumerate(pool[:PER_CLASS]):
+        picked = pool[PER_CLASS:] if rest else pool[:PER_CLASS]
+        for number, row in enumerate(picked, start=PER_CLASS if rest else 0):
             kind = names.get(row["type"], row["type"])
             chosen.append({"id": f"tr-{'scam' if label else 'legit'}-{number}", "label": label, "source": "synthetic-en",
                            "group": f"{'lừa đảo' if label else 'bình thường'} - {kind} (dịch máy)",
                            "text_en": row["dialogue"]})
-    real = fetch_rows("BothBosu/youtube-scam-conversations", "train", 20)
+    real = [] if rest else fetch_rows("BothBosu/youtube-scam-conversations", "train", 20)
     for number, row in enumerate(real):
         chosen.append({"id": f"tr-youtube-{number}", "label": int(row["labels"]), "source": "youtube-en",
                        "group": ("lừa đảo" if row["labels"] else "bình thường") + " - cuộc gọi thật tiếng Anh (dịch máy)",
@@ -110,9 +116,9 @@ def main() -> int:
     translated = iter(translate(flat, "cuda" if torch.cuda.is_available() else "cpu"))
     for row, sentences in zip(chosen, pieces):
         row["text"] = " ".join(next(translated) for _ in sentences)
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_bytes("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in chosen).encode("utf-8"))
-    print(f"wrote {OUT}: {len(chosen)} calls ({sum(row['label'] for row in chosen)} scam, "
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_bytes("".join(json.dumps(row, ensure_ascii=False) + "\n" for row in chosen).encode("utf-8"))
+    print(f"wrote {out}: {len(chosen)} calls ({sum(row['label'] for row in chosen)} scam, "
           f"{sum(1 - row['label'] for row in chosen)} normal)")
     return 0
 

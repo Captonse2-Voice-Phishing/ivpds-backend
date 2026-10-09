@@ -295,3 +295,28 @@ Lưu ý: các bộ test trên đã được xem kết quả qua bốn lần trai
 ### Triển khai (09/10/2026)
 
 Model đang chạy trong AI service là `phobert-base-r5d` (`AI_NLP_MODEL_NAME` trong `docker-compose.yml` và `.env.example`). Đã kiểm tra sau khi đổi: `/v1/info` báo `2026.10.09-phobert-base-r5d`; sáu case bắt buộc qua API thật cho kết quả như bảng trên; `pytest` trong image test với model này: 370 passed. `phobert-base-r4` và `phobert-base-r5b` vẫn nằm trong `ai/models/` để đổi lại khi cần. Các ca model bỏ sót sẽ được bù bằng Rule Engine trong Risk Engine (Phase 10).
+
+### Đợt 6 (model đang triển khai: `phobert-base-r6`, 10/10/2026)
+
+Giữ toàn bộ dữ liệu của 5d và thêm hai nguồn theo yêu cầu của người dùng:
+
+- `data/synthetic/handwritten/*.txt` → `tools/handwritten_calls_build.py`: 533 cuộc gọi viết tay từng cuộc (283 lừa đảo, 250 bình thường). 427 cuộc vào train (nguồn `ivpds_handwritten_vi`), 106 cuộc giữ lại làm test (`data/extra_tests/handwritten_holdout.jsonl`).
+- `tools/dataset_synthesize_vi_more.py`: 52 kịch bản bổ sung, 2.056 hội thoại (`data/synthetic/vi_generated_more.jsonl`). 34 kịch bản trong số này từng là bộ test `generated_test_calls`; bộ test đó đã bị bỏ.
+- Chạy: `sh training/run_round6.sh`. Train 12.255 dòng (6.062 lừa đảo, 6.193 bình thường), 24 phút.
+
+| Bộ test | `phobert-base-r5d` | `phobert-base-r6` |
+|---|---|---|
+| `handwritten_holdout` (106) | bắt 55/56, báo nhầm 3/50 | bắt 56/56, báo nhầm 0/50 |
+| `user_gendata` (38 cuộc lừa đảo của kho `hoangvt2501/data_scam`, chỉ để test) | bắt 37/38 | bắt 37/38 |
+| `context_pairs` (46) | bắt 20/20, báo nhầm 2/26 | bắt 20/20, báo nhầm 0/26 |
+| `short_requests` (36) | bắt 17/18, báo nhầm 4/18 | bắt 17/18, báo nhầm 4/18 |
+| `short_sentences` (37) | bắt 13/14, báo nhầm 0/23 | bắt 14/14, báo nhầm 3/23 |
+| `real_calls` (24) | bắt 15/16, báo nhầm 5/8 | bắt 16/16, báo nhầm 5/8 |
+| `everyday_calls` (56) | bắt 12/12, báo nhầm 0/44 | bắt 12/12, báo nhầm 0/44 |
+| `vlsp_ordinary_speech` (889) | báo nhầm 5 | báo nhầm 2 |
+| `translated_calls` (1.020) | bắt 496/520, báo nhầm 364/500 | bắt 512/520, báo nhầm 444/500 |
+| `test` (576) / `test_vi_context` (50) | sai 0 / sai 4 | sai 0 / sai 0 |
+
+Sáu case bắt buộc qua API thật: A, B, F là LOW; C, D, E là HIGH (Case C nay model tự cho PHISHING). `pytest` với model này: 397 passed.
+
+Điểm kém hơn 5d: báo nhầm trên bộ dịch máy tăng (364 → 444 trên 500) và có 3 câu ngắn bình thường bị báo nhầm. Kho `hoangvt2501/data_scam` không có giấy phép nên không đưa vào huấn luyện; chỉ dùng 38 hội thoại `gendata` để test.

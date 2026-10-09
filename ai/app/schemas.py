@@ -157,6 +157,43 @@ class IndicatorResponse(ApiModel):
     speaker_count: int
 
 
+class RiskAssessmentRequest(IndicatorRequest):
+    """Nội dung cuộc gọi cần đánh giá rủi ro. Giống ``IndicatorRequest``: gửi ``text`` hoặc ``turns``."""
+
+
+class RiskComponents(ApiModel):
+    """Ba thành phần cộng lại thành điểm rủi ro, để giải thích được vì sao điểm cao hay thấp."""
+
+    # Xác suất lừa đảo do NLP Model tính (0 đến 1), và số điểm nó đóng góp.
+    model_probability: float
+    model_points: float
+    # Điểm theo số lượng và loại dấu hiệu Rule Engine tìm thấy.
+    rule_score: float
+    # Mức nghiêm trọng cao nhất trong các dấu hiệu (None nếu không có dấu hiệu), và số điểm nó đóng góp.
+    highest_severity: str | None
+    severity_points: float
+
+
+class RiskAssessmentResponse(ApiModel):
+    """Kết quả của Risk Engine. Ba trường đầu và ``indicators`` theo đúng API contract trong README."""
+
+    # Điểm rủi ro cuối cùng, từ 0 đến 100.
+    risk_score: int
+    # LOW (0-29), MEDIUM (30-59) hoặc HIGH (60-100).
+    risk_level: str
+    # Mức chắc chắn của kết quả (0 đến 1): cao khi model dứt khoát và Rule Engine không nói ngược lại.
+    # Đây không phải xác suất lừa đảo.
+    confidence: float
+    # Mã các dấu hiệu Rule Engine tìm thấy.
+    indicators: list[str]
+    # Chi tiết từng dấu hiệu (mức nghiêm trọng, bằng chứng, luật đã khớp).
+    indicator_details: list[IndicatorResult]
+    components: RiskComponents
+    model_version: str
+    ruleset_version: str
+    risk_engine_version: str
+
+
 class AudioMetadata(ApiModel):
     """Thông tin kỹ thuật của file audio nhận được (trước khi chuẩn hóa)."""
 
