@@ -794,3 +794,36 @@ def test_rule_engine_keeps_its_measured_level_on_the_conversation_set():
 
     assert sum(flagged[i] for i in scams) >= MIN_SCAMS_FLAGGED
     assert sum(flagged[i] for i in normal) <= MAX_NORMAL_FLAGGED
+
+
+# ============================================== patterns taken from real call recordings (ASR text)
+
+
+def test_common_speech_recognition_mistakes_are_normalised():
+    assert "trúng thưởng" in normalize("chương trình bốc thăm trụ thưởng")
+    assert normalize("gửi một đường linh và một mã cốt") == "gửi một đường link và một mã code"
+
+
+@pytest.mark.parametrize(("text", "indicator"), [
+    ("công ty bảo hiểm xin chào quý khách có một bảo hiểm chưa nhận đây là lần thông báo cuối cùng", BAIT),
+    ("vui lòng bấm phím sáu để được nhân viên hỗ trợ", HANDOFF),
+    ("số máy này của anh đang nằm trong chương trình bốc thăm trụ thưởng của bên em", BAIT),
+    ("mình chỉ vui lòng thanh toán cái thuế nhập khẩu là năm phẩy năm phần trăm", MONEY),
+    ("cổng game bên em có tài xỉu bắn cá game bài và xổ số anh ạ", BAIT),
+    ("chúng tôi sẽ khóa toàn bộ lại nhá", LOCK),
+    ("tôi gọi cho anh bên công an điều tra thành phố hà nội", AUTHORITY),
+    ("khi bắt đầu lưu âm không được có người thứ ba xuất hiện", SECRECY),
+    ("số điện thoại đó lập facebook đăng những thông tin chống phá nhà nước", LEGAL),
+])
+def test_patterns_from_real_scam_recordings_are_detected(text, indicator):
+    assert indicator in codes(text)
+
+
+@pytest.mark.parametrize("text", [
+    "tổng đài xin nghe vui lòng bấm phím một để nghe hướng dẫn",
+    "hôm qua tôi lên công an phường làm lại căn cước",
+    "em có bưu phẩm gửi cho anh chiều nay em giao nhé",
+    "con chơi game xong thì đi ngủ sớm nhé",
+])
+def test_everyday_sentences_near_those_patterns_stay_clean(text):
+    assert codes(text) == set()

@@ -30,10 +30,12 @@ def test_info_reports_the_real_state_of_each_component(client, auth):
         "audioProcessing": "READY",
         "speechToText": "UNAVAILABLE",
         "ruleEngine": "READY",
+        # Implemented, but this client has no fine-tuned artifact to load.
+        "nlpModel": "UNAVAILABLE",
         # Not built yet, and the service must say so.
-        "nlpModel": "NOT_IMPLEMENTED",
         "riskEngine": "NOT_IMPLEMENTED",
     }
+    assert body["nlpModel"] is None
 
 
 def test_api_key_is_not_accepted_as_a_query_parameter(client):

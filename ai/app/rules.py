@@ -18,7 +18,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from enum import StrEnum
 
-RULESET_VERSION = "2026.10.4"
+RULESET_VERSION = "2026.10.5"
 
 
 class Indicator(StrEnum):
@@ -91,6 +91,13 @@ _TONE_VARIANTS = {
 _TONE_VARIANT_RX = re.compile("(" + "|".join(_TONE_VARIANTS) + r")(?!\w)")
 # Chỉ dấu kết câu mới ngắt. Dấu phẩy không ngắt, vì lời yêu cầu thường là một chuỗi liệt kê
 # ("tên, địa chỉ và số thẻ tín dụng") và transcript của Whisper vốn không có dấu phẩy.
+# Lỗi nghe nhầm lặp lại của PhoWhisper trên ghi âm cuộc gọi thật, đưa về cách viết đúng trước khi so luật.
+# Chỉ thêm những lỗi đã thấy trong transcript thật thuộc tập train.
+_ASR_FIXES = {
+    "trụ thưởng": "trúng thưởng", "mã cốt": "mã code", "đường linh": "đường link", "phây búc": "facebook",
+    "thuê búc": "facebook",
+}
+_ASR_FIX_RX = re.compile(r"(?<!\S)(?:" + "|".join(_ASR_FIXES) + r")(?!\S)")
 _CLAUSE_BREAK = re.compile(r"[.!?…]+")
 _NOT_WORD = re.compile(r"[^\w|]+")
 
@@ -106,6 +113,7 @@ def normalize(text: str) -> str:
     with_breaks = _CLAUSE_BREAK.sub(lambda m: " || " if "?" in m.group(0) else " | ", lowered)
     words_only = _NOT_WORD.sub(" ", with_breaks)
     unified = _TONE_VARIANT_RX.sub(lambda m: _TONE_VARIANTS[m.group(1)], words_only)
+    unified = _ASR_FIX_RX.sub(lambda m: _ASR_FIXES[m.group(0)], unified)
     return " ".join(unified.split())
 
 
@@ -342,6 +350,7 @@ _ADVANCE_FEE = _alt(
     "khoản phí", "một khoản phí", "tiền thuế", "thuế thu nhập", "phí nhận thưởng", "phí nhận giải",
     "phí trước bạ", "thuế trúng thưởng", "tiền phạt", "tiền bảo lãnh",
     "tạm ứng viện phí", "tạm ứng", "tiền máu", "phí mở khóa", "phí bảo hiểm khoản vay",
+    "thuế nhập khẩu", "cước phí", "khoản cước phí", "phí thuế",
 )
 # Mục đích vô lý của một khoản nộp thêm: "nạp thêm mười triệu để mở khóa", "chuyển trước để giữ chỗ".
 _UNLOCK_PURPOSE = _alt(
@@ -439,6 +448,7 @@ _SCARCITY = _alt(
     "hết hạn hôm nay", "kẻo hết", "sắp đóng lệnh", "là đóng lệnh", "quá hạn", "mất suất", "giữ suất",
     "không kịp đâu", "không còn thời gian", "từng phút", "nhận cọc bạn khác",
     "nhận cọc người khác", "đang rất gấp", "đang gấp lắm", "gấp lắm", "cần gấp",
+    "lần thông báo cuối cùng", "thông báo cuối cùng", "lần cuối cùng",
 )
 # "kẻo mất tiền", "kẻo hệ thống khóa mất", "không là mất suất": hậu quả nếu chậm trễ.
 _OR_ELSE = (
@@ -474,7 +484,7 @@ _BAD_OUTCOME = (
 _LOCKABLE = _alt(
     "tài khoản", "thẻ tín dụng", "thẻ atm", "thẻ", "sim", "số điện thoại", "thuê bao", "ví điện tử", "dịch vụ",
     # Quyền lợi do nhà nước chi trả cũng bị đem ra dọa "đình chỉ", "cắt".
-    "quyền lợi", "phúc lợi", "lương hưu", "trợ cấp", "số an sinh xã hội",
+    "quyền lợi", "phúc lợi", "lương hưu", "trợ cấp", "số an sinh xã hội", "toàn bộ", "số này", "số thuê bao",
 )
 _LOCK = _alt(
     "khóa vĩnh viễn", "tạm khóa", "khóa", "phong tỏa", "đóng băng", "đình chỉ", "tạm ngưng", "tạm dừng",
@@ -490,7 +500,8 @@ _AUTHORITY = _alt(
     "an sinh xã hội", "thanh tra", "ủy ban phường", "ủy ban", "an ninh mạng",
     # Đơn vị cung cấp dịch vụ thiết yếu cũng hay bị giả danh để dọa cắt dịch vụ.
     "công ty điện lực", "điện lực", "công ty cấp nước", "bưu điện", "viettel", "vinaphone", "mobifone",
-    "nhà mạng",
+    "nhà mạng", "bộ thông tin truyền thông", "bộ thông tin", "cục viễn thông", "trung tâm viễn thông",
+    "công an điều tra",
 )
 # Cấp bậc và chức danh tố tụng: chỉ cần tự xưng như vậy qua điện thoại là đã đáng chú ý.
 _OFFICER_TITLE = _alt(
@@ -518,13 +529,21 @@ _INSTALL = _alt("cài đặt", "cài", "tải xuống", "tải về", "tải", "
 _SOFTWARE = _alt("ứng dụng", "phần mềm", "app", "chương trình", "bản")
 _OPEN = _alt("bấm vào", "nhấn vào", "nhấp vào", "click vào", "truy cập vào", "truy cập", "bấm", "nhấn", "nhấp")
 _LINK = _alt("đường link", "link", "đường dẫn", "liên kết")
+# Cơ quan mà kẻ lừa đảo hay xưng tên trong lời nói đứt quãng: chỉ cần "bên công an điều tra", "là bộ thông tin".
+_NAMED_AGENCY = _alt(
+    "công an điều tra", "cơ quan điều tra", "cơ quan cảnh sát điều tra", "viện kiểm sát", "bộ công an",
+    "bộ thông tin truyền thông", "bộ thông tin", "cục viễn thông", "trung tâm viễn thông",
+)
+# Dụ vào cổng cờ bạc trực tuyến.
+_GAMBLING = _alt("cổng game", "tài xỉu", "bắn cá", "game bài", "nổ hũ", "cá cược", "nhà cái")
 _PRIZE = _alt(
     "trúng thưởng", "trúng giải", "đã trúng", "giải nhất", "giải đặc biệt", "nhận thưởng", "nhận giải",
     "phần thưởng là", "được hoàn thuế", "khoản trợ cấp", "đủ điều kiện nhận",
     "đủ điều kiện để nhận", "khoản tiền hoàn lại", "khoản hoàn tiền", "miễn phí trị giá", "được chọn để nhận",
     "đã được chọn", "người may mắn", "khách hàng may mắn", "may mắn trúng", "được chọn nhận", "kiện quà",
     "thùng quà", "hoàn tiền gấp đôi", "bồi thường thêm", "đền bù thêm", "lãi mỗi ngày", "bảo toàn vốn",
-    "lãi gấp đôi", "lãi gấp ba",
+    "lãi gấp đôi", "lãi gấp ba", "bốc thăm trúng thưởng", "bốc thăm", "quay số", "quà tri ân", "tri ân",
+    "danh sách nhận quà", "chọn ngẫu nhiên", "số ngẫu nhiên", "phần thưởng duy nhất", "gửi tặng",
 )
 _GUARANTEE = _alt(
     "cam kết lợi nhuận", "cam kết trúng", "cam kết thu hồi", "không rủi ro", "bao lỗ", "hoàn lại gấp đôi",
@@ -744,6 +763,9 @@ RULES: tuple[Rule, ...] = (
          _compile(rf"{_OFFICER_TITLE} {_gap(6)}{_alt('nghe', 'đây', 'nghe đây')}"), (_asked_as_question,)),
     Rule("AU-7", Indicator.AUTHORITY_IMPERSONATION, Severity.LOW,
          _compile(rf"{_AUTHORITY} {_gap(3)}{_alt('xin thông báo', 'thông báo', 'đây', 'nghe')}"), (_asked_as_question,)),
+    # Lời nói thật thường không đủ câu: "tôi gọi cho anh bên công an điều tra", "là bộ thông tin anh biết không".
+    Rule("AU-9", Indicator.AUTHORITY_IMPERSONATION, Severity.LOW,
+         _compile(rf"{_alt('bên', 'là', 'từ', 'của')} {_NAMED_AGENCY}"), (_negated, _asked_as_question)),
     Rule("AU-8", Indicator.AUTHORITY_IMPERSONATION, Severity.LOW,
          _compile(rf"{_SELF} {_alt('ở', 'bên', 'ở bên', 'thuộc')} {_gap(3)}{_AUTHORITY}"), (_negated, _asked_as_question)),
 
@@ -758,6 +780,11 @@ RULES: tuple[Rule, ...] = (
     Rule("LT-4", Indicator.LEGAL_THREAT, Severity.MEDIUM,
          _compile(rf"số an sinh xã hội {_gap(5)}{_alt('bị đình chỉ', 'đình chỉ', 'bị treo', 'bị khóa', 'bị xâm phạm', 'bị đánh cắp', 'bị sử dụng')}"),
          ()),
+    # Gán cho người nghe tội "đăng tin chống phá": cái cớ quen thuộc của kiểu giả nhà mạng rồi chuyển sang công an.
+    Rule("LT-6", Indicator.LEGAL_THREAT, Severity.MEDIUM,
+         _compile(_alt("chống phá nhà nước", "chống phá đảng", "chống phá", "lập cho anh một hồ sơ",
+                       "lập cho chị một hồ sơ", "có hiệu lực trên pháp lý", "có hiệu lực pháp lý")),
+         (_negated, _clause_is_question)),
     Rule("LT-5", Indicator.LEGAL_THREAT, Severity.MEDIUM,
          _compile(_alt("bị ghi nợ xấu", "ghi nợ xấu", "kiện anh ra tòa", "kiện chị ra tòa", "kiện ra tòa",
                        "xử phạt hành chính", "chuyển công an", "chuyển sang công an", "chuyển hồ sơ sang")),
@@ -774,6 +801,9 @@ RULES: tuple[Rule, ...] = (
          _compile(_alt("giữ bí mật", "bí mật điều tra", "giữ kín", "không để người khác nghe", "ra chỗ vắng",
                        "chỗ vắng người", "không được nói là", "đừng nói là", "đừng gọi ai", "đừng báo ai",
                        "đừng nói ai", "đừng kể ai")), (_kept_confidential,)),
+    # "Ghi âm lời khai": bắt người nghe ở một mình, không có người thứ ba, giữ yên tĩnh suốt cuộc gọi.
+    Rule("SD-4", Indicator.SECRECY_DEMAND, Severity.MEDIUM,
+         _compile(_alt("người thứ ba", "không gian yên tĩnh", "giữ yên tĩnh", "bên cạnh không có")), ()),
     # Giữ máy liên tục cũng xảy ra khi hỗ trợ thật, nên chỉ là dấu hiệu yếu.
     Rule("SD-3", Indicator.SECRECY_DEMAND, Severity.LOW,
          _compile(rf"{_alt('không được', 'đừng')} {_alt('tắt máy', 'cúp máy', 'ngắt máy', 'gác máy')}"), ()),
@@ -838,6 +868,11 @@ RULES: tuple[Rule, ...] = (
                   rf"(?:{_alt('muốn', 'sẽ', 'sẵn sàng')} {_alt('hoàn lại', 'hoàn trả', 'hoàn')} {_gap(3)}{_alt('tiền', 'khoản', 'toàn bộ')}"
                   rf"|nợ {_alt('bạn', 'anh', 'chị', 'ông', 'bà', 'quý khách')})"),
          (_negated, _clause_is_question)),
+    # "Quý khách có một bảo hiểm chưa nhận": mồi của cuộc gọi tự động.
+    Rule("FB-8", Indicator.FINANCIAL_BAIT, Severity.MEDIUM,
+         _compile(rf"có {_gap(1)}{_alt('bảo hiểm', 'bưu phẩm', 'bưu kiện', 'khoản tiền', 'phần quà', 'gói hàng', 'kiện hàng')} "
+                  rf"{_gap(2)}chưa nhận"), (_negated, _clause_is_question)),
+    Rule("FB-9", Indicator.FINANCIAL_BAIT, Severity.MEDIUM, _compile(_GAMBLING), (_negated, _clause_is_question)),
     Rule("FB-7", Indicator.FINANCIAL_BAIT, Severity.MEDIUM,
          _compile(rf"khoản {_alt('hoàn lại', 'hoàn tiền', 'hoàn trả', 'bồi thường')} {_gap(3)}mà {_gap(1)}{_alt('bạn', 'anh', 'chị', 'ông', 'bà')} được"),
          (_negated, _clause_is_question)),
@@ -850,6 +885,10 @@ RULES: tuple[Rule, ...] = (
     Rule("UP-2", Indicator.UNUSUAL_PAYMENT, Severity.MEDIUM, _compile(_ODD_CRYPTO), (_negated, _clause_is_question)),
 
     # --- CALL_HANDOFF: đưa thêm người vào cuộc gọi ---
+    # Cuộc gọi tự động: "bấm phím sáu để được nhân viên hỗ trợ".
+    Rule("CH-2", Indicator.CALL_HANDOFF, Severity.LOW,
+         _compile(rf"{_alt('bấm phím', 'nhấn phím', 'ấn phím')} {_gap(2)}để {_gap(2)}{_alt('nhân viên', 'tổng đài viên', 'gặp')}"),
+         ()),
     Rule("CH-1", Indicator.CALL_HANDOFF, Severity.LOW,
          _compile(rf"(?P<verb>{_HAND_OVER}) {_gap(2)}{_alt('cho', 'sang', 'với', 'tới', 'đến')} {_gap(4)}{_COLLEAGUE}"),
          (_negated,)),

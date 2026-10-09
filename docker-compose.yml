@@ -69,6 +69,11 @@ services:
       AI_LOG_LEVEL: ${AI_LOG_LEVEL:-INFO}
       # Speech-to-text uses PhoWhisper-medium, which is built into the image (see ai/Dockerfile).
       AI_WHISPER_CPU_THREADS: ${AI_WHISPER_CPU_THREADS:-0}
+      # Fine-tuned NLP model. The artifact is not in the image or in git (it is large): it is read from
+      # ai/models/<name> on this machine. Without it the service still runs and reports the model as UNAVAILABLE.
+      AI_NLP_MODEL_DIR: /opt/models/nlp/${AI_NLP_MODEL_NAME:-phobert-base-r5d}
+    volumes:
+      - ./ai/models:/opt/models/nlp:ro
     ports:
       - "127.0.0.1:${AI_PORT:-8000}:8000"
     healthcheck:

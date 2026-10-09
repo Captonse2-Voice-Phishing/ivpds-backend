@@ -2,6 +2,7 @@
 
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 
@@ -11,6 +12,7 @@ from app.api import v1
 from app.config import Settings, get_settings
 from app.errors import install_error_handlers
 from app.limits import MaxBodySizeMiddleware
+from app.nlp import CONFIG_FILE, TextClassifier
 from app.observability import RequestContextMiddleware, configure_logging
 from app.rules import RuleEngine
 from app.stt import Transcriber, WhisperTranscriber
@@ -22,11 +24,12 @@ log = logging.getLogger(__name__)
 _MULTIPART_OVERHEAD_BYTES = 1024 * 1024
 
 
-def create_app(settings: Settings | None = None, transcriber: Transcriber | None = None) -> FastAPI:
+def create_app(settings: Settings | None = None, transcriber: Transcriber | None = None,
+               classifier: TextClassifier | None = None) -> FastAPI:
     """Tạo ứng dụng FastAPI: nạp cấu hình, cấu hình log, đăng ký middleware, xử lý lỗi và các router.
 
-    Hai tham số chỉ dùng trong test: ``settings`` để thay cấu hình, ``transcriber`` để dùng sẵn
-    một bộ nhận dạng thay vì nạp model khi khởi động.
+    Các tham số chỉ dùng trong test: ``settings`` để thay cấu hình, ``transcriber`` và ``classifier`` để dùng
+    sẵn một bộ nhận dạng hoặc một bộ phân loại thay vì nạp model khi khởi động.
     """
     # Đọc cấu hình ngay khi khởi động để thiếu biến môi trường bắt buộc thì dừng luôn.
     resolved = settings or get_settings()
@@ -53,6 +56,17 @@ def create_app(settings: Settings | None = None, transcriber: Transcriber | None
                 log.info("Whisper model ready: %s", service.transcriber.name)
             except Exception:
                 log.exception("Could not load the Whisper model; speech-to-text is unavailable")
+        if app.state.nlp is None:
+            # Artifact của NLP Model nằm ngoài image. Thiếu hoặc nạp lỗi thì API phân loại trả 503.
+            if (Path(resolved.nlp_model_dir) / CONFIG_FILE).is_file():
+                try:
+                    log.info("Loading NLP model from %s", resolved.nlp_model_dir)
+                    app.state.nlp = TextClassifier(resolved.nlp_model_dir, device=resolved.nlp_device)
+                    log.info("NLP model ready: %s", app.state.nlp.name)
+                except Exception:
+                    log.exception("Could not load the NLP model; classification is unavailable")
+            else:
+                log.warning("No NLP model artifact in %s; classification is unavailable", resolved.nlp_model_dir)
         yield
 
     app = FastAPI(
@@ -63,6 +77,7 @@ def create_app(settings: Settings | None = None, transcriber: Transcriber | None
     )
     app.state.transcription = TranscriptionService(resolved, transcriber)
     app.state.rules = RuleEngine()
+    app.state.nlp = classifier
     if settings is not None:
         # Để các route lấy cấu hình qua Depends(get_settings) cũng dùng cấu hình được truyền vào.
         app.dependency_overrides[get_settings] = lambda: settings

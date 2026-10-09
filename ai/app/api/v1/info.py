@@ -21,6 +21,7 @@ def info(request: Request, settings: Annotated[Settings, Depends(get_settings)])
     thì báo UNAVAILABLE. Không báo READY khi chưa có model hay engine thật.
     """
     transcriber = request.app.state.transcription.transcriber
+    classifier = request.app.state.nlp
     return ServiceInfo(
         service=settings.service_name,
         version=__version__,
@@ -28,8 +29,9 @@ def info(request: Request, settings: Annotated[Settings, Depends(get_settings)])
             audio_processing=ComponentStatus.READY if AudioProcessor.available() else ComponentStatus.UNAVAILABLE,
             speech_to_text=ComponentStatus.READY if transcriber is not None else ComponentStatus.UNAVAILABLE,
             rule_engine=ComponentStatus.READY,
-            nlp_model=ComponentStatus.NOT_IMPLEMENTED,
+            nlp_model=ComponentStatus.READY if classifier is not None else ComponentStatus.UNAVAILABLE,
             risk_engine=ComponentStatus.NOT_IMPLEMENTED,
         ),
         stt_model=transcriber.name if transcriber is not None else None,
+        nlp_model=classifier.name if classifier is not None else None,
     )

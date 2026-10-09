@@ -4,7 +4,9 @@ def test_openapi_document_describes_the_api(client):
     assert response.status_code == 200
     document = response.json()
     assert document["info"]["title"] == "IVPDS AI Service"
-    assert set(document["paths"]) == {"/health", "/v1/info", "/v1/indicators", "/v1/transcriptions"}
+    assert set(document["paths"]) == {
+        "/health", "/v1/info", "/v1/indicators", "/v1/classifications", "/v1/transcriptions",
+    }
 
 
 def test_openapi_marks_v1_routes_as_api_key_protected_and_health_as_open(client):

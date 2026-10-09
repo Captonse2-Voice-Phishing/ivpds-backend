@@ -36,6 +36,9 @@ class ErrorResponse(ApiModel):
     field_errors: list[FieldViolation] | None = None
 
 
+_MAX_TEXT_LENGTH = 100_000
+
+
 class HealthResponse(ApiModel):
     """Kết quả health check."""
 
@@ -68,6 +71,27 @@ class ServiceInfo(ApiModel):
     components: PipelineComponents
     # Tên model speech-to-text đang nạp; None nếu chưa nạp được.
     stt_model: str | None = None
+    # Tên và phiên bản NLP Model đang nạp; None nếu chưa có artifact.
+    nlp_model: str | None = None
+
+
+class ClassificationRequest(ApiModel):
+    """Transcript cần NLP Model phân loại."""
+
+    text: str = Field(max_length=_MAX_TEXT_LENGTH)
+
+
+class ClassificationResponse(ApiModel):
+    """Kết quả của NLP Model. Đây là xác suất do model tính, chưa phải điểm hay mức rủi ro."""
+
+    # NORMAL hoặc PHISHING theo ngưỡng của model.
+    label: str
+    # Xác suất model gán cho lớp PHISHING (0 đến 1).
+    phishing_probability: float
+    # Số đoạn mà transcript được cắt ra để chấm, và xác suất của từng đoạn theo thứ tự.
+    chunk_count: int
+    chunk_probabilities: list[float]
+    model_version: str
 
 
 class ConversationTurn(ApiModel):
@@ -76,9 +100,6 @@ class ConversationTurn(ApiModel):
     # Tên hoặc nhãn bất kỳ của người nói ("A", "Người gọi 1"); cùng một người phải dùng cùng một nhãn.
     speaker: str = Field(min_length=1, max_length=50)
     text: str = Field(max_length=20_000)
-
-
-_MAX_TEXT_LENGTH = 100_000
 
 
 class IndicatorRequest(ApiModel):

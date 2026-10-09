@@ -11,3 +11,9 @@ huggingface-hub==1.32.0
 tokenizers==0.23.2
 onnxruntime==1.30.0
 av==18.1.0
+
+# NLP Model: Hugging Face Transformers trên PyTorch (bản CPU, cài riêng trong Dockerfile).
+transformers==5.19.0
+sentencepiece==0.2.2
+# Tách từ tiếng Việt, cần cho model PhoBERT.
+pyvi==0.1.1

@@ -242,7 +242,8 @@ def test_info_reports_ready_components_once_the_model_is_loaded(auth, whisper):
         "audioProcessing": "READY",
         "speechToText": "READY",
         "ruleEngine": "READY",
-        "nlpModel": "NOT_IMPLEMENTED",
+        # No fine-tuned artifact is given to this client.
+        "nlpModel": "UNAVAILABLE",
         "riskEngine": "NOT_IMPLEMENTED",
     }
     assert body["sttModel"] == expected_model_name()

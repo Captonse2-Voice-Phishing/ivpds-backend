@@ -16,3 +16,16 @@ __pycache__/
 .idea/
 .vscode/
 *.iml
+
+# Dataset: raw downloads and processed splits are rebuilt with ai/tools/dataset_*.py
+ai/data/raw/*/
+ai/data/processed/*.jsonl
+ai/data/synthetic/*.jsonl
+ai/data/raw/youtube_calls/
+ai/data/youtube_calls*.jsonl
+
+# NLP model artifacts and error dumps (rebuilt by ai/training)
+ai/models/
+ai/training/reports/*/errors.jsonl
+ai/data/extra_tests/
+ai/training/reports/extra/*.errors.jsonl

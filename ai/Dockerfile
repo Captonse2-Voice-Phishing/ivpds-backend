@@ -40,7 +40,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /srv
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+# PyTorch for the NLP model: the CPU-only build, from the PyTorch index (the default PyPI wheel bundles CUDA
+# libraries the service does not need). Same version as the training image (ai/training/requirements.txt).
+RUN pip install torch==2.14.1 --index-url https://download.pytorch.org/whl/cpu \
+    && pip install -r requirements.txt
 RUN useradd --system --no-create-home ivpds
 COPY --from=model /model /opt/models/phowhisper-medium-int8
 COPY app app

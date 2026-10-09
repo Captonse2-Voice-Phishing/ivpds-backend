@@ -45,6 +45,13 @@ class Settings(BaseSettings):
     # Số request được nhận dạng cùng lúc. Nhận dạng dùng hết CPU nên mặc định xử lý lần lượt.
     max_concurrent_transcriptions: int = Field(default=1, ge=1)
 
+    # --- NLP Model ---
+    # Thư mục chứa artifact đã fine-tune (trọng số, tokenizer, nlp_config.json). Artifact không nằm trong image
+    # hay trong git vì nặng; docker-compose gắn thư mục artifact của máy vào đường dẫn này.
+    # Không có artifact thì service vẫn chạy, /v1/info báo NLP Model là UNAVAILABLE và API phân loại trả 503.
+    nlp_model_dir: str = "/opt/models/nlp"
+    nlp_device: Literal["cpu", "cuda"] = "cpu"
+
 
 @lru_cache
 def get_settings() -> Settings:

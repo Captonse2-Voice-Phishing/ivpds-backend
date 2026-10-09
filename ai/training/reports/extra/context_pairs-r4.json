@@ -1,0 +1,177 @@
+{
+  "file": "context_pairs.jsonl",
+  "samples": 46,
+  "phishing": 20,
+  "normal": 26,
+  "deployed_model": "phobert-base-r4",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 46,
+        "accuracy": 0.8913,
+        "phishing": {
+          "precision": 0.8261,
+          "recall": 0.95,
+          "f1": 0.8837
+        },
+        "normal": {
+          "precision": 0.9565,
+          "recall": 0.8462,
+          "f1": 0.898
+        },
+        "macro_f1": 0.8909,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 22,
+          "true_normal_pred_phishing": 4,
+          "true_phishing_pred_normal": 1,
+          "true_phishing_pred_phishing": 19
+        },
+        "false_positives": 4,
+        "false_negatives": 1
+      },
+      "by_group": {
+        "bình thường có nhắc từ ngữ lừa đảo": {
+          "samples": 6,
+          "flagged_as_phishing": 4,
+          "label": "NORMAL"
+        },
+        "cặp cùng chủ đề - hợp pháp": {
+          "samples": 20,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "cặp cùng chủ đề - lừa đảo": {
+          "samples": 20,
+          "flagged_as_phishing": 19,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "baseline-tfidf-logreg-r4": {
+      "all": {
+        "samples": 46,
+        "accuracy": 0.8478,
+        "phishing": {
+          "precision": 0.76,
+          "recall": 0.95,
+          "f1": 0.8444
+        },
+        "normal": {
+          "precision": 0.9524,
+          "recall": 0.7692,
+          "f1": 0.8511
+        },
+        "macro_f1": 0.8478,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 20,
+          "true_normal_pred_phishing": 6,
+          "true_phishing_pred_normal": 1,
+          "true_phishing_pred_phishing": 19
+        },
+        "false_positives": 6,
+        "false_negatives": 1
+      },
+      "by_group": {
+        "bình thường có nhắc từ ngữ lừa đảo": {
+          "samples": 6,
+          "flagged_as_phishing": 3,
+          "label": "NORMAL"
+        },
+        "cặp cùng chủ đề - hợp pháp": {
+          "samples": 20,
+          "flagged_as_phishing": 3,
+          "label": "NORMAL"
+        },
+        "cặp cùng chủ đề - lừa đảo": {
+          "samples": 20,
+          "flagged_as_phishing": 19,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "phobert-base-r4": {
+      "all": {
+        "samples": 46,
+        "accuracy": 0.8696,
+        "phishing": {
+          "precision": 0.7692,
+          "recall": 1.0,
+          "f1": 0.8696
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.7692,
+          "f1": 0.8696
+        },
+        "macro_f1": 0.8696,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 20,
+          "true_normal_pred_phishing": 6,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 20
+        },
+        "false_positives": 6,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "bình thường có nhắc từ ngữ lừa đảo": {
+          "samples": 6,
+          "flagged_as_phishing": 3,
+          "label": "NORMAL"
+        },
+        "cặp cùng chủ đề - hợp pháp": {
+          "samples": 20,
+          "flagged_as_phishing": 3,
+          "label": "NORMAL"
+        },
+        "cặp cùng chủ đề - lừa đảo": {
+          "samples": 20,
+          "flagged_as_phishing": 20,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "e5-small-r4": {
+      "all": {
+        "samples": 46,
+        "accuracy": 0.7391,
+        "phishing": {
+          "precision": 0.7222,
+          "recall": 0.65,
+          "f1": 0.6842
+        },
+        "normal": {
+          "precision": 0.75,
+          "recall": 0.8077,
+          "f1": 0.7778
+        },
+        "macro_f1": 0.731,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 21,
+          "true_normal_pred_phishing": 5,
+          "true_phishing_pred_normal": 7,
+          "true_phishing_pred_phishing": 13
+        },
+        "false_positives": 5,
+        "false_negatives": 7
+      },
+      "by_group": {
+        "bình thường có nhắc từ ngữ lừa đảo": {
+          "samples": 6,
+          "flagged_as_phishing": 3,
+          "label": "NORMAL"
+        },
+        "cặp cùng chủ đề - hợp pháp": {
+          "samples": 20,
+          "flagged_as_phishing": 2,
+          "label": "NORMAL"
+        },
+        "cặp cùng chủ đề - lừa đảo": {
+          "samples": 20,
+          "flagged_as_phishing": 13,
+          "label": "PHISHING"
+        }
+      }
+    }
+  }
+}

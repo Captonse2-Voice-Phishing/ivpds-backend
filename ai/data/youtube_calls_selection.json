@@ -1,0 +1,260 @@
+{
+ "note": "Mốc thời gian (giây) của từng cuộc gọi trong video YouTube; chọn bằng cách đọc transcript PhoWhisper, chưa có người nghe kiểm tra. label 1 = lừa đảo. Trường split được cố định ngay từ lần chia đầu tiên để tập test không đổi khi danh sách thay đổi.",
+ "approved_by_owner_on": "2026-10-08",
+ "videos": [
+  {
+   "id": "-uEUKyG7FzQ",
+   "calls": [
+    {
+     "start": 0,
+     "end": 113,
+     "label": 1,
+     "type": "đánh cắp thông tin tài khoản",
+     "staged": false
+    }
+   ],
+   "split": "test"
+  },
+  {
+   "id": "6QS829YPilE",
+   "calls": [
+    {
+     "start": 0,
+     "end": 542,
+     "label": 1,
+     "type": "trúng thưởng",
+     "staged": false
+    }
+   ],
+   "split": "train"
+  },
+  {
+   "id": "7QXrbe5vNGE",
+   "calls": [
+    {
+     "start": 0,
+     "end": 130,
+     "label": 1,
+     "type": "trúng thưởng quà tri ân",
+     "staged": false
+    }
+   ],
+   "split": "train"
+  },
+  {
+   "id": "91gQ2uf90-c",
+   "calls": [
+    {
+     "start": 0,
+     "end": 275,
+     "label": 1,
+     "type": "tặng mã quà qua Zalo",
+     "staged": false
+    }
+   ],
+   "split": "train"
+  },
+  {
+   "id": "J8n6EmcxWVk",
+   "calls": [
+    {
+     "start": 39,
+     "end": 453,
+     "label": 1,
+     "type": "trúng thưởng",
+     "staged": false
+    }
+   ],
+   "split": "train"
+  },
+  {
+   "id": "PGJFBQfVpyo",
+   "calls": [
+    {
+     "start": 0,
+     "end": 72,
+     "label": 1,
+     "type": "khóa thuê bao",
+     "staged": false
+    }
+   ],
+   "split": "train"
+  },
+  {
+   "id": "U31Bj_EhKrM",
+   "calls": [
+    {
+     "start": 0,
+     "end": 100,
+     "label": 1,
+     "type": "giả công an",
+     "staged": false
+    }
+   ],
+   "split": "train"
+  },
+  {
+   "id": "Xt5YtCKcV4A",
+   "calls": [
+    {
+     "start": 0,
+     "end": 267,
+     "label": 1,
+     "type": "khóa sim rồi giả công an",
+     "staged": false
+    }
+   ],
+   "split": "test"
+  },
+  {
+   "id": "sEKYsEikK40",
+   "calls": [
+    {
+     "start": 0,
+     "end": 151,
+     "label": 1,
+     "type": "giả cục viễn thông",
+     "staged": false
+    }
+   ],
+   "split": "test"
+  },
+  {
+   "id": "yUd85c-5dhY",
+   "calls": [
+    {
+     "start": 0,
+     "end": 584,
+     "label": 1,
+     "type": "bán hàng trúng thưởng",
+     "staged": false
+    }
+   ],
+   "split": "test"
+  },
+  {
+   "id": "gj0R8y3e9HA",
+   "calls": [
+    {
+     "start": 62,
+     "end": 182,
+     "label": 1,
+     "type": "giả công an",
+     "staged": false
+    }
+   ],
+   "split": "test"
+  },
+  {
+   "id": "EtZrGHAw-oU",
+   "calls": [
+    {
+     "start": 120,
+     "end": 511,
+     "label": 1,
+     "type": "khóa sim giả cục viễn thông",
+     "staged": false
+    }
+   ],
+   "split": "test"
+  },
+  {
+   "id": "TFKcraTUNJk",
+   "calls": [
+    {
+     "start": 0,
+     "end": 737,
+     "label": 1,
+     "type": "giả bưu phẩm rồi công an",
+     "staged": false
+    }
+   ],
+   "split": "test"
+  },
+  {
+   "id": "veAVkYnl_cY",
+   "split": "train",
+   "calls": [
+    {
+     "start": 0,
+     "end": 86,
+     "label": 1,
+     "type": "tuyển cộng tác viên chạy đơn",
+     "staged": false
+    }
+   ]
+  },
+  {
+   "id": "Gef7oAnGaFM",
+   "split": "train",
+   "calls": [
+    {
+     "start": 0,
+     "end": 168,
+     "label": 1,
+     "type": "giả nhà mạng tặng quà, bấm link",
+     "staged": false
+    }
+   ]
+  },
+  {
+   "id": "xNl6wwpQMMM",
+   "split": "train",
+   "calls": [
+    {
+     "start": 0,
+     "end": 400,
+     "label": 1,
+     "type": "giả bưu điện rồi cảnh sát điều tra",
+     "staged": false
+    }
+   ]
+  },
+  {
+   "id": "G-iwBerD9YA",
+   "split": "train",
+   "calls": [
+    {
+     "start": 0,
+     "end": 102,
+     "label": 1,
+     "type": "giả bưu điện",
+     "staged": false
+    }
+   ]
+  }
+ ],
+ "excluded": {
+  "2jKAV2yNH04": "đòi nợ, nhãn lừa đảo không rõ",
+  "JNXht6LfIp8": "đòi nợ app vay, nhãn không rõ",
+  "TW9o0lEUDVg": "tư vấn vay, nhãn không rõ",
+  "OFzgtMUqpQw": "chủ yếu là lời kể",
+  "SrU0GZqJ6aQ": "chủ yếu là lời kể",
+  "l-v__frv2so": "lời kể, không phải cuộc gọi",
+  "0finfuxyg2w": "lẫn nhiều lời dẫn",
+  "MceOm7EQlZ0": "lẫn nhiều lời dẫn",
+  "pNeIef2isbw": "lẫn nhiều lời dẫn",
+  "fGYn39fiV04": "tái hiện có lời dẫn",
+  "0scg3AX3iEU": "gần như không có lời thoại",
+  "RcUwr6oGNlc": "transcript rỗng",
+  "B3lSxej72Wk": "bản tin, không phải cuộc gọi",
+  "21-GhmfUVKE": "video không còn",
+  "US6FnLuN0Go": "video không còn",
+  "k6LslIOHRUo": "YouTube chặn tải (403)",
+  "8k_9xxBPB6s": "YouTube chặn tải (403)",
+  "R8o3HM3Yuxc": "lời dẫn chen giữa cuộc gọi; dùng bản đăng lại U31Bj_EhKrM của cùng cuộc gọi",
+  "dcKZ3u5mBFw": "tiểu phẩm có lời kể, không phải cuộc gọi (phát hiện khi đọc kỹ)",
+  "5X3ngO0O4yg": "cuộc gọi tự động 59 từ, lặp một câu; quá ngắn để huấn luyện (chủ dự án yêu cầu bỏ)",
+  "tHa45kpN9e8": "transcript rời rạc, gần như chỉ có lời người trêu lại, không còn nội dung lừa đảo",
+  "Q8YksmdTroA": "lời nhắn nhắc nợ tự động, ngắn và nhãn lừa đảo không rõ",
+  "AJC5TTGJL7A": "dàn dựng, lẫn lời dẫn",
+  "M6ajMZuklE0": "phần lớn là đoạn trêu đọc tên vô nghĩa, không còn nội dung lừa đảo",
+  "QVZXXJ3rtqs": "mời mở thẻ tín dụng, không chắc là lừa đảo",
+  "wXpw7JY8MrQ": "lời kể, không phải cuộc gọi",
+  "xwJl6IYB6LA": "lời kể, không phải cuộc gọi",
+  "xjBGHWHQD4Y": "lời kể, không phải cuộc gọi",
+  "5Ch5U4Quf0I": "bản tin, không phải cuộc gọi",
+  "HmyK40cv1Lw": "tái hiện có lời dẫn",
+  "LB-2t3BvJho": "tiểu phẩm hài"
+ }
+}
