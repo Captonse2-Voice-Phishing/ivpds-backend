@@ -1,0 +1,244 @@
+{
+  "file": "short_sentences.jsonl",
+  "samples": 37,
+  "phishing": 14,
+  "normal": 23,
+  "deployed_model": "e5-small",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 37,
+        "accuracy": 0.973,
+        "phishing": {
+          "precision": 1.0,
+          "recall": 0.9286,
+          "f1": 0.963
+        },
+        "normal": {
+          "precision": 0.9583,
+          "recall": 1.0,
+          "f1": 0.9787
+        },
+        "macro_f1": 0.9708,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 23,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 1,
+          "true_phishing_pred_phishing": 13
+        },
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "by_group": {
+        "case A/B/F": {
+          "samples": 3,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "case D/E": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "câu thường ngày": {
+          "samples": 20,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "kịch bản lừa đảo ngắn": {
+          "samples": 12,
+          "flagged_as_phishing": 11,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "baseline-tfidf-logreg": {
+      "all": {
+        "samples": 37,
+        "accuracy": 0.8378,
+        "phishing": {
+          "precision": 0.7,
+          "recall": 1.0,
+          "f1": 0.8235
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.7391,
+          "f1": 0.85
+        },
+        "macro_f1": 0.8367,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 17,
+          "true_normal_pred_phishing": 6,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 14
+        },
+        "false_positives": 6,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "case A/B/F": {
+          "samples": 3,
+          "flagged_as_phishing": 2,
+          "label": "NORMAL"
+        },
+        "case D/E": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "câu thường ngày": {
+          "samples": 20,
+          "flagged_as_phishing": 4,
+          "label": "NORMAL"
+        },
+        "kịch bản lừa đảo ngắn": {
+          "samples": 12,
+          "flagged_as_phishing": 12,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "e5-small": {
+      "all": {
+        "samples": 37,
+        "accuracy": 0.7568,
+        "phishing": {
+          "precision": 0.6667,
+          "recall": 0.7143,
+          "f1": 0.6897
+        },
+        "normal": {
+          "precision": 0.8182,
+          "recall": 0.7826,
+          "f1": 0.8
+        },
+        "macro_f1": 0.7449,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 18,
+          "true_normal_pred_phishing": 5,
+          "true_phishing_pred_normal": 4,
+          "true_phishing_pred_phishing": 10
+        },
+        "false_positives": 5,
+        "false_negatives": 4
+      },
+      "by_group": {
+        "case A/B/F": {
+          "samples": 3,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "case D/E": {
+          "samples": 2,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "câu thường ngày": {
+          "samples": 20,
+          "flagged_as_phishing": 4,
+          "label": "NORMAL"
+        },
+        "kịch bản lừa đảo ngắn": {
+          "samples": 12,
+          "flagged_as_phishing": 8,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "phobert-base-v2": {
+      "all": {
+        "samples": 37,
+        "accuracy": 0.7568,
+        "phishing": {
+          "precision": 0.6923,
+          "recall": 0.6429,
+          "f1": 0.6667
+        },
+        "normal": {
+          "precision": 0.7917,
+          "recall": 0.8261,
+          "f1": 0.8085
+        },
+        "macro_f1": 0.7376,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 19,
+          "true_normal_pred_phishing": 4,
+          "true_phishing_pred_normal": 5,
+          "true_phishing_pred_phishing": 9
+        },
+        "false_positives": 4,
+        "false_negatives": 5
+      },
+      "by_group": {
+        "case A/B/F": {
+          "samples": 3,
+          "flagged_as_phishing": 2,
+          "label": "NORMAL"
+        },
+        "case D/E": {
+          "samples": 2,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "câu thường ngày": {
+          "samples": 20,
+          "flagged_as_phishing": 2,
+          "label": "NORMAL"
+        },
+        "kịch bản lừa đảo ngắn": {
+          "samples": 12,
+          "flagged_as_phishing": 8,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "xlmr-base": {
+      "all": {
+        "samples": 37,
+        "accuracy": 0.7027,
+        "phishing": {
+          "precision": 0.7143,
+          "recall": 0.3571,
+          "f1": 0.4762
+        },
+        "normal": {
+          "precision": 0.7,
+          "recall": 0.913,
+          "f1": 0.7925
+        },
+        "macro_f1": 0.6343,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 21,
+          "true_normal_pred_phishing": 2,
+          "true_phishing_pred_normal": 9,
+          "true_phishing_pred_phishing": 5
+        },
+        "false_positives": 2,
+        "false_negatives": 9
+      },
+      "by_group": {
+        "case A/B/F": {
+          "samples": 3,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "case D/E": {
+          "samples": 2,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "câu thường ngày": {
+          "samples": 20,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "kịch bản lừa đảo ngắn": {
+          "samples": 12,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "file": "vlsp_ordinary_speech.jsonl",
+  "samples": 889,
+  "phishing": 0,
+  "normal": 889,
+  "deployed_model": "e5-small",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 889,
+        "accuracy": 1.0,
+        "phishing": {
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "macro_f1": null,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 889,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 0
+        },
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "lời nói thường ngày (VLSP 2020)": {
+          "samples": 889,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        }
+      }
+    },
+    "baseline-tfidf-logreg": {
+      "all": {
+        "samples": 889,
+        "accuracy": 0.784,
+        "phishing": {
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.784,
+          "f1": 0.8789
+        },
+        "macro_f1": null,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 697,
+          "true_normal_pred_phishing": 192,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 0
+        },
+        "false_positives": 192,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "lời nói thường ngày (VLSP 2020)": {
+          "samples": 889,
+          "flagged_as_phishing": 192,
+          "label": "NORMAL"
+        }
+      }
+    },
+    "e5-small": {
+      "all": {
+        "samples": 889,
+        "accuracy": 0.6648,
+        "phishing": {
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.6648,
+          "f1": 0.7986
+        },
+        "macro_f1": null,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 591,
+          "true_normal_pred_phishing": 298,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 0
+        },
+        "false_positives": 298,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "lời nói thường ngày (VLSP 2020)": {
+          "samples": 889,
+          "flagged_as_phishing": 298,
+          "label": "NORMAL"
+        }
+      }
+    },
+    "phobert-base-v2": {
+      "all": {
+        "samples": 889,
+        "accuracy": 0.7885,
+        "phishing": {
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.7885,
+          "f1": 0.8818
+        },
+        "macro_f1": null,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 701,
+          "true_normal_pred_phishing": 188,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 0
+        },
+        "false_positives": 188,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "lời nói thường ngày (VLSP 2020)": {
+          "samples": 889,
+          "flagged_as_phishing": 188,
+          "label": "NORMAL"
+        }
+      }
+    },
+    "xlmr-base": {
+      "all": {
+        "samples": 889,
+        "accuracy": 0.8774,
+        "phishing": {
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.8774,
+          "f1": 0.9347
+        },
+        "macro_f1": null,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 780,
+          "true_normal_pred_phishing": 109,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 0
+        },
+        "false_positives": 109,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "lời nói thường ngày (VLSP 2020)": {
+          "samples": 889,
+          "flagged_as_phishing": 109,
+          "label": "NORMAL"
+        }
+      }
+    }
+  }
+}

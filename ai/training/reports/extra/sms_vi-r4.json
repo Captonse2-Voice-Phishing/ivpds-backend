@@ -1,0 +1,157 @@
+{
+  "file": "sms_vi.jsonl",
+  "samples": 2543,
+  "phishing": 688,
+  "normal": 1855,
+  "deployed_model": "phobert-base-r4",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 2543,
+        "accuracy": 0.7428,
+        "phishing": {
+          "precision": 0.8542,
+          "recall": 0.0596,
+          "f1": 0.1114
+        },
+        "normal": {
+          "precision": 0.7407,
+          "recall": 0.9962,
+          "f1": 0.8497
+        },
+        "macro_f1": 0.4806,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 1848,
+          "true_normal_pred_phishing": 7,
+          "true_phishing_pred_normal": 647,
+          "true_phishing_pred_phishing": 41
+        },
+        "false_positives": 7,
+        "false_negatives": 647
+      },
+      "by_group": {
+        "SMS hợp lệ": {
+          "samples": 1855,
+          "flagged_as_phishing": 7,
+          "label": "NORMAL"
+        },
+        "SMS rác/lừa đảo": {
+          "samples": 688,
+          "flagged_as_phishing": 41,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "baseline-tfidf-logreg-r4": {
+      "all": {
+        "samples": 2543,
+        "accuracy": 0.7357,
+        "phishing": {
+          "precision": 0.5541,
+          "recall": 0.1192,
+          "f1": 0.1962
+        },
+        "normal": {
+          "precision": 0.747,
+          "recall": 0.9644,
+          "f1": 0.8419
+        },
+        "macro_f1": 0.5191,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 1789,
+          "true_normal_pred_phishing": 66,
+          "true_phishing_pred_normal": 606,
+          "true_phishing_pred_phishing": 82
+        },
+        "false_positives": 66,
+        "false_negatives": 606
+      },
+      "by_group": {
+        "SMS hợp lệ": {
+          "samples": 1855,
+          "flagged_as_phishing": 66,
+          "label": "NORMAL"
+        },
+        "SMS rác/lừa đảo": {
+          "samples": 688,
+          "flagged_as_phishing": 82,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "phobert-base-r4": {
+      "all": {
+        "samples": 2543,
+        "accuracy": 0.4145,
+        "phishing": {
+          "precision": 0.2228,
+          "recall": 0.468,
+          "f1": 0.3019
+        },
+        "normal": {
+          "precision": 0.6667,
+          "recall": 0.3946,
+          "f1": 0.4958
+        },
+        "macro_f1": 0.3989,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 732,
+          "true_normal_pred_phishing": 1123,
+          "true_phishing_pred_normal": 366,
+          "true_phishing_pred_phishing": 322
+        },
+        "false_positives": 1123,
+        "false_negatives": 366
+      },
+      "by_group": {
+        "SMS hợp lệ": {
+          "samples": 1855,
+          "flagged_as_phishing": 1123,
+          "label": "NORMAL"
+        },
+        "SMS rác/lừa đảo": {
+          "samples": 688,
+          "flagged_as_phishing": 322,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "e5-small-r4": {
+      "all": {
+        "samples": 2543,
+        "accuracy": 0.6127,
+        "phishing": {
+          "precision": 0.3099,
+          "recall": 0.3517,
+          "f1": 0.3295
+        },
+        "normal": {
+          "precision": 0.7469,
+          "recall": 0.7094,
+          "f1": 0.7277
+        },
+        "macro_f1": 0.5286,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 1316,
+          "true_normal_pred_phishing": 539,
+          "true_phishing_pred_normal": 446,
+          "true_phishing_pred_phishing": 242
+        },
+        "false_positives": 539,
+        "false_negatives": 446
+      },
+      "by_group": {
+        "SMS hợp lệ": {
+          "samples": 1855,
+          "flagged_as_phishing": 539,
+          "label": "NORMAL"
+        },
+        "SMS rác/lừa đảo": {
+          "samples": 688,
+          "flagged_as_phishing": 242,
+          "label": "PHISHING"
+        }
+      }
+    }
+  }
+}

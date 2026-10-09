@@ -1,0 +1,210 @@
+{
+  "file": "everyday_calls.jsonl",
+  "samples": 56,
+  "phishing": 12,
+  "normal": 44,
+  "deployed_model": "phobert-base-r5b",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 56,
+        "accuracy": 1.0,
+        "phishing": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "macro_f1": 1.0,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 44,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 12
+        },
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "bạn bè tâm sự": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "công việc": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "dịch vụ thật": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "gia đình": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "học phí": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "lừa đảo cùng chủ đề": {
+          "samples": 12,
+          "flagged_as_phishing": 12,
+          "label": "PHISHING"
+        },
+        "mua bán, thuê nhà": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "mẹ và con": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        }
+      }
+    },
+    "baseline-tfidf-logreg-r5b": {
+      "all": {
+        "samples": 56,
+        "accuracy": 0.9821,
+        "phishing": {
+          "precision": 0.9231,
+          "recall": 1.0,
+          "f1": 0.96
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.9773,
+          "f1": 0.9885
+        },
+        "macro_f1": 0.9743,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 43,
+          "true_normal_pred_phishing": 1,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 12
+        },
+        "false_positives": 1,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "bạn bè tâm sự": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "công việc": {
+          "samples": 6,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "dịch vụ thật": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "gia đình": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "học phí": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "lừa đảo cùng chủ đề": {
+          "samples": 12,
+          "flagged_as_phishing": 12,
+          "label": "PHISHING"
+        },
+        "mua bán, thuê nhà": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "mẹ và con": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        }
+      }
+    },
+    "phobert-base-r5b": {
+      "all": {
+        "samples": 56,
+        "accuracy": 1.0,
+        "phishing": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "macro_f1": 1.0,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 44,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 12
+        },
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "bạn bè tâm sự": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "công việc": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "dịch vụ thật": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "gia đình": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "học phí": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "lừa đảo cùng chủ đề": {
+          "samples": 12,
+          "flagged_as_phishing": 12,
+          "label": "PHISHING"
+        },
+        "mua bán, thuê nhà": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "mẹ và con": {
+          "samples": 6,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        }
+      }
+    }
+  }
+}

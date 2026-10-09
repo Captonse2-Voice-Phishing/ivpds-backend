@@ -1,0 +1,217 @@
+{
+ "note": "Sửa lỗi nghe nhầm của PhoWhisper trong transcript YouTube. Người sửa đọc văn bản và suy theo ngữ cảnh, KHÔNG nghe lại âm thanh; chỉ sửa chỗ chắc chắn. Bản gốc của PhoWhisper vẫn được giữ trong trường text_asr.",
+ "everywhere": [
+  [
+   "trụ thưởng",
+   "trúng thưởng"
+  ],
+  [
+   "mã cốt",
+   "mã code"
+  ],
+  [
+   "ma cốt",
+   "mã code"
+  ],
+  [
+   "đường linh",
+   "đường link"
+  ],
+  [
+   "phây búc",
+   "facebook"
+  ],
+  [
+   "thuê búc",
+   "facebook"
+  ],
+  [
+   "cô viết",
+   "covid"
+  ],
+  [
+   "căn cứ công dân",
+   "căn cước công dân"
+  ],
+  [
+   "vũ điện",
+   "bưu điện"
+  ],
+  [
+   "bộ phẩm",
+   "bưu phẩm"
+  ],
+  [
+   "vô phạm",
+   "bưu phẩm"
+  ],
+  [
+   "công vân",
+   "công văn"
+  ],
+  [
+   "viện thông",
+   "viễn thông"
+  ],
+  [
+   "cục tuyển thông",
+   "cục viễn thông"
+  ],
+  [
+   "pinaphone",
+   "vinaphone"
+  ],
+  [
+   "vina phone",
+   "vinaphone"
+  ],
+  [
+   "mỷ phẩm",
+   "mỹ phẩm"
+  ],
+  [
+   "số thu bao",
+   "số thuê bao"
+  ],
+  [
+   "số theo bao",
+   "số thuê bao"
+  ],
+  [
+   "số pê bao",
+   "số thuê bao"
+  ],
+  [
+   "số gắn cướp",
+   "số căn cước"
+  ],
+  [
+   "số tiệm khoản",
+   "số tài khoản"
+  ],
+  [
+   "số tiền khoản",
+   "số tài khoản"
+  ],
+  [
+   "tết công binh",
+   "techcombank"
+  ],
+  [
+   "tài xử",
+   "tài xỉu"
+  ],
+  [
+   "quay vũ",
+   "quay hũ"
+  ],
+  [
+   "trảy nhãn",
+   "trải nghiệm"
+  ],
+  [
+   "tải cơm về",
+   "tải game về"
+  ],
+  [
+   "tủ zalo",
+   "số zalo"
+  ],
+  [
+   "quà chuyên",
+   "quà tri ân"
+  ],
+  [
+   "chương trình chuyên này",
+   "chương trình tri ân này"
+  ],
+  [
+   "số thứ ba",
+   "số thuê bao"
+  ],
+  [
+   "khoản cướp phí to tao",
+   "khoản cước phí"
+  ],
+  [
+   "mua cà ",
+   "mua card "
+  ],
+  [
+   "mua kẹt",
+   "mua card"
+  ],
+  [
+   "liên lai",
+   "biên lai"
+  ],
+  [
+   "thị sĩ",
+   "thụy sĩ"
+  ],
+  [
+   "cặp đồng thụy sĩ",
+   "cặp đồng hồ thụy sĩ"
+  ],
+  [
+   "quy đỏ",
+   "quy đổi"
+  ],
+  [
+   "hợp táng",
+   "hợp tác"
+  ],
+  [
+   "bộ tin thông",
+   "bộ thông tin"
+  ],
+  [
+   "phá sim",
+   "khóa sim"
+  ],
+  [
+   "tổng thái viên",
+   "tổng đài viên"
+  ],
+  [
+   "unk ",
+   ""
+  ],
+  [
+   " unk",
+   ""
+  ]
+ ],
+ "videos": {
+  "U31Bj_EhKrM": {
+   "remove": [
+    "giả danh công an coi điện lừa đảo và cái kết ngỡ ngàng ",
+    " đối nhất hay nhất và nóng hổi nhất tại việt nam."
+   ]
+  },
+  "EtZrGHAw-oU": {
+   "start_at": "hiện đang sử dụng và đăng ký"
+  },
+  "sEKYsEikK40": {
+   "end_after": "anh được chuyển đến nhân viên hỗ trợ trực tiếp"
+  },
+  "TFKcraTUNJk": {
+   "remove": [
+    " con người đừng để bị lừa nhé."
+   ]
+  },
+  "PGJFBQfVpyo": {
+   "remove": [
+    " tắt máy ôi mọi người bỏ cho đẻ."
+   ]
+  },
+  "91gQ2uf90-c": {
+   "end_after": "có phải ấy tài khoản tài khiếp gì không a lô a lô."
+  },
+  "6QS829YPilE": {
+   "remove": [
+    " thế thế thế thế chào các bạn thế ui giời ơi."
+   ]
+  }
+ }
+}

@@ -1,0 +1,8 @@
+# Thư viện cho huấn luyện. torch và transformers phải trùng phiên bản với image chạy service (ai/requirements.txt).
+torch==2.14.1
+transformers==5.19.0
+sentencepiece==0.2.2
+scikit-learn==1.9.1
+joblib==1.6.0
+# Tách từ tiếng Việt, chỉ cần khi thử PhoBERT.
+pyvi==0.1.1

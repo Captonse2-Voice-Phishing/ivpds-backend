@@ -1,0 +1,24 @@
+{
+  "adamtc_scam_dialogues": {
+    "repo": "adamtc/scam_dialogues",
+    "page": "https://huggingface.co/datasets/adamtc/scam_dialogues",
+    "revision": "123b204a85b280439da8c1901b0703cec0fe3b0b",
+    "license": "apache-2.0",
+    "description": "Hội thoại điện thoại lừa đảo/bình thường, tổng hợp, tiếng Việt dịch máy.",
+    "synthetic": true,
+    "approved_by_owner_on": "2026-10-08",
+    "downloaded_at": "2026-10-08T14:20:59+00:00",
+    "files": {
+      "scam-dialogues-train-text.json": {
+        "url": "https://huggingface.co/datasets/adamtc/scam_dialogues/resolve/123b204a85b280439da8c1901b0703cec0fe3b0b/scam-dialogues-train-text.json",
+        "bytes": 12807779,
+        "sha256": "9624796ced4b611e1dde3b8e58c014bd45e8a5006cf0c3713274062da24f8dc0"
+      },
+      "README.md": {
+        "url": "https://huggingface.co/datasets/adamtc/scam_dialogues/resolve/123b204a85b280439da8c1901b0703cec0fe3b0b/README.md",
+        "bytes": 159,
+        "sha256": "7e1b5a4502df044c9ca419cffbe4cfa5115420e43efaf0fd94c8b9ef85ea6732"
+      }
+    }
+  }
+}

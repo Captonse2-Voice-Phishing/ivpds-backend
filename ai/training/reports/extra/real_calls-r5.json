@@ -1,0 +1,165 @@
+{
+  "file": "real_calls.jsonl",
+  "samples": 24,
+  "phishing": 16,
+  "normal": 8,
+  "deployed_model": "phobert-base-r5",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 24,
+        "accuracy": 0.5,
+        "phishing": {
+          "precision": 0.8333,
+          "recall": 0.3125,
+          "f1": 0.4545
+        },
+        "normal": {
+          "precision": 0.3889,
+          "recall": 0.875,
+          "f1": 0.5385
+        },
+        "macro_f1": 0.4965,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 7,
+          "true_normal_pred_phishing": 1,
+          "true_phishing_pred_normal": 11,
+          "true_phishing_pred_phishing": 5
+        },
+        "false_positives": 1,
+        "false_negatives": 11
+      },
+      "by_group": {
+        "bình thường - nhắc nợ, tư vấn vay (nhãn có thể tranh cãi)": {
+          "samples": 4,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - telesales, tư vấn": {
+          "samples": 4,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "lừa đảo - ghi âm mới (đợt 2)": {
+          "samples": 5,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - transcript chất lượng thấp": {
+          "samples": 4,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tập test thật có sẵn (7 cuộc)": {
+          "samples": 7,
+          "flagged_as_phishing": 3,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "baseline-tfidf-logreg-r5": {
+      "all": {
+        "samples": 24,
+        "accuracy": 0.4167,
+        "phishing": {
+          "precision": 1.0,
+          "recall": 0.125,
+          "f1": 0.2222
+        },
+        "normal": {
+          "precision": 0.3636,
+          "recall": 1.0,
+          "f1": 0.5333
+        },
+        "macro_f1": 0.3778,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 8,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 14,
+          "true_phishing_pred_phishing": 2
+        },
+        "false_positives": 0,
+        "false_negatives": 14
+      },
+      "by_group": {
+        "bình thường - nhắc nợ, tư vấn vay (nhãn có thể tranh cãi)": {
+          "samples": 4,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "bình thường - telesales, tư vấn": {
+          "samples": 4,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "lừa đảo - ghi âm mới (đợt 2)": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "PHISHING"
+        },
+        "lừa đảo - transcript chất lượng thấp": {
+          "samples": 4,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tập test thật có sẵn (7 cuộc)": {
+          "samples": 7,
+          "flagged_as_phishing": 1,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "phobert-base-r5": {
+      "all": {
+        "samples": 24,
+        "accuracy": 0.75,
+        "phishing": {
+          "precision": 0.75,
+          "recall": 0.9375,
+          "f1": 0.8333
+        },
+        "normal": {
+          "precision": 0.75,
+          "recall": 0.375,
+          "f1": 0.5
+        },
+        "macro_f1": 0.6666,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 3,
+          "true_normal_pred_phishing": 5,
+          "true_phishing_pred_normal": 1,
+          "true_phishing_pred_phishing": 15
+        },
+        "false_positives": 5,
+        "false_negatives": 1
+      },
+      "by_group": {
+        "bình thường - nhắc nợ, tư vấn vay (nhãn có thể tranh cãi)": {
+          "samples": 4,
+          "flagged_as_phishing": 4,
+          "label": "NORMAL"
+        },
+        "bình thường - telesales, tư vấn": {
+          "samples": 4,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "lừa đảo - ghi âm mới (đợt 2)": {
+          "samples": 5,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - transcript chất lượng thấp": {
+          "samples": 4,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "lừa đảo - tập test thật có sẵn (7 cuộc)": {
+          "samples": 7,
+          "flagged_as_phishing": 7,
+          "label": "PHISHING"
+        }
+      }
+    }
+  }
+}
