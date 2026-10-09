@@ -1,0 +1,371 @@
+{
+  "name": "phobert-base-r3",
+  "kind": "transformer",
+  "version": "2026.10.09-phobert-base-r3",
+  "base_model": "vinai/phobert-base-v2",
+  "aggregation": "top2",
+  "threshold": 0.5,
+  "max_length": 256,
+  "training_seconds": 842.3,
+  "hardware": "NVIDIA GeForce RTX 3050 Ti Laptop GPU",
+  "best_checkpoint": {
+    "selection_macro_f1": 0.9806,
+    "validation_macro_f1": 0.9913,
+    "epoch": 1,
+    "aggregation": "top2"
+  },
+  "evaluated_on": "cpu",
+  "results": {
+    "validation": {
+      "all": {
+        "samples": 1329,
+        "accuracy": 0.9917,
+        "phishing": {
+          "precision": 0.9794,
+          "recall": 1.0,
+          "f1": 0.9896
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.9864,
+          "f1": 0.9931
+        },
+        "macro_f1": 0.9913,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 796,
+          "true_normal_pred_phishing": 11,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 522
+        },
+        "false_positives": 11,
+        "false_negatives": 0
+      },
+      "by_source": {
+        "adamtc_scam_dialogues": {
+          "samples": 576,
+          "accuracy": 0.9965,
+          "phishing": {
+            "precision": 0.9931,
+            "recall": 1.0,
+            "f1": 0.9965
+          },
+          "normal": {
+            "precision": 1.0,
+            "recall": 0.9931,
+            "f1": 0.9965
+          },
+          "macro_f1": 0.9965,
+          "confusion_matrix": {
+            "true_normal_pred_normal": 286,
+            "true_normal_pred_phishing": 2,
+            "true_phishing_pred_normal": 0,
+            "true_phishing_pred_phishing": 288
+          },
+          "false_positives": 2,
+          "false_negatives": 0
+        },
+        "ivpds_generated_vi": {
+          "samples": 438,
+          "accuracy": 0.9817,
+          "phishing": {
+            "precision": 0.9669,
+            "recall": 1.0,
+            "f1": 0.9832
+          },
+          "normal": {
+            "precision": 1.0,
+            "recall": 0.9608,
+            "f1": 0.98
+          },
+          "macro_f1": 0.9816,
+          "confusion_matrix": {
+            "true_normal_pred_normal": 196,
+            "true_normal_pred_phishing": 8,
+            "true_phishing_pred_normal": 0,
+            "true_phishing_pred_phishing": 234
+          },
+          "false_positives": 8,
+          "false_negatives": 0
+        },
+        "vlsp_ordinary_speech": {
+          "samples": 315,
+          "accuracy": 0.9968,
+          "phishing": {
+            "precision": null,
+            "recall": null,
+            "f1": null
+          },
+          "normal": {
+            "precision": 1.0,
+            "recall": 0.9968,
+            "f1": 0.9984
+          },
+          "macro_f1": null,
+          "confusion_matrix": {
+            "true_normal_pred_normal": 314,
+            "true_normal_pred_phishing": 1,
+            "true_phishing_pred_normal": 0,
+            "true_phishing_pred_phishing": 0
+          },
+          "false_positives": 1,
+          "false_negatives": 0
+        }
+      },
+      "seconds_per_document": 0.1836
+    },
+    "validation_vi_context": {
+      "all": {
+        "samples": 100,
+        "accuracy": 0.95,
+        "phishing": {
+          "precision": 0.942,
+          "recall": 0.9848,
+          "f1": 0.963
+        },
+        "normal": {
+          "precision": 0.9677,
+          "recall": 0.8824,
+          "f1": 0.9231
+        },
+        "macro_f1": 0.943,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 30,
+          "true_normal_pred_phishing": 4,
+          "true_phishing_pred_normal": 1,
+          "true_phishing_pred_phishing": 65
+        },
+        "false_positives": 4,
+        "false_negatives": 1
+      },
+      "by_source": {
+        "ivpds_authored": {
+          "samples": 100,
+          "accuracy": 0.95,
+          "phishing": {
+            "precision": 0.942,
+            "recall": 0.9848,
+            "f1": 0.963
+          },
+          "normal": {
+            "precision": 0.9677,
+            "recall": 0.8824,
+            "f1": 0.9231
+          },
+          "macro_f1": 0.943,
+          "confusion_matrix": {
+            "true_normal_pred_normal": 30,
+            "true_normal_pred_phishing": 4,
+            "true_phishing_pred_normal": 1,
+            "true_phishing_pred_phishing": 65
+          },
+          "false_positives": 4,
+          "false_negatives": 1
+        }
+      },
+      "seconds_per_document": 0.0674
+    },
+    "test": {
+      "all": {
+        "samples": 576,
+        "accuracy": 0.9983,
+        "phishing": {
+          "precision": 0.9965,
+          "recall": 1.0,
+          "f1": 0.9983
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.9965,
+          "f1": 0.9983
+        },
+        "macro_f1": 0.9983,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 287,
+          "true_normal_pred_phishing": 1,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 288
+        },
+        "false_positives": 1,
+        "false_negatives": 0
+      },
+      "by_source": {
+        "adamtc_scam_dialogues": {
+          "samples": 576,
+          "accuracy": 0.9983,
+          "phishing": {
+            "precision": 0.9965,
+            "recall": 1.0,
+            "f1": 0.9983
+          },
+          "normal": {
+            "precision": 1.0,
+            "recall": 0.9965,
+            "f1": 0.9983
+          },
+          "macro_f1": 0.9983,
+          "confusion_matrix": {
+            "true_normal_pred_normal": 287,
+            "true_normal_pred_phishing": 1,
+            "true_phishing_pred_normal": 0,
+            "true_phishing_pred_phishing": 288
+          },
+          "false_positives": 1,
+          "false_negatives": 0
+        }
+      },
+      "seconds_per_document": 0.3879
+    },
+    "test_vi_context": {
+      "all": {
+        "samples": 50,
+        "accuracy": 0.98,
+        "phishing": {
+          "precision": 0.9697,
+          "recall": 1.0,
+          "f1": 0.9846
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.9444,
+          "f1": 0.9714
+        },
+        "macro_f1": 0.978,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 17,
+          "true_normal_pred_phishing": 1,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 32
+        },
+        "false_positives": 1,
+        "false_negatives": 0
+      },
+      "by_source": {
+        "ivpds_authored": {
+          "samples": 50,
+          "accuracy": 0.98,
+          "phishing": {
+            "precision": 0.9697,
+            "recall": 1.0,
+            "f1": 0.9846
+          },
+          "normal": {
+            "precision": 1.0,
+            "recall": 0.9444,
+            "f1": 0.9714
+          },
+          "macro_f1": 0.978,
+          "confusion_matrix": {
+            "true_normal_pred_normal": 17,
+            "true_normal_pred_phishing": 1,
+            "true_phishing_pred_normal": 0,
+            "true_phishing_pred_phishing": 32
+          },
+          "false_positives": 1,
+          "false_negatives": 0
+        }
+      },
+      "seconds_per_document": 0.0681
+    },
+    "test_real_calls": {
+      "all": {
+        "samples": 7,
+        "accuracy": 1.0,
+        "phishing": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "normal": {
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "macro_f1": null,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 0,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 7
+        },
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "by_source": {
+        "youtube_calls": {
+          "samples": 7,
+          "accuracy": 1.0,
+          "phishing": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "normal": {
+            "precision": null,
+            "recall": null,
+            "f1": null
+          },
+          "macro_f1": null,
+          "confusion_matrix": {
+            "true_normal_pred_normal": 0,
+            "true_normal_pred_phishing": 0,
+            "true_phishing_pred_normal": 0,
+            "true_phishing_pred_phishing": 7
+          },
+          "false_positives": 0,
+          "false_negatives": 0
+        }
+      },
+      "seconds_per_document": 0.9008
+    },
+    "test_real_calls_raw_asr": {
+      "all": {
+        "samples": 7,
+        "accuracy": 1.0,
+        "phishing": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0
+        },
+        "normal": {
+          "precision": null,
+          "recall": null,
+          "f1": null
+        },
+        "macro_f1": null,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 0,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 7
+        },
+        "false_positives": 0,
+        "false_negatives": 0
+      },
+      "by_source": {
+        "youtube_calls": {
+          "samples": 7,
+          "accuracy": 1.0,
+          "phishing": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0
+          },
+          "normal": {
+            "precision": null,
+            "recall": null,
+            "f1": null
+          },
+          "macro_f1": null,
+          "confusion_matrix": {
+            "true_normal_pred_normal": 0,
+            "true_normal_pred_phishing": 0,
+            "true_phishing_pred_normal": 0,
+            "true_phishing_pred_phishing": 7
+          },
+          "false_positives": 0,
+          "false_negatives": 0
+        }
+      }
+    }
+  }
+}
