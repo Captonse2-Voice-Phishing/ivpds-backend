@@ -114,6 +114,9 @@ services:
       AI_API_KEY: ${AI_API_KEY:?AI_API_KEY is required (at least 16 characters)}
       AI_TRANSCRIPTION_TIMEOUT: ${AI_TRANSCRIPTION_TIMEOUT:-10m}
       ANALYSIS_AUTO_START: ${ANALYSIS_AUTO_START:-true}
+      # Push notifications go out through the Expo Push Service only when switched on.
+      PUSH_ENABLED: ${PUSH_ENABLED:-false}
+      PUSH_ACCESS_TOKEN: ${PUSH_ACCESS_TOKEN:-}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
       # Defaults send to Mailpit; set MAIL_HOST etc. in .env to use a real SMTP server.

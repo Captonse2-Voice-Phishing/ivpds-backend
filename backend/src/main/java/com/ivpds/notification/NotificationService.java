@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,7 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Nghiệp vụ thông báo: tạo thông báo khi có sự kiện đáng báo, và cho người dùng xem, đếm, đánh dấu đã đọc.
  *
- * <p>Thông báo được lưu trong database và ứng dụng lấy về qua API; hệ thống chưa có kênh đẩy (push) tới thiết bị.
+ * <p>Thông báo được lưu trong database và ứng dụng lấy về qua API. Mỗi thông báo vừa lưu còn được phát ra dưới
+ * dạng {@link NotificationCreatedEvent} để {@link PushSender} đẩy tới thiết bị của người dùng (nếu kênh đẩy bật).
  * Tiêu đề và nội dung viết bằng tiếng Việt vì đó là chữ hiển thị thẳng cho người dùng cuối.
  */
 @Service
@@ -31,8 +33,11 @@ public class NotificationService {
 
     private final NotificationRepository notifications;
     private final CallRecordRepository calls;
+    private final ApplicationEventPublisher events;
 
-    public NotificationService(NotificationRepository notifications, CallRecordRepository calls) {
+    public NotificationService(NotificationRepository notifications, CallRecordRepository calls,
+            ApplicationEventPublisher events) {
+        this.events = events;
         this.notifications = notifications;
         this.calls = calls;
     }
@@ -41,7 +46,9 @@ public class NotificationService {
     @Transactional
     public Notification create(UUID userId, Notification.Type type, String title, String message, UUID analysisId,
             UUID callId) {
-        return notifications.save(new Notification(userId, type, title, message, analysisId, callId));
+        Notification saved = notifications.save(new Notification(userId, type, title, message, analysisId, callId));
+        events.publishEvent(NotificationCreatedEvent.of(saved));
+        return saved;
     }
 
     /**
@@ -57,7 +64,7 @@ public class NotificationService {
             calls.findById(event.callId()).ifPresent(call -> {
                 boolean high = event.riskLevel() == RiskResult.Level.HIGH;
                 String caller = call.getCallerNumber() == null ? "" : " từ số " + call.getCallerNumber();
-                notifications.save(new Notification(call.getUserId(),
+                Notification saved = notifications.save(new Notification(call.getUserId(),
                         high ? Notification.Type.HIGH_RISK_CALL : Notification.Type.SUSPICIOUS_CALL,
                         high ? "Cuộc gọi có nguy cơ lừa đảo cao" : "Cuộc gọi có dấu hiệu đáng ngờ",
                         "Cuộc gọi%s được đánh giá mức %s với %d/100 điểm rủi ro.%s".formatted(caller,
@@ -65,6 +72,7 @@ public class NotificationService {
                                 high ? " Không cung cấp mã OTP, mật khẩu hay chuyển tiền theo yêu cầu của người gọi."
                                         : " Hãy kiểm tra lại thông tin trước khi làm theo yêu cầu của người gọi."),
                         event.analysisId(), event.callId()));
+                events.publishEvent(NotificationCreatedEvent.of(saved));
             });
         } catch (RuntimeException e) {
             log.error("Could not create a notification for analysis {}", event.analysisId(), e);

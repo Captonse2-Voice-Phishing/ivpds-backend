@@ -1,5 +1,7 @@
 package com.ivpds.blacklist;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
@@ -16,6 +18,9 @@ public interface BlacklistRepository extends JpaRepository<BlacklistNumber, UUID
 
     /** Tìm một số đã chuẩn hóa, chỉ khi nó đang bị chặn. */
     Optional<BlacklistNumber> findByPhoneNumberAndActiveTrue(String phoneNumber);
+
+    /** Trong các số đã cho, những số đang bị chặn. */
+    List<BlacklistNumber> findByPhoneNumberInAndActiveTrue(Collection<String> phoneNumbers);
 
     /**
      * Danh sách cho trang quản trị, mới nhất trước.

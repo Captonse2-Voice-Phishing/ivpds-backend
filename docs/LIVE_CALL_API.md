@@ -169,6 +169,8 @@ Cuộc gọi trực tiếp được lưu như mọi cuộc gọi khác, với `s
 
 Nhận dạng giọng nói chạy trên CPU nên chỉ phục vụ được ít cuộc gọi cùng lúc; muốn nhiều hơn cần GPU.
 
+Các mẫu lừa đảo đang bật của quản trị viên được backend tự gửi cho AI service khi mở mỗi cuộc gọi; ứng dụng không cần làm gì thêm. Dấu hiệu do mẫu tạo ra xuất hiện trong `indicators` như mọi dấu hiệu khác.
+
 ## 8. Thử nhanh khi chưa có ứng dụng
 
 `ai/tools/live_call_demo.py` đóng vai ứng dụng: phát một file âm thanh qua API này đúng tốc độ thời gian thực và in các sự kiện.

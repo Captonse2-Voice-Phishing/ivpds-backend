@@ -6,6 +6,7 @@ import com.ivpds.audio.AudioFile;
 import com.ivpds.audio.AudioFileRepository;
 import com.ivpds.audio.AudioStorage;
 import com.ivpds.common.error.ApiException;
+import com.ivpds.phishingpattern.ActivePhishingPatterns;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -75,11 +76,14 @@ public class AnalysisProcessor {
     private final AiClient ai;
     private final TransactionTemplate transaction;
     private final ApplicationEventPublisher events;
+    private final ActivePhishingPatterns patterns;
 
     public AnalysisProcessor(AnalysisRepository analyses, TranscriptRepository transcripts,
             RiskResultRepository riskResults, AudioFileRepository audioFiles, AudioStorage storage, AiClient ai,
-            PlatformTransactionManager transactionManager, ApplicationEventPublisher events) {
+            PlatformTransactionManager transactionManager, ApplicationEventPublisher events,
+            ActivePhishingPatterns patterns) {
         this.events = events;
+        this.patterns = patterns;
         this.analyses = analyses;
         this.transcripts = transcripts;
         this.riskResults = riskResults;
@@ -112,7 +116,7 @@ public class AnalysisProcessor {
                 throw new Failure(NO_SPEECH_DETECTED);
             }
             saveTranscript(analysisId, transcription, text);
-            RiskAssessment risk = ai.assessRisk(text, requestId);
+            RiskAssessment risk = ai.assessRisk(text, requestId, patterns.list());
             complete(analysisId, risk);
             log.info("Analysis {} completed: {} ({})", analysisId, risk.riskLevel(), risk.riskScore());
         } catch (AiServiceException e) {

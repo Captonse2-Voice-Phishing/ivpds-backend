@@ -16,7 +16,11 @@ import com.ivpds.analysis.StubAiServer.Received;
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ivpds.phishingpattern.ActivePhishingPatterns.Pattern;
 import java.time.Duration;
+import java.util.List;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +71,7 @@ class AiClientTest {
 
     @Test
     void riskAssessmentSendsTheTranscriptAsJsonAndReadsTheResult() {
-        RiskAssessment result = client.assessRisk("Anh đọc mã OTP cho em.", "req-2");
+        RiskAssessment result = client.assessRisk("Anh đọc mã OTP cho em.", "req-2", List.of());
 
         assertThat(result.riskScore()).isEqualTo(100);
         assertThat(result.riskLevel()).isEqualTo("HIGH");
@@ -86,6 +90,22 @@ class AiClientTest {
     }
 
     @Test
+    void riskAssessmentCarriesTheAdministratorsPatternsWhenThereAreAny() throws Exception {
+        client.assessRisk("xin chào", "req-3", List.of(
+                new Pattern("p-1", "FINANCIAL_BAIT", "gói bảo an tâm phúc"),
+                new Pattern("p-2", "OTP_REQUEST", "đọc mã cho em")));
+
+        JsonNode body = new ObjectMapper().readTree(stub.received("/v1/risk-assessments").get(0).body());
+        assertThat(body.get("text").asText()).isEqualTo("xin chào");
+        assertThat(body.get("customPatterns")).hasSize(2);
+        JsonNode first = body.get("customPatterns").get(0);
+        assertThat(first.get("id").asText()).isEqualTo("p-1");
+        assertThat(first.get("indicatorCode").asText()).isEqualTo("FINANCIAL_BAIT");
+        assertThat(first.get("phrase").asText()).isEqualTo("gói bảo an tâm phúc");
+        assertThat(first).hasSize(3);
+    }
+
+    @Test
     void anEmptyTranscriptIsReturnedAsIsAndLeftToTheCallerToJudge() {
         stub.onTranscription(json(200, transcriptionBody("")));
 
@@ -99,7 +119,7 @@ class AiClientTest {
         // Port 9 (discard) is not listening.
         AiClient unreachable = client("http://127.0.0.1:9", Duration.ofSeconds(5));
 
-        assertFails(() -> unreachable.assessRisk("xin chào", "r"), AiServiceException.UNAVAILABLE);
+        assertFails(() -> unreachable.assessRisk("xin chào", "r", List.of()), AiServiceException.UNAVAILABLE);
         assertFails(() -> transcribe(unreachable), AiServiceException.UNAVAILABLE);
     }
 
@@ -107,7 +127,7 @@ class AiClientTest {
     void aConnectionClosedWithoutAnAnswerIsReportedAsUnavailable() {
         stub.onRisk(dropConnection());
 
-        assertFails(() -> client.assessRisk("xin chào", "r"), AiServiceException.UNAVAILABLE);
+        assertFails(() -> client.assessRisk("xin chào", "r", List.of()), AiServiceException.UNAVAILABLE);
     }
 
     @Test
@@ -116,7 +136,7 @@ class AiClientTest {
         stub.onRisk(delayed(2_000, json(200, riskBody(10, "LOW", 0.9))));
         stub.onTranscription(delayed(2_000, json(200, transcriptionBody("xin chào"))));
 
-        assertFails(() -> impatient.assessRisk("xin chào", "r"), AiServiceException.TIMEOUT);
+        assertFails(() -> impatient.assessRisk("xin chào", "r", List.of()), AiServiceException.TIMEOUT);
         assertFails(() -> transcribe(impatient), AiServiceException.TIMEOUT);
     }
 
@@ -126,13 +146,13 @@ class AiClientTest {
     void anUnexplainedServerErrorIsReportedAsAServiceError() {
         stub.onRisk(raw(500, "text/plain", "Internal Server Error"));
 
-        assertFails(() -> client.assessRisk("xin chào", "r"), AiServiceException.ERROR);
+        assertFails(() -> client.assessRisk("xin chào", "r", List.of()), AiServiceException.ERROR);
     }
 
     @Test
     void errorCodesOfTheAiServiceAreKeptWhenItSaysWhyItCannotAnswer() {
         stub.onRisk(error(503, "NLP_MODEL_UNAVAILABLE"));
-        assertFails(() -> client.assessRisk("xin chào", "r"), "NLP_MODEL_UNAVAILABLE");
+        assertFails(() -> client.assessRisk("xin chào", "r", List.of()), "NLP_MODEL_UNAVAILABLE");
 
         stub.onTranscription(error(503, "STT_UNAVAILABLE"));
         assertFails(() -> transcribe(client), "STT_UNAVAILABLE");
@@ -148,28 +168,28 @@ class AiClientTest {
     void aBare503IsReportedAsUnavailable() {
         stub.onRisk(raw(503, "text/html", "<html>Bad Gateway</html>"));
 
-        assertFails(() -> client.assessRisk("xin chào", "r"), AiServiceException.UNAVAILABLE);
+        assertFails(() -> client.assessRisk("xin chào", "r", List.of()), AiServiceException.UNAVAILABLE);
     }
 
     @Test
     void aRejectedApiKeyIsReportedAsAnAuthenticationFailure() {
         stub.onRisk(error(401, "UNAUTHORIZED"));
 
-        assertFails(() -> client.assessRisk("xin chào", "r"), AiServiceException.AUTH_FAILED);
+        assertFails(() -> client.assessRisk("xin chào", "r", List.of()), AiServiceException.AUTH_FAILED);
     }
 
     @Test
     void anUnexpectedClientErrorIsReportedAsARejectedRequest() {
         stub.onRisk(error(400, "VALIDATION_FAILED"));
 
-        assertFails(() -> client.assessRisk("xin chào", "r"), AiServiceException.REQUEST_REJECTED);
+        assertFails(() -> client.assessRisk("xin chào", "r", List.of()), AiServiceException.REQUEST_REJECTED);
     }
 
     @Test
     void anErrorCodeThatDoesNotLookLikeACodeIsNotTrusted() {
         stub.onRisk(json(503, "{\"code\":\"<script>alert(1)</script>\"}"));
 
-        assertFails(() -> client.assessRisk("xin chào", "r"), AiServiceException.UNAVAILABLE);
+        assertFails(() -> client.assessRisk("xin chào", "r", List.of()), AiServiceException.UNAVAILABLE);
     }
 
     // ------------------------------------------------------- invalid responses
@@ -177,7 +197,7 @@ class AiClientTest {
     @Test
     void aSuccessfulAnswerThatIsNotJsonIsAnInvalidResponse() {
         stub.onRisk(raw(200, "application/json", "this is not json"));
-        assertFails(() -> client.assessRisk("xin chào", "r"), AiServiceException.INVALID_RESPONSE);
+        assertFails(() -> client.assessRisk("xin chào", "r", List.of()), AiServiceException.INVALID_RESPONSE);
 
         stub.onTranscription(raw(200, "text/html", "<html>hello</html>"));
         assertFails(() -> transcribe(client), AiServiceException.INVALID_RESPONSE);
@@ -210,7 +230,7 @@ class AiClientTest {
         }) {
             stub.onRisk(json(200, body));
 
-            assertFails(() -> client.assessRisk("xin chào", "r"), AiServiceException.INVALID_RESPONSE);
+            assertFails(() -> client.assessRisk("xin chào", "r", List.of()), AiServiceException.INVALID_RESPONSE);
         }
     }
 

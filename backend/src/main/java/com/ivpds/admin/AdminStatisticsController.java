@@ -55,6 +55,7 @@ public class AdminStatisticsController {
      * @param callsByRiskLevel số cuộc gọi theo mức rủi ro của lần phân tích hoàn tất mới nhất
      * @param topIndicators   các dấu hiệu lừa đảo xuất hiện nhiều nhất
      * @param blacklist       số dòng của danh sách đen: tổng và đang chặn
+     * @param blacklistReports số báo cáo số lừa đảo của người dùng theo trạng thái
      * @param phishingPatterns số mẫu lừa đảo: tổng và đang bật
      * @param suspectedNumbers các số gọi đến có cuộc gọi mức HIGH mà chưa nằm trong danh sách đen
      * @param daily           số cuộc gọi mỗi ngày trong giai đoạn, chia theo mức rủi ro
@@ -69,6 +70,7 @@ public class AdminStatisticsController {
             Map<String, Long> callsByRiskLevel,
             List<IndicatorCount> topIndicators,
             Map<String, Long> blacklist,
+            Map<String, Long> blacklistReports,
             Map<String, Long> phishingPatterns,
             List<SuspectedNumber> suspectedNumbers,
             List<DailyCount> daily) {
@@ -155,6 +157,8 @@ public class AdminStatisticsController {
         Map<String, Long> blacklist = new LinkedHashMap<>();
         blacklist.put("total", count("select count(*) from blacklist_numbers"));
         blacklist.put("active", count("select count(*) from blacklist_numbers where active"));
+        Map<String, Long> reports = grouped("select status, count(*) from blacklist_reports group by status",
+                "PENDING", "APPROVED", "REJECTED");
         Map<String, Long> patterns = new LinkedHashMap<>();
         patterns.put("total", count("select count(*) from phishing_patterns"));
         patterns.put("active", count("select count(*) from phishing_patterns where active"));
@@ -189,7 +193,7 @@ public class AdminStatisticsController {
                         rs.getTimestamp(4).toInstant()), SUSPECTED_NUMBERS);
 
         return new Statistics(Instant.now().truncatedTo(ChronoUnit.SECONDS), period, zone.getId(), users, calls,
-                analyses, risk, indicators, blacklist, patterns, suspected, daily);
+                analyses, risk, indicators, blacklist, reports, patterns, suspected, daily);
     }
 
     private long count(String sql, Object... args) {

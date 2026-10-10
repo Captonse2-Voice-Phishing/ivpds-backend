@@ -3,6 +3,7 @@ package com.ivpds.phishingpattern;
 import com.ivpds.common.PageResponse;
 import com.ivpds.common.error.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -29,7 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * API quản lý mẫu lừa đảo, chỉ dành cho ADMIN. Nghiệp vụ ở đây chỉ là thêm, sửa, xóa, tìm kiếm nên nằm ngay trong
- * controller thay vì tách thành một lớp service riêng.
+ * controller thay vì tách thành một lớp service riêng. Mẫu đang bật được Rule Engine dùng từ lần phân tích kế
+ * tiếp; mỗi mẫu là một cụm từ ít nhất hai từ, gắn với một mã dấu hiệu Rule Engine biết.
  */
 @RestController
 @RequestMapping("/api/v1/admin/phishing-patterns")
@@ -46,18 +48,21 @@ public class PhishingPatternController {
     }
 
     /** Thêm một mẫu. Mã dấu hiệu viết hoa, dạng OTP_REQUEST. */
+    @Schema(name = "PhishingPatternCreateRequest")
     public record CreateRequest(
             @NotBlank @Size(max = 150) String name,
             @NotBlank @Pattern(regexp = CODE_FORMAT, message = "must look like OTP_REQUEST") String indicatorCode,
-            @NotBlank @Size(max = 2000) String pattern,
+            @NotBlank @Size(max = ActivePhishingPatterns.MAX_PHRASE_LENGTH) String pattern,
             @Size(max = 2000) String description) {
     }
 
     /** Sửa một mẫu; trường nào không gửi thì giữ nguyên. */
+    @Schema(name = "PhishingPatternUpdateRequest")
     public record UpdateRequest(
             @Size(min = 1, max = 150) @Pattern(regexp = ".*\\S.*", message = "must not be blank") String name,
             @Pattern(regexp = CODE_FORMAT, message = "must look like OTP_REQUEST") String indicatorCode,
-            @Size(min = 1, max = 2000) @Pattern(regexp = "(?s).*\\S.*", message = "must not be blank") String pattern,
+            @Size(min = 1, max = ActivePhishingPatterns.MAX_PHRASE_LENGTH)
+            @Pattern(regexp = "(?s).*\\S.*", message = "must not be blank") String pattern,
             @Size(max = 2000) String description,
             Boolean active) {
     }
@@ -97,6 +102,7 @@ public class PhishingPatternController {
     @Transactional
     @Operation(summary = "Admin: add a phishing pattern")
     public PatternResponse create(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody CreateRequest request) {
+        requireUsable(request.indicatorCode(), request.pattern());
         String description = request.description() == null || request.description().isBlank()
                 ? null : request.description().trim();
         return PatternResponse.from(patterns.save(new PhishingPattern(request.name().trim(), request.indicatorCode(),
@@ -108,6 +114,8 @@ public class PhishingPatternController {
     @Operation(summary = "Admin: change a phishing pattern or switch it on or off")
     public PatternResponse update(@PathVariable UUID id, @Valid @RequestBody UpdateRequest request) {
         PhishingPattern pattern = find(id);
+        requireUsable(request.indicatorCode() == null ? pattern.getIndicatorCode() : request.indicatorCode(),
+                request.pattern() == null ? pattern.getPattern() : request.pattern());
         pattern.update(request.name() == null ? null : request.name().trim(), request.indicatorCode(),
                 request.pattern() == null ? null : request.pattern().trim(), request.description(), request.active());
         return PatternResponse.from(pattern);
@@ -118,6 +126,21 @@ public class PhishingPatternController {
     @Transactional
     public void delete(@PathVariable UUID id) {
         patterns.delete(find(id));
+    }
+
+    /**
+     * Từ chối mẫu mà Rule Engine không dùng được: mã dấu hiệu lạ, hoặc cụm từ chỉ có một từ (một từ đơn lẻ
+     * khớp quá nhiều câu bình thường).
+     */
+    private static void requireUsable(String indicatorCode, String phrase) {
+        if (!ActivePhishingPatterns.INDICATOR_CODES.contains(indicatorCode)) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "UNKNOWN_INDICATOR_CODE",
+                    "indicatorCode must be one of " + new java.util.TreeSet<>(ActivePhishingPatterns.INDICATOR_CODES) + ".");
+        }
+        if (!ActivePhishingPatterns.usable(indicatorCode, phrase)) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "PATTERN_TOO_SHORT",
+                    "pattern must be a phrase of at least two words.");
+        }
     }
 
     private PhishingPattern find(UUID id) {

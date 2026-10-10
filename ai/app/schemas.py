@@ -102,6 +102,37 @@ class ConversationTurn(ApiModel):
     text: str = Field(max_length=20_000)
 
 
+class CustomPattern(ApiModel):
+    """Một mẫu lừa đảo do quản trị viên quản lý, gửi kèm yêu cầu để Rule Engine dùng thêm cho lần phân tích đó.
+
+    AI service không lưu các mẫu này: backend gửi danh sách đang bật trong mỗi yêu cầu, nên sửa mẫu ở trang quản
+    trị là có hiệu lực ngay ở lần phân tích kế tiếp.
+    """
+
+    # Mã định danh của mẫu ở backend; xuất hiện trong ``ruleIds`` của kết quả dưới dạng ``CUSTOM-<id>``.
+    id: str = Field(min_length=1, max_length=64, pattern=r"^[A-Za-z0-9-]+$")
+    # Dấu hiệu mà mẫu này báo; phải là một mã Rule Engine biết.
+    indicator_code: str
+    # Cụm từ cần khớp, ít nhất hai từ.
+    phrase: str = Field(min_length=3, max_length=200)
+
+    @model_validator(mode="after")
+    def _must_compile(self) -> "CustomPattern":
+        """Từ chối ngay mẫu không dùng được, để lỗi cấu hình không bị bỏ qua trong im lặng."""
+        self.to_rule()
+        return self
+
+    def to_rule(self):
+        """Chuyển thành luật của Rule Engine."""
+        from app.rules import Indicator, custom_rule
+
+        try:
+            indicator = Indicator(self.indicator_code)
+        except ValueError:
+            raise ValueError(f"unknown indicator code {self.indicator_code!r}") from None
+        return custom_rule(self.id, indicator, self.phrase)
+
+
 class IndicatorRequest(ApiModel):
     """Nội dung cần tìm dấu hiệu lừa đảo. Gửi đúng một trong hai trường ``text`` hoặc ``turns``.
 
@@ -111,6 +142,12 @@ class IndicatorRequest(ApiModel):
 
     text: str | None = Field(default=None, max_length=_MAX_TEXT_LENGTH)
     turns: list[ConversationTurn] | None = Field(default=None, min_length=1, max_length=2_000)
+    # Các mẫu bổ sung do quản trị viên quản lý; bỏ trống thì chỉ dùng bộ luật có sẵn.
+    custom_patterns: list[CustomPattern] | None = Field(default=None, max_length=500)
+
+    def extra_rules(self) -> list:
+        """Các luật bổ sung của yêu cầu này."""
+        return [pattern.to_rule() for pattern in self.custom_patterns or []]
 
     @model_validator(mode="after")
     def _exactly_one_input(self) -> "IndicatorRequest":

@@ -143,6 +143,9 @@ class LiveCallIntegrationTest extends AnalysisTestSupport {
 
     @Test
     void aLiveCallIsRelayedToTheAiServiceAlertsDuringTheCallAndIsStoredAtTheEnd() throws Exception {
+        UUID patternId = UUID.randomUUID();
+        jdbc.update("insert into phishing_patterns (id, name, indicator_code, pattern) values (?, ?, ?, ?)", patternId,
+                "Gói bảo hiểm giả", "FINANCIAL_BAIT", "gói bảo an tâm phúc");
         Session user = register("live");
         JsonNode opened = open(user, null).getBody();
         UUID callId = UUID.fromString(opened.get("callId").asText());
@@ -174,6 +177,17 @@ class LiveCallIntegrationTest extends AnalysisTestSupport {
         assertThat(ai.frames()).containsExactly(caller, callee);
         assertThat(ai.apiKey()).isEqualTo("test-ai-api-key-0123456789");
         assertThat(ai.requestId()).isEqualTo(analysisId.toString());
+        // Before any audio it was told the administrator's active patterns; the last message ended the call.
+        jdbc.update("delete from phishing_patterns where id = ?", patternId);
+        assertThat(ai.texts()).hasSize(2);
+        JsonNode start = json.readTree(ai.texts().get(0));
+        assertThat(start.get("type").asText()).isEqualTo("start");
+        assertThat(start.get("customPatterns")).anySatisfy(pattern -> {
+            assertThat(pattern.get("id").asText()).isEqualTo(patternId.toString());
+            assertThat(pattern.get("indicatorCode").asText()).isEqualTo("FINANCIAL_BAIT");
+            assertThat(pattern.get("phrase").asText()).isEqualTo("gói bảo an tâm phúc");
+        });
+        assertThat(json.readTree(ai.texts().get(1)).get("type").asText()).isEqualTo("end");
 
         // The result is stored like any other analysis.
         JsonNode done = awaitFinished(user, callId);
@@ -316,9 +330,15 @@ class LiveCallIntegrationTest extends AnalysisTestSupport {
                 // What was recognised before the failure is real and is kept.
                 assertThat(failed.get("transcript").asText()).isEqualTo("Tôi gọi từ ngân hàng.");
             }
-            // After a failed live call the stored recording can still be analysed as a file.
-            assertThat(jdbc.queryForObject("select duration_seconds from audio_files where call_record_id = ?",
-                    BigDecimal.class, callId)).as(code).isEqualByComparingTo("0.5");
+            // After a failed live call the stored recording can still be analysed as a file. When the AI
+            // service refuses at the very start, the call may already be over before the first frame arrives,
+            // so there is either the whole frame on record or nothing.
+            List<BigDecimal> recorded = jdbc.queryForList(
+                    "select duration_seconds from audio_files where call_record_id = ?", BigDecimal.class, callId);
+            if (!code.equals("STT_UNAVAILABLE")) {
+                assertThat(recorded).as(code).hasSize(1);
+            }
+            assertThat(recorded).as(code).allSatisfy(seconds -> assertThat(seconds).isEqualByComparingTo("0.5"));
         }
     }
 

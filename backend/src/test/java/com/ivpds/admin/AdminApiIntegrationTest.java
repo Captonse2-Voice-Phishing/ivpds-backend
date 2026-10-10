@@ -65,6 +65,7 @@ class AdminApiIntegrationTest extends AnalysisTestSupport {
         UUID any = UUID.randomUUID();
         Map<String, HttpMethod> endpoints = new HashMap<>();
         for (String path : List.of("/users", "/users/" + any, "/calls", "/calls/" + any, "/statistics", "/blacklist",
+                "/blacklist/reports",
                 "/phishing-patterns", "/phishing-patterns/" + any)) {
             endpoints.put(path, HttpMethod.GET);
         }
@@ -212,6 +213,22 @@ class AdminApiIntegrationTest extends AnalysisTestSupport {
                 Map.of("name", "n", "indicatorCode", "OTP_REQUEST"))) {
             assertError(send(admin, HttpMethod.POST, base, invalid), HttpStatus.BAD_REQUEST, "VALIDATION_FAILED");
         }
+
+        // Only what the rule engine can use is accepted: a known indicator and a phrase of two words or more.
+        for (String code : List.of("MADE_UP_CODE", "COORDINATED_CALLERS")) {
+            assertError(send(admin, HttpMethod.POST, base, Map.of("name", "n", "indicatorCode", code,
+                    "pattern", "đọc mã otp")), HttpStatus.BAD_REQUEST, "UNKNOWN_INDICATOR_CODE");
+        }
+        assertError(send(admin, HttpMethod.POST, base, Map.of("name", "n", "indicatorCode", "OTP_REQUEST",
+                "pattern", "otp")), HttpStatus.BAD_REQUEST, "PATTERN_TOO_SHORT");
+        assertError(send(admin, HttpMethod.POST, base, Map.of("name", "n", "indicatorCode", "OTP_REQUEST",
+                "pattern", "ab ".repeat(67))), HttpStatus.BAD_REQUEST, "VALIDATION_FAILED");
+        assertError(send(admin, HttpMethod.PATCH, base + "/" + id, Map.of("pattern", "otp")), HttpStatus.BAD_REQUEST,
+                "PATTERN_TOO_SHORT");
+        assertError(send(admin, HttpMethod.PATCH, base + "/" + id, Map.of("indicatorCode", "MADE_UP_CODE")),
+                HttpStatus.BAD_REQUEST, "UNKNOWN_INDICATOR_CODE");
+        assertThat(send(admin, HttpMethod.GET, base + "/" + id, null).getBody().get("pattern").asText())
+                .isEqualTo("đọc mã otp cho em");
 
         assertThat(names(send(admin, HttpMethod.GET, base + "?query=" + marker, null).getBody())).hasSize(2);
         assertThat(names(send(admin, HttpMethod.GET, base + "?query=" + marker + "&indicatorCode=OTP_REQUEST", null)

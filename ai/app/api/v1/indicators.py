@@ -16,10 +16,12 @@ def find_indicators(request: Request, body: IndicatorRequest) -> IndicatorRespon
     tổng hợp theo từng người nói. Nội dung rỗng hoặc không có dấu hiệu nào cho danh sách rỗng, không phải lỗi.
     """
     engine = request.app.state.rules
+    extra_rules = body.extra_rules()
     if body.turns is not None:
-        analysis = engine.analyze_conversation([Turn(speaker=t.speaker.strip(), text=t.text) for t in body.turns])
+        analysis = engine.analyze_conversation([Turn(speaker=t.speaker.strip(), text=t.text) for t in body.turns],
+                                               extra_rules)
     else:
-        analysis = engine.analyze_text(body.text)
+        analysis = engine.analyze_text(body.text, extra_rules)
     return IndicatorResponse(
         indicators=[
             IndicatorResult(code=m.code.value, severity=m.severity.value, evidence=m.evidence, rule_ids=m.rule_ids)

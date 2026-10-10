@@ -134,6 +134,47 @@ class AnalysisIntegrationTest extends AnalysisTestSupport {
     }
 
     @Test
+    void theAdministratorsActivePatternsGoWithEveryRiskAssessment() throws Exception {
+        String insert = "insert into phishing_patterns (id, name, indicator_code, pattern, active) values (?, ?, ?, ?, ?)";
+        UUID active = UUID.randomUUID();
+        UUID switchedOff = UUID.randomUUID();
+        UUID oneWord = UUID.randomUUID();
+        UUID unknownCode = UUID.randomUUID();
+        jdbc.update(insert, active, "Gói bảo hiểm giả", "FINANCIAL_BAIT", "gói bảo an tâm phúc", true);
+        jdbc.update(insert, switchedOff, "Đã tắt", "URGENCY", "làm ngay trong hôm nay", false);
+        // Rows written before patterns were validated: the rule engine cannot use them.
+        jdbc.update(insert, oneWord, "Một từ", "OTP_REQUEST", "otp", true);
+        jdbc.update(insert, unknownCode, "Mã lạ", "MADE_UP_CODE", "hai từ", true);
+        try {
+            Session user = register("patterns");
+            assertThat(analyse(user, uploadCall(user, wav(1))).get("status").asText()).isEqualTo("COMPLETED");
+
+            JsonNode sent = new com.fasterxml.jackson.databind.ObjectMapper()
+                    .readTree(ai.received("/v1/risk-assessments").get(0).body());
+            assertThat(sent.get("text").asText()).isEqualTo(StubAiServer.TRANSCRIPT);
+            List<String> ids = new java.util.ArrayList<>();
+            sent.get("customPatterns").forEach(pattern -> ids.add(pattern.get("id").asText()));
+            assertThat(ids).contains(active.toString())
+                    .doesNotContain(switchedOff.toString(), oneWord.toString(), unknownCode.toString());
+            for (JsonNode pattern : sent.get("customPatterns")) {
+                if (pattern.get("id").asText().equals(active.toString())) {
+                    assertThat(pattern.get("indicatorCode").asText()).isEqualTo("FINANCIAL_BAIT");
+                    assertThat(pattern.get("phrase").asText()).isEqualTo("gói bảo an tâm phúc");
+                }
+            }
+
+            // Switching the pattern off takes effect at the very next analysis.
+            jdbc.update("update phishing_patterns set active = false where id = ?", active);
+            ai.reset();
+            analyse(user, uploadCall(user, wav(1)));
+            String next = new String(ai.received("/v1/risk-assessments").get(0).body(), StandardCharsets.UTF_8);
+            assertThat(next).contains(StubAiServer.TRANSCRIPT).doesNotContain(active.toString());
+        } finally {
+            jdbc.update("delete from phishing_patterns where id in (?, ?, ?, ?)", active, switchedOff, oneWord, unknownCode);
+        }
+    }
+
+    @Test
     void aLowRiskAnswerIsStoredAsLowWithAnEmptyIndicatorList() {
         ai.onRisk(json(200, """
                 {"riskScore":0,"riskLevel":"LOW","confidence":1.0,"indicators":[],

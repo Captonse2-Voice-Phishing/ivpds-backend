@@ -1,5 +1,6 @@
 package com.ivpds.phishingpattern;
 
+import java.util.List;
 import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +10,9 @@ import org.springframework.data.repository.query.Param;
 
 /** Truy cập dữ liệu bảng {@code phishing_patterns}. */
 public interface PhishingPatternRepository extends JpaRepository<PhishingPattern, UUID> {
+
+    /** Các mẫu đang bật, cũ nhất trước (thứ tự ổn định giữa các lần gọi). */
+    List<PhishingPattern> findByActiveTrueOrderByCreatedAtAsc();
 
     /**
      * Danh sách cho trang quản trị, mới nhất trước.

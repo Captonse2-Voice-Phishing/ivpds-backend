@@ -353,7 +353,7 @@ Thông báo được tạo tự động khi: cuộc gọi phân tích xong ở m
 
 - Mã nguồn: các module `history/`, `blacklist/`, `notification/`, `phishingpattern/`, `admin/` trong `backend/src/main/java/com/ivpds/`; migration `V8`.
 - Test: backend 159 test qua (thêm 14). Thử thật qua Docker Compose với ghi âm cuộc gọi lừa đảo thật gửi từ một số trong danh sách đen: hai thông báo được tạo, lịch sử và thống kê quản trị hiện đúng, xóa cuộc gọi trả 204.
-- Giới hạn: thông báo chỉ lưu trong database, chưa có kênh đẩy tới thiết bị; mẫu lừa đảo chỉ là dữ liệu quản trị, Rule Engine của AI service chưa đọc bảng này.
+- Giới hạn lúc đó (thông báo chưa có kênh đẩy; Rule Engine chưa đọc mẫu lừa đảo) đã được xử lý ở mục 13.
 
 Bổ sung sau Phase 12 (cùng ngày):
 
@@ -361,3 +361,59 @@ Bổ sung sau Phase 12 (cùng ngày):
 - Tài khoản bị khóa bị chặn ngay ở request kế tiếp: access token chỉ được chấp nhận khi tài khoản còn hoạt động (một truy vấn nhỏ cho mỗi request có đăng nhập).
 - Thống kê có thêm `suspectedNumbers`: các số gọi đến có cuộc gọi mức HIGH mà chưa nằm trong danh sách đen, để quản trị viên xem xét. Đây là gợi ý, không phải kết luận.
 - Backend: 161 test qua.
+
+## 13. Bổ sung sau Phase 12 — báo cáo số lừa đảo, mẫu của quản trị viên, thông báo đẩy (10/10/2026)
+
+Ba phần này nằm ngoài danh sách chức năng của README và được làm theo yêu cầu. Thêm hai bảng (`blacklist_reports`, `push_devices`, migration `V9`).
+
+### 13.1 Người dùng báo cáo số lừa đảo, quản trị viên duyệt
+
+| API | Dùng để |
+|---|---|
+| `POST /api/v1/blacklist/reports` | Báo cáo một số. Gửi `phoneNumber`, hoặc `callId` của một cuộc gọi của mình (lấy số người gọi của cuộc gọi đó), kèm `reason` tùy chọn |
+| `GET /api/v1/blacklist/reports` | Các báo cáo của mình và trạng thái `PENDING` / `APPROVED` / `REJECTED` |
+| `GET /api/v1/admin/blacklist/reports?status=&query=` | Hàng chờ của quản trị viên; mỗi dòng có `reportsForNumber` (số người đã báo cáo số đó) và `blacklisted` |
+| `POST /api/v1/admin/blacklist/reports/{id}/approve` | Duyệt: đưa số vào danh sách đen (hoặc bật lại số đã gỡ) và duyệt luôn mọi báo cáo đang chờ về số đó. `reason` tùy chọn là lý do hiện cho người tra cứu; bỏ trống thì dùng lý do của báo cáo |
+| `POST /api/v1/admin/blacklist/reports/{id}/reject` | Từ chối một báo cáo; các báo cáo khác về số đó giữ nguyên |
+
+- Báo cáo không tự chặn số: phải có quản trị viên duyệt, để một người dùng không tự ý chặn số của người khác.
+- Mỗi người báo cáo một số một lần (kể cả sau khi bị từ chối); số đang bị chặn thì không nhận báo cáo; mỗi tài khoản có tối đa 20 báo cáo đang chờ.
+- Thống kê quản trị có thêm `blacklistReports` (số báo cáo theo trạng thái).
+
+### 13.2 Rule Engine dùng mẫu lừa đảo của quản trị viên
+
+- Ở mỗi lần phân tích (file và cuộc gọi trực tiếp), backend đọc các mẫu đang bật trong `phishing_patterns` và gửi kèm cho AI service (`customPatterns` của `/v1/risk-assessments` và `/v1/indicators`; tin nhắn `{"type":"start","customPatterns":[...]}` đầu phiên trực tiếp). AI service không lưu mẫu, nên thêm, sửa, tắt một mẫu có hiệu lực ngay ở lần phân tích kế tiếp.
+- Mỗi mẫu là một cụm từ khớp nguyên cụm, đúng ranh giới từ, không vượt qua dấu kết câu, bỏ qua khi đứng sau từ phủ định ("đừng ..."). Luật tạo từ mẫu có mã `CUSTOM-<id>`.
+- Mẫu chỉ khớp chữ, không hiểu ngữ cảnh như luật có sẵn, nên mức nghiêm trọng bị giới hạn ở MEDIUM: riêng các mẫu không thể đẩy một cuộc gọi lên HIGH.
+- Mẫu phải có ít nhất hai từ, dài tối đa 200 ký tự, và `indicatorCode` là một trong 14 mã Rule Engine nhận (mọi mã trừ `COORDINATED_CALLERS`). Sai thì API quản trị trả 400 `PATTERN_TOO_SHORT` hoặc `UNKNOWN_INDICATOR_CODE`. Mẫu cũ không hợp lệ bị bỏ qua kèm cảnh báo trong log.
+
+### 13.3 Thông báo đẩy (Expo Push Service)
+
+| API | Dùng để |
+|---|---|
+| `PUT /api/v1/notifications/devices` | Đăng ký thiết bị: `{"token": "ExponentPushToken[...]", "platform": "ANDROID" \| "IOS" \| "WEB"}`. Gọi sau mỗi lần đăng nhập và khi token đổi |
+| `GET /api/v1/notifications/devices` | Các thiết bị đã đăng ký của mình |
+| `DELETE /api/v1/notifications/devices?token=` | Gỡ thiết bị khi đăng xuất |
+
+- Mỗi thông báo vừa lưu được đẩy tới mọi thiết bị của người nhận, kèm `data` gồm `notificationId`, `type`, `callId`, `analysisId` để ứng dụng mở đúng màn hình.
+- Kênh đẩy **mặc định tắt** (`PUSH_ENABLED=false`). Bật lên thì tiêu đề và nội dung thông báo (có số điện thoại người gọi) được gửi tới Expo rồi Apple/Google để chuyển tới máy. `PUSH_ACCESS_TOKEN` chỉ cần khi dự án Expo bật enhanced push security.
+- Lỗi của kênh đẩy chỉ ghi log, không ảnh hưởng thông báo đã lưu hay kết quả phân tích. Token Expo báo `DeviceNotRegistered` bị xóa. Một token thuộc về người đăng nhập sau cùng trên thiết bị đó; mỗi người tối đa 10 thiết bị.
+
+### Kiểm thử
+
+- Backend: 182 test, qua hết (thêm 21). AI service: 455 test, qua hết (thêm 25).
+- Thử thật qua Docker Compose (backend + AI service thật):
+  - Mẫu của quản trị viên: một cuộc gọi bình thường được 16 điểm (LOW); bật một mẫu khớp transcript thì có thêm dấu hiệu của mẫu và lên 24 điểm (vẫn LOW); tắt mẫu thì trở lại đúng 16 điểm.
+  - Cuộc gọi trực tiếp (50 giây đầu của ghi âm lừa đảo thật) với mẫu "bộ công an": dấu hiệu của mẫu xuất hiện ngay ở câu chứa cụm đó.
+  - Báo cáo số: báo cáo từ một cuộc gọi, duyệt, số bị chặn, cuộc gọi kế tiếp từ số đó tạo cảnh báo.
+  - Thiết bị: đăng ký, liệt kê, gỡ.
+- **NOT VERIFIED:** việc một điện thoại thật nhận được thông báo đẩy. Test dùng máy chủ giả thay cho Expo, nên chỉ chứng minh backend gửi đúng nội dung và đọc đúng câu trả lời. Cần ứng dụng mobile (Phase 13) với dự án Expo thật để kiểm chứng.
+
+## 14. Kiểm tra lại toàn bộ và tài liệu API (10/10/2026)
+
+- Tài liệu API đầy đủ cho người viết mobile và trang quản trị: [API_BACKEND.md](API_BACKEND.md).
+- Chạy lại từ bản build sạch: backend 182 test qua, AI service 455 test qua.
+- Đi qua mọi API trong tài liệu trên hệ thống thật (Docker Compose, AI service thật, hai file ghi âm thật): 180 phép kiểm, qua hết. Ghi âm lừa đảo thật được mức HIGH (97 điểm), cuộc gọi bình thường mức LOW (16 điểm).
+- Sửa một lỗi hiển thị của Swagger: hai cặp request trùng tên (`RegisterRequest`, `UpdateRequest`) ghi đè lên nhau, làm Swagger hiện sai body của API đăng ký tài khoản. Bản thân API không sai.
+- Luồng quên mật khẩu không thử trên hệ thống thật vì `.env` đang gửi mail thật qua Gmail; luồng này có test tự động với Mailpit.
+

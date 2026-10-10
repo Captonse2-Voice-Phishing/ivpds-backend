@@ -13,8 +13,8 @@ import java.util.UUID;
  * Một mẫu lừa đảo do quản trị viên ghi nhận (bảng {@code phishing_patterns}): một cụm từ hoặc cách nói đặc trưng
  * của kẻ lừa đảo, gắn với một loại dấu hiệu.
  *
- * <p>Hiện tại đây là dữ liệu quản trị: Rule Engine của AI service dùng bộ luật viết trong mã nguồn và chưa đọc
- * bảng này.
+ * <p>Các mẫu đang bật được gửi kèm mỗi yêu cầu phân tích sang AI service, nơi Rule Engine coi mỗi mẫu là một cụm
+ * từ cần khớp ở mức nghiêm trọng MEDIUM (xem {@link ActivePhishingPatterns}).
  */
 @Entity
 @Table(name = "phishing_patterns")

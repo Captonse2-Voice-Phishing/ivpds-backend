@@ -2,6 +2,7 @@ package com.ivpds.blacklist;
 
 import com.ivpds.common.PageResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -32,10 +33,12 @@ public class BlacklistController {
     }
 
     /** Thêm một số vào danh sách đen. */
+    @Schema(name = "BlacklistAddRequest")
     public record AddRequest(String phoneNumber, String reason) {
     }
 
     /** Sửa một dòng; trường nào không gửi thì giữ nguyên. */
+    @Schema(name = "BlacklistUpdateRequest")
     public record UpdateRequest(String reason, Boolean active) {
     }
 

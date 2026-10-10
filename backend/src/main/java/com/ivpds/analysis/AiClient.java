@@ -1,6 +1,7 @@
 package com.ivpds.analysis;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ivpds.phishingpattern.ActivePhishingPatterns.Pattern;
 import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -94,14 +95,20 @@ public class AiClient {
     /**
      * Gửi transcript sang AI service để Risk Engine đánh giá rủi ro.
      *
+     * @param customPatterns các mẫu lừa đảo đang bật do quản trị viên quản lý, để Rule Engine dùng thêm
+     *
      * @throws AiServiceException nếu gọi thất bại hoặc kết quả thiếu hay sai giá trị
      */
-    public RiskAssessment assessRisk(String transcript, String requestId) {
+    public RiskAssessment assessRisk(String transcript, String requestId, List<Pattern> customPatterns) {
+        // Chỉ thêm trường customPatterns khi có mẫu, để yêu cầu thông thường giữ nguyên hình dạng.
+        Map<String, Object> request = customPatterns.isEmpty()
+                ? Map.of("text", transcript)
+                : Map.of("text", transcript, "customPatterns", customPatterns);
         RiskAssessment result = call(() -> riskClient.post()
                 .uri("/v1/risk-assessments")
                 .header(REQUEST_ID_HEADER, requestId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(Map.of("text", transcript))
+                .body(request)
                 .retrieve()
                 .body(RiskAssessment.class));
         validate(result);

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ivpds.analysis.AiClient.RiskAssessment;
 import com.ivpds.analysis.LiveCallTickets.Ticket;
+import com.ivpds.phishingpattern.ActivePhishingPatterns;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,9 +66,12 @@ public class LiveCallSocketHandler extends AbstractWebSocketHandler {
     private final LiveCallRecorder recorder;
     private final ObjectMapper json;
     private final HttpClient http;
+    private final ActivePhishingPatterns patterns;
     private final Map<String, Relay> relays = new ConcurrentHashMap<>();
 
-    public LiveCallSocketHandler(AiProperties ai, LiveCallRecorder recorder, ObjectMapper json) {
+    public LiveCallSocketHandler(AiProperties ai, LiveCallRecorder recorder, ObjectMapper json,
+            ActivePhishingPatterns patterns) {
+        this.patterns = patterns;
         this.ai = ai;
         this.recorder = recorder;
         this.json = json;
@@ -141,6 +145,7 @@ public class LiveCallSocketHandler extends AbstractWebSocketHandler {
 
         /** Mở kết nối tới AI service; mã theo dõi là id của lần phân tích để nối log của hai bên. */
         void connect() {
+            String start = startMessage();
             CompletableFuture<WebSocket> connecting = http.newWebSocketBuilder()
                     .header(AiClient.API_KEY_HEADER, ai.apiKey())
                     .header(AiClient.REQUEST_ID_HEADER, ticket.analysisId().toString())
@@ -149,12 +154,31 @@ public class LiveCallSocketHandler extends AbstractWebSocketHandler {
             synchronized (sendLock) {
                 upstream = connecting;
             }
+            // Tin nhắn đầu tiên, trước mọi gói âm thanh: các mẫu do quản trị viên quản lý cho riêng cuộc gọi này.
+            sendUpstream(socket -> socket.sendText(start, true));
             connecting.whenComplete((socket, error) -> {
                 if (error != null) {
                     log.warn("Live call {}: could not reach the AI service: {}", ticket.callId(), error.toString());
                     fail(AiServiceException.UNAVAILABLE);
                 }
             });
+        }
+
+        /**
+         * Tin nhắn mở đầu gửi cho AI service. Nếu không đọc được mẫu (lỗi database), cuộc gọi vẫn tiếp tục với
+         * bộ luật có sẵn: người dùng đang nghe máy cần được bảo vệ hơn là cần đủ mẫu bổ sung.
+         */
+        private String startMessage() {
+            List<ActivePhishingPatterns.Pattern> active;
+            try {
+                active = patterns.list();
+            } catch (RuntimeException e) {
+                log.error("Live call {}: could not load the phishing patterns; continuing without them",
+                        ticket.callId(), e);
+                active = List.of();
+            }
+            return json.createObjectNode().put("type", "start")
+                    .set("customPatterns", json.valueToTree(active)).toString();
         }
 
         // ------------------------------------------------------- từ ứng dụng

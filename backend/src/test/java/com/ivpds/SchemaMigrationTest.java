@@ -33,7 +33,7 @@ class SchemaMigrationTest {
         Integer failed = jdbc.queryForObject(
                 "select count(*) from flyway_schema_history where not success", Integer.class);
 
-        assertThat(versions).containsExactly("1", "2", "3", "4", "5", "6", "7", "8");
+        assertThat(versions).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
         assertThat(failed).isZero();
     }
 
@@ -45,7 +45,7 @@ class SchemaMigrationTest {
         assertThat(tables).containsExactlyInAnyOrder(
                 "users", "roles", "user_roles", "refresh_tokens", "password_reset_tokens",
                 "call_records", "audio_files", "transcripts", "analyses", "risk_results", "risk_indicators",
-                "phishing_patterns", "blacklist_numbers", "notifications",
+                "phishing_patterns", "blacklist_numbers", "notifications", "blacklist_reports", "push_devices",
                 "flyway_schema_history");
     }
 

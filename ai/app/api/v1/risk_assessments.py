@@ -22,12 +22,14 @@ def assess_risk(request: Request, body: RiskAssessmentRequest) -> RiskAssessment
     if classifier is None:
         raise ApiError(503, "NLP_MODEL_UNAVAILABLE", "The NLP model is not available.")
     engine = request.app.state.rules
+    extra_rules = body.extra_rules()
     if body.turns is not None:
-        analysis = engine.analyze_conversation([Turn(speaker=t.speaker.strip(), text=t.text) for t in body.turns])
+        analysis = engine.analyze_conversation([Turn(speaker=t.speaker.strip(), text=t.text) for t in body.turns],
+                                               extra_rules)
         # Model được huấn luyện trên transcript liền, không có nhãn người nói.
         text = " ".join(turn.text for turn in body.turns)
     else:
-        analysis = engine.analyze_text(body.text)
+        analysis = engine.analyze_text(body.text, extra_rules)
         text = body.text
     prediction = classifier.predict(text)
     result = assess(analysis.indicators, prediction.phishing_probability)

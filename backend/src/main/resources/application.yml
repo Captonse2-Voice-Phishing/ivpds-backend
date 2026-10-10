@@ -100,6 +100,15 @@ ivpds:
   live:
     # How long the one-time ticket returned by POST /api/v1/live-calls stays valid.
     ticket-ttl: ${LIVE_TICKET_TTL:60s}
+  push:
+    # Push notifications through the Expo Push Service. Off by default: turning it on sends notification
+    # titles and messages to Expo (and on to Apple/Google) for delivery.
+    enabled: ${PUSH_ENABLED:false}
+    url: ${PUSH_URL:https://exp.host/--/api/v2/push/send}
+    # Only needed when the Expo project has enhanced push security switched on.
+    access-token: ${PUSH_ACCESS_TOKEN:}
+    connect-timeout: ${PUSH_CONNECT_TIMEOUT:3s}
+    request-timeout: ${PUSH_REQUEST_TIMEOUT:10s}
   mail:
     from: ${MAIL_FROM:no-reply@ivpds.local}
   bootstrap:

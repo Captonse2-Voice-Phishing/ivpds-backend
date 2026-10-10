@@ -197,6 +197,8 @@ class LiveSession:
     transcriber: SampleTranscriber
     rules: RuleEngine
     classifier: ChunkClassifier
+    # Các luật bổ sung do quản trị viên quản lý, áp dụng cho riêng cuộc gọi này.
+    extra_rules: list = field(default_factory=list)
     turns: list[SpokenTurn] = field(default_factory=list)
     risk_score: int = 0
     risk_level: RiskLevel = RiskLevel.LOW
@@ -229,7 +231,8 @@ class LiveSession:
 
     def _reassess(self) -> list[dict]:
         """Chạy Rule Engine, NLP Model và Risk Engine trên toàn bộ hội thoại đã nghe được."""
-        analysis = self.rules.analyze_conversation([Turn(turn.speaker.value, turn.text) for turn in self.turns])
+        analysis = self.rules.analyze_conversation([Turn(turn.speaker.value, turn.text) for turn in self.turns],
+                                                   self.extra_rules)
         probability = self._model_probability(" ".join(turn.text for turn in self.turns))
         result = assess(analysis.indicators, probability)
 

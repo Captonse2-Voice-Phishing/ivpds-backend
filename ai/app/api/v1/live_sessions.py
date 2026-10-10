@@ -6,6 +6,8 @@ Bên gọi gửi:
 
 * Gói nhị phân: byte đầu cho biết người nói (0 = người gọi đến, 1 = người dùng ứng dụng), phần còn lại là PCM
   16 bit có dấu, little-endian, một kênh, 16 kHz. Gói dài bao nhiêu cũng được (khuyến nghị 100-500 ms).
+* Tin nhắn văn bản ``{"type": "start", "customPatterns": [...]}`` (tùy chọn, chỉ trước gói âm thanh đầu tiên): các
+  mẫu lừa đảo do quản trị viên quản lý, cùng cấu trúc với ``customPatterns`` của ``POST /v1/risk-assessments``.
 * Tin nhắn văn bản ``{"type": "end"}``: kết thúc cuộc gọi, yêu cầu kết quả cuối.
 
 Service gửi (JSON, mỗi sự kiện có ``type`` và số thứ tự ``seq``):
@@ -26,10 +28,12 @@ import secrets
 import uuid
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
+from pydantic import ValidationError
 
 from app.live import (BYTES_PER_SAMPLE, LIVE_API_VERSION, SAMPLE_RATE, SPEAKER_BY_PREFIX, LiveSession, Speaker,
                       Utterance, UtteranceSegmenter)
 from app.risk import RISK_ENGINE_VERSION
+from app.schemas import CustomPattern
 from app.security import API_KEY_HEADER
 
 log = logging.getLogger(__name__)
@@ -38,6 +42,7 @@ log = logging.getLogger(__name__)
 router = APIRouter(prefix="/v1", tags=["Live sessions"])
 
 _MAX_FRAME_BYTES = 1024 * 1024
+_MAX_CUSTOM_PATTERNS = 500
 # Mã đóng kết nối riêng của ứng dụng (khoảng 4000-4999 dành cho ứng dụng).
 CLOSE_UNAUTHORIZED = 4401
 CLOSE_UNAVAILABLE = 4503
@@ -158,7 +163,8 @@ async def _run(websocket: WebSocket, session_id: str) -> None:
                 if max(s.seconds_received for s in segmenters.values()) >= settings.live_max_session_seconds:
                     ended_by = "MAX_DURATION"
                     break
-            elif _is_end(message.get("text")):
+            elif _is_end(message.get("text"), session, audio_started=any(
+                    segmenter.seconds_received > 0 for segmenter in segmenters.values())):
                 break
         for segmenter in segmenters.values():
             await enqueue(segmenter.flush())
@@ -188,15 +194,28 @@ def _feed(data: bytes, segmenters: dict[Speaker, UtteranceSegmenter]) -> list[Ut
     return segmenters[SPEAKER_BY_PREFIX[data[0]]].feed(data[1:])
 
 
-def _is_end(text: str | None) -> bool:
-    """Tin nhắn văn bản có phải yêu cầu kết thúc không; văn bản khác là lỗi giao thức."""
+def _is_end(text: str | None, session: LiveSession, audio_started: bool) -> bool:
+    """Xử lý một tin nhắn văn bản: ``end`` kết thúc phiên (trả True), ``start`` nạp các mẫu bổ sung (trả False).
+
+    Mọi văn bản khác, ``start`` gửi sau khi đã có âm thanh, hay mẫu không hợp lệ đều là lỗi giao thức.
+    """
     try:
         message = json.loads(text or "")
     except ValueError:
         message = None
-    if not isinstance(message, dict) or message.get("type") != "end":
-        raise _SessionError("INVALID_MESSAGE", 'Text messages must be {"type": "end"}.')
-    return True
+    kind = message.get("type") if isinstance(message, dict) else None
+    if kind == "end":
+        return True
+    if kind == "start" and not audio_started:
+        try:
+            patterns = [CustomPattern.model_validate(item) for item in message.get("customPatterns") or []]
+        except (ValidationError, TypeError):
+            raise _SessionError("INVALID_CUSTOM_PATTERNS", "customPatterns is not valid.") from None
+        if len(patterns) > _MAX_CUSTOM_PATTERNS:
+            raise _SessionError("INVALID_CUSTOM_PATTERNS", "Too many custom patterns.")
+        session.extra_rules = [pattern.to_rule() for pattern in patterns]
+        return False
+    raise _SessionError("INVALID_MESSAGE", 'Text messages must be {"type": "end"}, or {"type": "start"} before any audio.')
 
 
 async def _fail(websocket: WebSocket, error: _SessionError) -> None:
