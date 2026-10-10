@@ -3,7 +3,7 @@
 Cách dùng (chạy từ thư mục ``ai`` trong image huấn luyện, có GPU thì nhanh hơn):
 
     docker run --rm --gpus all -e PYTHONPATH=/work -v "D:/Capstone2/ai:/work" -w /work \
-        ivpds/train:dev python -m tools.risk_signals_dump phobert-base-r5d
+        ivpds/train:dev python -m tools.risk_signals_dump phobert-base-r6
 
 Với mỗi dòng, script chạy NLP Model và Rule Engine trên cùng một transcript liền (không có nhãn người nói, giống
 transcript Whisper trả về) rồi ghi xác suất của model và danh sách dấu hiệu vào ``data/risk/signals.jsonl``.

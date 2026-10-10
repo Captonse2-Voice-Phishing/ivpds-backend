@@ -5,6 +5,8 @@ import java.util.UUID;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /** Truy cập dữ liệu bảng {@code call_records}. */
 public interface CallRecordRepository extends JpaRepository<CallRecord, UUID> {
@@ -14,4 +16,9 @@ public interface CallRecordRepository extends JpaRepository<CallRecord, UUID> {
 
     /** Tìm cuộc gọi theo id, chỉ khi nó thuộc về đúng người dùng đó. */
     Optional<CallRecord> findByIdAndUserId(UUID id, UUID userId);
+
+    /** Cuộc gọi có lần phân tích nào đang chờ hoặc đang chạy không. */
+    @Query(value = "select exists(select 1 from analyses a where a.call_record_id = :callId "
+            + "and a.status in ('PENDING', 'PROCESSING'))", nativeQuery = true)
+    boolean hasUnfinishedAnalysis(@Param("callId") UUID callId);
 }

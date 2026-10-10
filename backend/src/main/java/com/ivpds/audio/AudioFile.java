@@ -45,7 +45,7 @@ public class AudioFile {
     @Column(name = "size_bytes", nullable = false)
     private long sizeBytes;
 
-    /** Thời lượng tính bằng giây; hiện chưa có giá trị, sẽ do AI service (FFmpeg) cung cấp. */
+    /** Thời lượng tính bằng giây, do AI service (FFmpeg) đo khi phân tích; null nếu chưa phân tích. */
     @Column(name = "duration_seconds", precision = 10, scale = 3)
     private BigDecimal durationSeconds;
 
@@ -100,6 +100,11 @@ public class AudioFile {
 
     public BigDecimal getDurationSeconds() {
         return durationSeconds;
+    }
+
+    /** Ghi thời lượng do AI service đo được. */
+    public void setDurationSeconds(BigDecimal durationSeconds) {
+        this.durationSeconds = durationSeconds;
     }
 
     public String getChecksumSha256() {

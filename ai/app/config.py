@@ -52,6 +52,22 @@ class Settings(BaseSettings):
     nlp_model_dir: str = "/opt/models/nlp"
     nlp_device: Literal["cpu", "cuda"] = "cpu"
 
+    # --- Phân tích cuộc gọi trực tiếp (WebSocket /v1/live-sessions) ---
+    # Số cuộc gọi được phân tích cùng lúc. Mỗi cuộc cần nhận dạng liên tục nên trên CPU chỉ nên để nhỏ.
+    live_max_sessions: int = Field(default=2, ge=1)
+    # Thời lượng tối đa của một cuộc gọi trực tiếp; tới giới hạn thì phiên được chốt kết quả và đóng.
+    live_max_session_seconds: int = Field(default=1800, gt=0)
+    # Không nhận được gì trong khoảng này thì coi như cuộc gọi đã kết thúc.
+    live_idle_timeout_seconds: float = Field(default=30, gt=0)
+    # Lượng âm thanh tối đa được phép chờ nhận dạng; vượt quá nghĩa là máy không theo kịp tốc độ nói.
+    live_max_pending_seconds: float = Field(default=60, gt=0)
+    # Ngưỡng độ lớn (RMS trên thang 16 bit, tối đa 32768) để coi một khung 20 ms là có tiếng nói.
+    live_speech_threshold: float = Field(default=300, gt=0)
+    # Im lặng bao lâu thì coi là hết một câu.
+    live_end_silence_ms: int = Field(default=700, ge=100)
+    # Một câu nói liên tục dài tới mức này thì bị cắt để nhận dạng, không chờ người nói nghỉ.
+    live_max_utterance_seconds: float = Field(default=15, gt=1)
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -47,4 +47,19 @@ public final class PhoneNumbers {
         }
         return digits;
     }
+
+    /**
+     * Chuỗi chữ số dùng để tìm "có chứa" trong các số đã chuẩn hóa. Mọi ký tự không phải chữ số bị bỏ, để
+     * "090 123" và "090123" cho cùng kết quả; số 0 đứng đầu cũng bị bỏ vì số nội địa được lưu ở dạng +84...,
+     * nên tìm "0901" phải ra "+84901...".
+     *
+     * @return null nếu đầu vào là null
+     */
+    public static String searchDigits(String text) {
+        if (text == null) {
+            return null;
+        }
+        String digits = text.replaceAll("[^0-9]", "");
+        return digits.startsWith("0") ? digits.substring(1) : digits;
+    }
 }

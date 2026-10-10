@@ -5,13 +5,16 @@ import tempfile
 import threading
 import time
 from pathlib import Path
-from typing import BinaryIO
+from typing import TYPE_CHECKING, BinaryIO
 
 from app.audio import AudioProcessor
 from app.config import Settings
 from app.errors import ApiError
 from app.schemas import AudioMetadata, ProcessingTime, TranscriptionResponse, TranscriptSegment
 from app.stt import Transcriber
+
+if TYPE_CHECKING:
+    import numpy as np
 
 log = logging.getLogger(__name__)
 
@@ -71,6 +74,16 @@ class TranscriptionService:
             segments=[TranscriptSegment(start=s.start, end=s.end, text=s.text) for s in transcript.segments],
             processing=ProcessingTime(audio_ms=audio_ms, speech_to_text_ms=stt_ms),
         )
+
+    def transcribe_samples(self, samples: "np.ndarray") -> str:
+        """Nhận dạng một câu nói của cuộc gọi trực tiếp và trả về văn bản (rỗng nếu không có lời nói).
+
+        Dùng chung giới hạn số lượt nhận dạng với việc phân tích file, vì cả hai cùng dùng hết CPU.
+        """
+        if self.transcriber is None:
+            raise ApiError(503, "STT_UNAVAILABLE", "The speech-to-text model is not available.")
+        with self._slots:
+            return self.transcriber.transcribe_samples(samples).text
 
     def _save(self, upload: BinaryIO, target: Path) -> None:
         """Ghi file tải lên ra đĩa, dừng ngay khi vượt giới hạn kích thước."""
