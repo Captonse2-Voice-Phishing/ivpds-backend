@@ -9,6 +9,7 @@ from fastapi import FastAPI
 from app import __version__
 from app.api import health
 from app.api import v1
+from app.api.v1 import live_sessions
 from app.config import Settings, get_settings
 from app.errors import install_error_handlers
 from app.limits import MaxBodySizeMiddleware
@@ -78,6 +79,9 @@ def create_app(settings: Settings | None = None, transcriber: Transcriber | None
     app.state.transcription = TranscriptionService(resolved, transcriber)
     app.state.rules = RuleEngine()
     app.state.nlp = classifier
+    app.state.settings = resolved
+    # Số cuộc gọi trực tiếp đang được phân tích.
+    app.state.live_sessions = 0
     if settings is not None:
         # Để các route lấy cấu hình qua Depends(get_settings) cũng dùng cấu hình được truyền vào.
         app.dependency_overrides[get_settings] = lambda: settings
@@ -88,6 +92,7 @@ def create_app(settings: Settings | None = None, transcriber: Transcriber | None
     install_error_handlers(app)
     app.include_router(health.router)
     app.include_router(v1.router)
+    app.include_router(live_sessions.router)
     return app
 
 

@@ -1,0 +1,195 @@
+{
+  "file": "translated_calls.jsonl",
+  "samples": 1020,
+  "phishing": 520,
+  "normal": 500,
+  "deployed_model": "phobert-base-r6",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 1020,
+        "accuracy": 0.6559,
+        "phishing": {
+          "precision": 0.8073,
+          "recall": 0.4269,
+          "f1": 0.5585
+        },
+        "normal": {
+          "precision": 0.6,
+          "recall": 0.894,
+          "f1": 0.7181
+        },
+        "macro_f1": 0.6383,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 447,
+          "true_normal_pred_phishing": 53,
+          "true_phishing_pred_normal": 298,
+          "true_phishing_pred_phishing": 222
+        },
+        "false_positives": 53,
+        "false_negatives": 298
+      },
+      "by_group": {
+        "bình thường - an sinh xã hội (dịch máy)": {
+          "samples": 167,
+          "flagged_as_phishing": 28,
+          "label": "NORMAL"
+        },
+        "bình thường - hoàn tiền (dịch máy)": {
+          "samples": 171,
+          "flagged_as_phishing": 10,
+          "label": "NORMAL"
+        },
+        "bình thường - hỗ trợ kỹ thuật (dịch máy)": {
+          "samples": 162,
+          "flagged_as_phishing": 15,
+          "label": "NORMAL"
+        },
+        "lừa đảo - an sinh xã hội (dịch máy)": {
+          "samples": 168,
+          "flagged_as_phishing": 74,
+          "label": "PHISHING"
+        },
+        "lừa đảo - cuộc gọi thật tiếng Anh (dịch máy)": {
+          "samples": 20,
+          "flagged_as_phishing": 2,
+          "label": "PHISHING"
+        },
+        "lừa đảo - hoàn tiền (dịch máy)": {
+          "samples": 166,
+          "flagged_as_phishing": 61,
+          "label": "PHISHING"
+        },
+        "lừa đảo - hỗ trợ kỹ thuật (dịch máy)": {
+          "samples": 166,
+          "flagged_as_phishing": 85,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "baseline-tfidf-logreg-r6": {
+      "all": {
+        "samples": 1020,
+        "accuracy": 0.7108,
+        "phishing": {
+          "precision": 0.6514,
+          "recall": 0.9308,
+          "f1": 0.7664
+        },
+        "normal": {
+          "precision": 0.87,
+          "recall": 0.482,
+          "f1": 0.6203
+        },
+        "macro_f1": 0.6933,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 241,
+          "true_normal_pred_phishing": 259,
+          "true_phishing_pred_normal": 36,
+          "true_phishing_pred_phishing": 484
+        },
+        "false_positives": 259,
+        "false_negatives": 36
+      },
+      "by_group": {
+        "bình thường - an sinh xã hội (dịch máy)": {
+          "samples": 167,
+          "flagged_as_phishing": 131,
+          "label": "NORMAL"
+        },
+        "bình thường - hoàn tiền (dịch máy)": {
+          "samples": 171,
+          "flagged_as_phishing": 45,
+          "label": "NORMAL"
+        },
+        "bình thường - hỗ trợ kỹ thuật (dịch máy)": {
+          "samples": 162,
+          "flagged_as_phishing": 83,
+          "label": "NORMAL"
+        },
+        "lừa đảo - an sinh xã hội (dịch máy)": {
+          "samples": 168,
+          "flagged_as_phishing": 159,
+          "label": "PHISHING"
+        },
+        "lừa đảo - cuộc gọi thật tiếng Anh (dịch máy)": {
+          "samples": 20,
+          "flagged_as_phishing": 11,
+          "label": "PHISHING"
+        },
+        "lừa đảo - hoàn tiền (dịch máy)": {
+          "samples": 166,
+          "flagged_as_phishing": 153,
+          "label": "PHISHING"
+        },
+        "lừa đảo - hỗ trợ kỹ thuật (dịch máy)": {
+          "samples": 166,
+          "flagged_as_phishing": 161,
+          "label": "PHISHING"
+        }
+      }
+    },
+    "phobert-base-r6": {
+      "all": {
+        "samples": 1020,
+        "accuracy": 0.5569,
+        "phishing": {
+          "precision": 0.5356,
+          "recall": 0.9846,
+          "f1": 0.6938
+        },
+        "normal": {
+          "precision": 0.875,
+          "recall": 0.112,
+          "f1": 0.1986
+        },
+        "macro_f1": 0.4462,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 56,
+          "true_normal_pred_phishing": 444,
+          "true_phishing_pred_normal": 8,
+          "true_phishing_pred_phishing": 512
+        },
+        "false_positives": 444,
+        "false_negatives": 8
+      },
+      "by_group": {
+        "bình thường - an sinh xã hội (dịch máy)": {
+          "samples": 167,
+          "flagged_as_phishing": 160,
+          "label": "NORMAL"
+        },
+        "bình thường - hoàn tiền (dịch máy)": {
+          "samples": 171,
+          "flagged_as_phishing": 144,
+          "label": "NORMAL"
+        },
+        "bình thường - hỗ trợ kỹ thuật (dịch máy)": {
+          "samples": 162,
+          "flagged_as_phishing": 140,
+          "label": "NORMAL"
+        },
+        "lừa đảo - an sinh xã hội (dịch máy)": {
+          "samples": 168,
+          "flagged_as_phishing": 166,
+          "label": "PHISHING"
+        },
+        "lừa đảo - cuộc gọi thật tiếng Anh (dịch máy)": {
+          "samples": 20,
+          "flagged_as_phishing": 20,
+          "label": "PHISHING"
+        },
+        "lừa đảo - hoàn tiền (dịch máy)": {
+          "samples": 166,
+          "flagged_as_phishing": 161,
+          "label": "PHISHING"
+        },
+        "lừa đảo - hỗ trợ kỹ thuật (dịch máy)": {
+          "samples": 166,
+          "flagged_as_phishing": 165,
+          "label": "PHISHING"
+        }
+      }
+    }
+  }
+}

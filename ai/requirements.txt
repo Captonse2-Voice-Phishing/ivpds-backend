@@ -1,5 +1,7 @@
 fastapi==0.141.1
 uvicorn==0.53.0
+# WebSocket cho uvicorn; thiếu thư viện này thì /v1/live-sessions trả 404 dù route có tồn tại.
+websockets==15.0.1
 pydantic-settings==2.15.0
 # File uploads (multipart/form-data).
 python-multipart==0.0.32

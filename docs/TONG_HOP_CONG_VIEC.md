@@ -250,3 +250,170 @@ Tóm tắt: 5b giảm báo nhầm trên cuộc gọi tiếng Việt (14/101 xu�
 Bổ sung: đã train thêm 5c (loại, đã xóa) và 5d (`phobert-base-r5d`). Trên 199 cuộc gọi tiếng Việt: đợt 4 bắt 79/80 lừa đảo và báo nhầm 19/119; 5b bắt 72/80 và báo nhầm 7/119; 5d bắt 77/80 và báo nhầm 11/119. Chưa có bản nào vừa bắt đủ như đợt 4 vừa ít báo nhầm như 5b. Model đang chạy vẫn là `phobert-base-r4`.
 
 Quyết định: dùng `phobert-base-r5d`. AI service đã chuyển sang model này (370 test qua, sáu case bắt buộc đã thử qua API thật). Các ca model sót sẽ do Risk Engine ở Phase 10 bù bằng điểm của Rule Engine.
+
+## 9. Phase 10 — Risk Engine (09/10/2026)
+
+Risk Engine ghép kết quả của Rule Engine và NLP Model thành điểm rủi ro 0–100 và mức LOW / MEDIUM / HIGH.
+
+- Mã nguồn: `ai/app/risk.py` (công thức), `ai/app/api/v1/risk_assessments.py` (API), test ở `ai/tests/test_risk.py`.
+- API: `POST /v1/risk-assessments`, gửi `text` hoặc `turns`, trả `riskScore`, `riskLevel`, `confidence`, `indicators` theo contract trong README, kèm `components` để giải thích điểm. Thiếu NLP Model thì trả 503, không tính điểm chỉ từ luật.
+- Công thức (bản 2026.10.1): `điểm = min(100, 70 × xác suất model + Rule Score + Indicator Severity)`.
+  - Rule Score: mỗi dấu hiệu LOW 3, MEDIUM 8, HIGH 15 điểm; tổ hợp "giả danh + đòi hỏi" cộng 25; trần 35.
+  - Indicator Severity: theo dấu hiệu nặng nhất, LOW 3, MEDIUM 8, HIGH 20.
+  - Ngưỡng theo README: 0–29 LOW, 30–59 MEDIUM, 60–100 HIGH.
+- Hệ quả của công thức: model rất chắc chắn thì tự lên HIGH; Rule Engine một mình tối đa 55 điểm (MEDIUM); một dấu hiệu yếu đứng riêng vẫn là LOW.
+- Công cụ đo: `ai/tools/risk_signals_dump.py` (ghi tín hiệu), `ai/tools/risk_evaluate.py` (chấm, ghi `ai/training/reports/risk-engine.json`).
+
+Kết quả trên 199 cuộc gọi tiếng Việt (80 lừa đảo, 119 bình thường), "phát hiện" nghĩa là từ MEDIUM trở lên:
+
+| Cách làm | Lừa đảo bị sót | Bình thường bị báo |
+|---|---|---|
+| Chỉ Rule Engine | 20/80 | 6/119 |
+| Chỉ NLP Model (5d) | 3/80 | 11/119 |
+| Risk Engine | 1/80 | 14/119 (11 HIGH, 3 MEDIUM) |
+
+Trọng số được chọn trên tập validation; bảng trên là các bộ test. Các bộ test này đã được xem nhiều lần trong ngày nên con số có thể lạc quan.
+
+### Kiểm thử lớn sau Phase 10: 2.136 cuộc gọi mới (10/10/2026)
+
+Hai bộ test mới, không dùng để train và không dùng để chọn trọng số:
+
+- `ai/data/extra_tests/generated_test_calls.jsonl`: 1.336 cuộc tự viết (680 lừa đảo, 656 bình thường) từ 34 kịch bản có chủ đề không nằm trong dữ liệu train; sinh bằng `ai/tools/testset_generate_vi.py`.
+- `ai/data/extra_tests/translated_calls_rest.jsonl`: 800 cuộc (400 + 400) là phần còn lại của bộ công khai `shakeleoatmeal/phone-scam-detection-synthetic`, dịch máy sang tiếng Việt bằng `ai/tools/translated_calls_fetch.py rest`.
+
+Kết quả của Risk Engine ("phát hiện" = từ MEDIUM trở lên):
+
+| Bộ | Số cuộc | Đúng | Lừa đảo bị sót | Bình thường bị báo |
+|---|---|---|---|---|
+| Tự viết, tiếng Việt | 1.336 | 99,1% | 1/680 (0,1%) | 11/656 (1,7%) |
+| Dịch máy từ tiếng Anh | 800 | 62,5% | 19/400 (4,8%) | 281/400 (70,2%) |
+| Cả hai bộ mới | 2.136 | 85,4% | 20/1.080 (1,9%) | 292/1.056 (27,7%) |
+| Tất cả bộ test (cũ + mới) | 3.981 | 81,6% | 36/2.000 (1,8%) | 695/1.981 (35,1%) |
+
+Giới hạn: bộ tự viết gồm 40 biến thể cho mỗi kịch bản nên chỉ có 34 kịch bản độc lập, và do cùng người viết với dữ liệu train; bộ dịch máy là kịch bản kiểu Mỹ do máy sinh, bản dịch sai nghĩa nhiều chỗ. Số liệu chi tiết ở `ai/training/reports/risk-engine.json`.
+
+### Đợt huấn luyện 6 (10/10/2026): thêm cuộc gọi viết tay và kịch bản bổ sung
+
+Theo yêu cầu, dữ liệu cũ được giữ nguyên và thêm 427 cuộc gọi viết tay cùng 2.056 hội thoại từ 52 kịch bản mới; tổng 12.255 dòng train. Model `phobert-base-r6` đang chạy trong AI service. So với 5d trên các bộ cuộc gọi tiếng Việt còn độc lập: bắt lừa đảo 172/174 (5d: 169/174), báo nhầm 12/169 (5d: 14/169). Trên bộ dịch máy báo nhầm tăng từ 364 lên 444 trên 500. Chi tiết ở `ai/training/README.md`, mục "Đợt 6"; số liệu Risk Engine với model mới ở `ai/training/reports/risk-engine.json`.
+
+Bộ test `generated_test_calls` (1.336 cuộc) đã chuyển sang huấn luyện nên con số 99,1% báo trước đó không còn dùng để đánh giá model mới.
+
+## 10. Phase 11 — Spring Boot ↔ FastAPI (10/10/2026)
+
+Backend gọi AI service thật để phân tích cuộc gọi và lưu kết quả.
+
+- Mã nguồn: module `backend/src/main/java/com/ivpds/analysis/` (`AiClient`, `AnalysisProcessor`, `AnalysisService`, `AnalysisController`, các entity và repository), migration `V6__analysis_details.sql`.
+- Luồng xử lý: gửi cuộc gọi → backend tự tạo một lần phân tích (PENDING) → luồng nền lấy audio từ MinIO, gọi `POST /v1/transcriptions` rồi `POST /v1/risk-assessments` của AI service → lưu `transcripts`, `risk_results`, `risk_indicators` → COMPLETED. Client hỏi lại trạng thái.
+- API mới (cần đăng nhập, chỉ với cuộc gọi của mình):
+  - `POST /api/v1/calls/{callId}/analyses`: yêu cầu phân tích (hoặc phân tích lại), trả 202.
+  - `GET /api/v1/calls/{callId}/analyses/latest`: trạng thái và kết quả mới nhất (`transcript`, `riskScore`, `riskLevel`, `confidence`, `indicators` theo README).
+  - `GET /api/v1/calls/{callId}/analyses`: lịch sử các lần phân tích.
+- Xử lý lỗi: mọi lỗi của AI service làm lần phân tích FAILED kèm mã (`AI_SERVICE_UNAVAILABLE`, `AI_SERVICE_TIMEOUT`, `AI_SERVICE_ERROR`, `AI_SERVICE_AUTH_FAILED`, `AI_INVALID_RESPONSE`, hoặc mã của chính AI service như `STT_UNAVAILABLE`, `NLP_MODEL_UNAVAILABLE`, `INVALID_AUDIO`), cùng `NO_SPEECH_DETECTED`, `AUDIO_OBJECT_MISSING`, `ANALYSIS_INTERRUPTED`. Lần phân tích FAILED không bao giờ có điểm hay mức rủi ro.
+- Cấu hình: `AI_BASE_URL`, `AI_API_KEY`, `AI_TRANSCRIPTION_TIMEOUT`, `ANALYSIS_AUTO_START` (xem `.env.example`).
+- Test: backend 136 test qua (thêm 27). Thử thật qua Docker Compose: cuộc gọi lừa đảo thật 267 giây cho HIGH 97 sau 81 giây; giọng đọc máy nội dung bình thường cho LOW 16; âm thanh không có tiếng nói cho `NO_SPEECH_DETECTED`; tắt AI service cho `AI_SERVICE_UNAVAILABLE` trong khi backend vẫn healthy.
+
+## 11. Phase 11B — Phân tích cuộc gọi trực tiếp (10/10/2026, ngoài README)
+
+Thêm theo yêu cầu của người dùng và mentor: ứng dụng VoIP gửi âm thanh của cuộc gọi đang diễn ra và nhận cảnh báo ngay trong lúc gọi. Giao thức đầy đủ cho mobile: `docs/LIVE_CALL_API.md`.
+
+- AI service: WebSocket `/v1/live-sessions` (`ai/app/live.py`, `ai/app/api/v1/live_sessions.py`). Âm thanh PCM 16 kHz đi theo luồng, mỗi gói ghi rõ người nói; service cắt từng câu theo khoảng lặng, nhận dạng từng câu, chấm lại rủi ro của cả cuộc gọi sau mỗi câu bằng đúng Rule Engine, NLP Model và Risk Engine của phân tích file, và phát `alert` khi mức rủi ro tăng.
+- Backend: `POST /api/v1/live-calls` (mở cuộc gọi, phát vé dùng một lần) và WebSocket `/api/v1/live-calls/stream` (`LiveCallController`, `LiveCallSocketHandler`, `LiveCallRecorder`, `LiveCallTickets`). Backend chuyển tiếp âm thanh và sự kiện, lưu ghi âm WAV hai kênh vào MinIO và kết quả vào các bảng sẵn có; migration `V7` thêm nguồn cuộc gọi `LIVE`.
+- Công cụ thử khi chưa có ứng dụng: `ai/tools/live_call_demo.py`.
+- Test: AI service 430 test qua, backend 145 test qua.
+- Thử thật qua Docker Compose: phát 150 giây đầu của một cuộc gọi lừa đảo thật theo thời gian thực. Cảnh báo HIGH đến ở giây 37,5 (câu gây cảnh báo kết thúc ở giây 32,9 của cuộc gọi); độ trễ từ lúc nói xong tới lúc có chữ trung vị 4,6 giây, lớn nhất 7,3 giây; kết quả cuối HIGH 100, lưu COMPLETED kèm ghi âm 150 giây.
+- Hai lỗi tìm thấy nhờ lần thử thật và đã sửa: máy chủ uvicorn thiếu thư viện WebSocket (thêm `websockets` vào `requirements.txt` và một test canh); Whisper lặp vô tận trên một câu ngắn làm mất 65 giây (chế độ trực tiếp nay giải mã một lần và chặn độ dài kết quả).
+- Giới hạn: nhận dạng trên CPU chỉ phục vụ được khoảng 2 cuộc gọi cùng lúc; phần thiết lập cuộc gọi VoIP giữa hai máy chưa có (thuộc ứng dụng mobile); chưa thử với hai luồng tiếng thật tách riêng, mới thử ghi âm trộn một kênh.
+
+## 12. Phase 12 — History / Blacklist / Notification / Admin API (10/10/2026)
+
+API cho ứng dụng (cần đăng nhập, chỉ thấy dữ liệu của mình):
+
+| API | Dùng để |
+|---|---|
+| `GET /api/v1/history` | Lịch sử cuộc gọi kèm kết quả phân tích mới nhất; lọc theo `riskLevel`, `status`, `from`, `to`, `callerNumber`; phân trang |
+| `GET /api/v1/history/{callId}` | Chi tiết một cuộc gọi kèm transcript |
+| `DELETE /api/v1/calls/{id}` | Xóa cuộc gọi cùng audio và kết quả |
+| `GET /api/v1/blacklist/lookup?phoneNumber=` | Tra một số có trong danh sách đen không |
+| `GET /api/v1/notifications`, `/unread-count` | Danh sách thông báo, số chưa đọc |
+| `POST /api/v1/notifications/{id}/read`, `/read-all` | Đánh dấu đã đọc |
+
+Bật, tắt cảnh báo blacklist dùng `PATCH /api/v1/users/me` với `blacklistAlertEnabled` (có từ Phase 5).
+
+API quản trị (`/api/v1/admin/**`, chỉ ADMIN):
+
+| API | Dùng để |
+|---|---|
+| `GET /users`, `GET /users/{id}`, `PATCH /users/{id}/status` | Tìm, xem, khóa và mở khóa tài khoản |
+| `GET /calls`, `GET /calls/{callId}` | Cuộc gọi của mọi người dùng kèm kết quả; `riskLevel=HIGH` để theo dõi cuộc gọi rủi ro cao |
+| `GET/POST /blacklist`, `PATCH/DELETE /blacklist/{id}` | Quản lý danh sách đen |
+| `GET/POST /phishing-patterns`, `GET/PATCH/DELETE /phishing-patterns/{id}` | Quản lý mẫu lừa đảo |
+| `GET /statistics?days=30` | Số liệu dashboard và báo cáo theo ngày |
+
+Thông báo được tạo tự động khi: cuộc gọi phân tích xong ở mức HIGH (`HIGH_RISK_CALL`) hoặc MEDIUM (`SUSPICIOUS_CALL`), và khi có cuộc gọi (gửi file hoặc trực tiếp) từ số trong danh sách đen (`BLACKLISTED_CALLER`, trừ khi người dùng đã tắt cảnh báo).
+
+- Mã nguồn: các module `history/`, `blacklist/`, `notification/`, `phishingpattern/`, `admin/` trong `backend/src/main/java/com/ivpds/`; migration `V8`.
+- Test: backend 159 test qua (thêm 14). Thử thật qua Docker Compose với ghi âm cuộc gọi lừa đảo thật gửi từ một số trong danh sách đen: hai thông báo được tạo, lịch sử và thống kê quản trị hiện đúng, xóa cuộc gọi trả 204.
+- Giới hạn lúc đó (thông báo chưa có kênh đẩy; Rule Engine chưa đọc mẫu lừa đảo) đã được xử lý ở mục 13.
+
+Bổ sung sau Phase 12 (cùng ngày):
+
+- Báo cáo theo ngày chia ngày theo múi giờ `Asia/Ho_Chi_Minh` (cấu hình `REPORT_TIME_ZONE`, hoặc tham số `timeZone` của `GET /api/v1/admin/statistics`); trước đó tính theo UTC nên cuộc gọi buổi sáng ở Việt Nam bị xếp vào ngày hôm trước.
+- Tài khoản bị khóa bị chặn ngay ở request kế tiếp: access token chỉ được chấp nhận khi tài khoản còn hoạt động (một truy vấn nhỏ cho mỗi request có đăng nhập).
+- Thống kê có thêm `suspectedNumbers`: các số gọi đến có cuộc gọi mức HIGH mà chưa nằm trong danh sách đen, để quản trị viên xem xét. Đây là gợi ý, không phải kết luận.
+- Backend: 161 test qua.
+
+## 13. Bổ sung sau Phase 12 — báo cáo số lừa đảo, mẫu của quản trị viên, thông báo đẩy (10/10/2026)
+
+Ba phần này nằm ngoài danh sách chức năng của README và được làm theo yêu cầu. Thêm hai bảng (`blacklist_reports`, `push_devices`, migration `V9`).
+
+### 13.1 Người dùng báo cáo số lừa đảo, quản trị viên duyệt
+
+| API | Dùng để |
+|---|---|
+| `POST /api/v1/blacklist/reports` | Báo cáo một số. Gửi `phoneNumber`, hoặc `callId` của một cuộc gọi của mình (lấy số người gọi của cuộc gọi đó), kèm `reason` tùy chọn |
+| `GET /api/v1/blacklist/reports` | Các báo cáo của mình và trạng thái `PENDING` / `APPROVED` / `REJECTED` |
+| `GET /api/v1/admin/blacklist/reports?status=&query=` | Hàng chờ của quản trị viên; mỗi dòng có `reportsForNumber` (số người đã báo cáo số đó) và `blacklisted` |
+| `POST /api/v1/admin/blacklist/reports/{id}/approve` | Duyệt: đưa số vào danh sách đen (hoặc bật lại số đã gỡ) và duyệt luôn mọi báo cáo đang chờ về số đó. `reason` tùy chọn là lý do hiện cho người tra cứu; bỏ trống thì dùng lý do của báo cáo |
+| `POST /api/v1/admin/blacklist/reports/{id}/reject` | Từ chối một báo cáo; các báo cáo khác về số đó giữ nguyên |
+
+- Báo cáo không tự chặn số: phải có quản trị viên duyệt, để một người dùng không tự ý chặn số của người khác.
+- Mỗi người báo cáo một số một lần (kể cả sau khi bị từ chối); số đang bị chặn thì không nhận báo cáo; mỗi tài khoản có tối đa 20 báo cáo đang chờ.
+- Thống kê quản trị có thêm `blacklistReports` (số báo cáo theo trạng thái).
+
+### 13.2 Rule Engine dùng mẫu lừa đảo của quản trị viên
+
+- Ở mỗi lần phân tích (file và cuộc gọi trực tiếp), backend đọc các mẫu đang bật trong `phishing_patterns` và gửi kèm cho AI service (`customPatterns` của `/v1/risk-assessments` và `/v1/indicators`; tin nhắn `{"type":"start","customPatterns":[...]}` đầu phiên trực tiếp). AI service không lưu mẫu, nên thêm, sửa, tắt một mẫu có hiệu lực ngay ở lần phân tích kế tiếp.
+- Mỗi mẫu là một cụm từ khớp nguyên cụm, đúng ranh giới từ, không vượt qua dấu kết câu, bỏ qua khi đứng sau từ phủ định ("đừng ..."). Luật tạo từ mẫu có mã `CUSTOM-<id>`.
+- Mẫu chỉ khớp chữ, không hiểu ngữ cảnh như luật có sẵn, nên mức nghiêm trọng bị giới hạn ở MEDIUM: riêng các mẫu không thể đẩy một cuộc gọi lên HIGH.
+- Mẫu phải có ít nhất hai từ, dài tối đa 200 ký tự, và `indicatorCode` là một trong 14 mã Rule Engine nhận (mọi mã trừ `COORDINATED_CALLERS`). Sai thì API quản trị trả 400 `PATTERN_TOO_SHORT` hoặc `UNKNOWN_INDICATOR_CODE`. Mẫu cũ không hợp lệ bị bỏ qua kèm cảnh báo trong log.
+
+### 13.3 Thông báo đẩy (Expo Push Service)
+
+| API | Dùng để |
+|---|---|
+| `PUT /api/v1/notifications/devices` | Đăng ký thiết bị: `{"token": "ExponentPushToken[...]", "platform": "ANDROID" \| "IOS" \| "WEB"}`. Gọi sau mỗi lần đăng nhập và khi token đổi |
+| `GET /api/v1/notifications/devices` | Các thiết bị đã đăng ký của mình |
+| `DELETE /api/v1/notifications/devices?token=` | Gỡ thiết bị khi đăng xuất |
+
+- Mỗi thông báo vừa lưu được đẩy tới mọi thiết bị của người nhận, kèm `data` gồm `notificationId`, `type`, `callId`, `analysisId` để ứng dụng mở đúng màn hình.
+- Kênh đẩy **mặc định tắt** (`PUSH_ENABLED=false`). Bật lên thì tiêu đề và nội dung thông báo (có số điện thoại người gọi) được gửi tới Expo rồi Apple/Google để chuyển tới máy. `PUSH_ACCESS_TOKEN` chỉ cần khi dự án Expo bật enhanced push security.
+- Lỗi của kênh đẩy chỉ ghi log, không ảnh hưởng thông báo đã lưu hay kết quả phân tích. Token Expo báo `DeviceNotRegistered` bị xóa. Một token thuộc về người đăng nhập sau cùng trên thiết bị đó; mỗi người tối đa 10 thiết bị.
+
+### Kiểm thử
+
+- Backend: 182 test, qua hết (thêm 21). AI service: 455 test, qua hết (thêm 25).
+- Thử thật qua Docker Compose (backend + AI service thật):
+  - Mẫu của quản trị viên: một cuộc gọi bình thường được 16 điểm (LOW); bật một mẫu khớp transcript thì có thêm dấu hiệu của mẫu và lên 24 điểm (vẫn LOW); tắt mẫu thì trở lại đúng 16 điểm.
+  - Cuộc gọi trực tiếp (50 giây đầu của ghi âm lừa đảo thật) với mẫu "bộ công an": dấu hiệu của mẫu xuất hiện ngay ở câu chứa cụm đó.
+  - Báo cáo số: báo cáo từ một cuộc gọi, duyệt, số bị chặn, cuộc gọi kế tiếp từ số đó tạo cảnh báo.
+  - Thiết bị: đăng ký, liệt kê, gỡ.
+- **NOT VERIFIED:** việc một điện thoại thật nhận được thông báo đẩy. Test dùng máy chủ giả thay cho Expo, nên chỉ chứng minh backend gửi đúng nội dung và đọc đúng câu trả lời. Cần ứng dụng mobile (Phase 13) với dự án Expo thật để kiểm chứng.
+
+## 14. Kiểm tra lại toàn bộ và tài liệu API (10/10/2026)
+
+- Tài liệu API đầy đủ cho người viết mobile và trang quản trị: [API_BACKEND.md](API_BACKEND.md).
+- Chạy lại từ bản build sạch: backend 182 test qua, AI service 455 test qua.
+- Đi qua mọi API trong tài liệu trên hệ thống thật (Docker Compose, AI service thật, hai file ghi âm thật): 180 phép kiểm, qua hết. Ghi âm lừa đảo thật được mức HIGH (97 điểm), cuộc gọi bình thường mức LOW (16 điểm).
+- Sửa một lỗi hiển thị của Swagger: hai cặp request trùng tên (`RegisterRequest`, `UpdateRequest`) ghi đè lên nhau, làm Swagger hiện sai body của API đăng ký tài khoản. Bản thân API không sai.
+- Luồng quên mật khẩu không thử trên hệ thống thật vì `.env` đang gửi mail thật qua Gmail; luồng này có test tự động với Mailpit.
+

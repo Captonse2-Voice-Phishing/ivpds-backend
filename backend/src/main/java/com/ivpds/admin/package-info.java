@@ -1,2 +1,2 @@
-/** Quản trị: quản lý người dùng, theo dõi, báo cáo và thống kê. (Chưa triển khai.) */
+/** API riêng của quản trị viên: quản lý tài khoản, theo dõi các cuộc gọi đã phân tích, thống kê. */
 package com.ivpds.admin;

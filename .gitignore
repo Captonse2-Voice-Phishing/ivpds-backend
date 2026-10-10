@@ -29,3 +29,5 @@ ai/models/
 ai/training/reports/*/errors.jsonl
 ai/data/extra_tests/
 ai/training/reports/extra/*.errors.jsonl
+# Recorded Risk Engine inputs (rebuilt by tools/risk_signals_dump.py)
+ai/data/risk/

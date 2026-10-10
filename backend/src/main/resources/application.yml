@@ -77,6 +77,38 @@ ivpds:
     connect-timeout: ${STORAGE_CONNECT_TIMEOUT:3s}
     # Upper bound for one storage operation, retries included.
     request-timeout: ${STORAGE_REQUEST_TIMEOUT:60s}
+  ai:
+    # The FastAPI AI service (speech-to-text, rule engine, NLP model, risk engine).
+    base-url: ${AI_BASE_URL:http://localhost:8000}
+    api-key: ${AI_API_KEY}
+    connect-timeout: ${AI_CONNECT_TIMEOUT:3s}
+    # Whisper on CPU can take minutes for a long call.
+    transcription-timeout: ${AI_TRANSCRIPTION_TIMEOUT:10m}
+    risk-timeout: ${AI_RISK_TIMEOUT:60s}
+    # After a live call ends, how long to wait for the AI service's final result.
+    live-finish-timeout: ${AI_LIVE_FINISH_TIMEOUT:60s}
+  analysis:
+    # Start an analysis automatically when a call is uploaded.
+    auto-start: ${ANALYSIS_AUTO_START:true}
+    # Analyses processed at the same time; the AI service runs on CPU, so keep this small.
+    workers: ${ANALYSIS_WORKERS:2}
+    # Analyses allowed to wait for a free worker; beyond this, new requests are refused with 503.
+    queue-capacity: ${ANALYSIS_QUEUE_CAPACITY:50}
+  reports:
+    # Time zone used to split days in the admin statistics.
+    time-zone: ${REPORT_TIME_ZONE:Asia/Ho_Chi_Minh}
+  live:
+    # How long the one-time ticket returned by POST /api/v1/live-calls stays valid.
+    ticket-ttl: ${LIVE_TICKET_TTL:60s}
+  push:
+    # Push notifications through the Expo Push Service. Off by default: turning it on sends notification
+    # titles and messages to Expo (and on to Apple/Google) for delivery.
+    enabled: ${PUSH_ENABLED:false}
+    url: ${PUSH_URL:https://exp.host/--/api/v2/push/send}
+    # Only needed when the Expo project has enhanced push security switched on.
+    access-token: ${PUSH_ACCESS_TOKEN:}
+    connect-timeout: ${PUSH_CONNECT_TIMEOUT:3s}
+    request-timeout: ${PUSH_REQUEST_TIMEOUT:10s}
   mail:
     from: ${MAIL_FROM:no-reply@ivpds.local}
   bootstrap:

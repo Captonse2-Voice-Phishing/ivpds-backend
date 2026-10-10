@@ -1,17 +1,25 @@
 package com.ivpds.auth;
 
+import com.ivpds.user.UserRepository;
+import com.ivpds.user.UserStatus;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtValidators;
@@ -49,11 +57,19 @@ public class SecurityConfig {
     };
 
     /**
+     * Luồng WebSocket của cuộc gọi trực tiếp. Không dùng Bearer token ở đây: client lấy một vé dùng một lần qua
+     * {@code POST /api/v1/live-calls} (API đó cần đăng nhập) và backend kiểm tra vé khi bắt tay WebSocket.
+     */
+    private static final String LIVE_CALL_STREAM = "/api/v1/live-calls/stream";
+
+    /**
      * Quy tắc truy cập: nhóm công khai ai cũng gọi được, {@code /api/v1/admin/**} chỉ dành cho ADMIN,
-     * mọi API còn lại phải đăng nhập. Lỗi 401 và 403 do {@link SecurityErrorHandler} trả về.
+     * mọi API còn lại phải đăng nhập bằng token của một tài khoản đang hoạt động. Lỗi 401 và 403 do
+     * {@link SecurityErrorHandler} trả về.
      */
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityErrorHandler errors) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http, SecurityErrorHandler errors, UserRepository users)
+            throws Exception {
         http
                 // API dùng Bearer token, không dùng cookie hay session phía server, nên không cần chống CSRF.
                 .csrf(AbstractHttpConfigurer::disable)
@@ -61,10 +77,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_AUTH_ENDPOINTS).permitAll()
                         .requestMatchers(PUBLIC_INFRA_ENDPOINTS).permitAll()
+                        .requestMatchers(LIVE_CALL_STREAM).permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth -> oauth
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(activeAccountsOnly(users)))
                         .authenticationEntryPoint(errors)
                         .accessDeniedHandler(errors))
                 .exceptionHandling(e -> e.authenticationEntryPoint(errors).accessDeniedHandler(errors));
@@ -91,6 +108,27 @@ public class SecurityConfig {
                 .build();
         decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(properties.issuer()));
         return decoder;
+    }
+
+    /**
+     * Chấp nhận access token chỉ khi tài khoản của nó còn tồn tại và đang hoạt động. Access token tự nó không thu
+     * hồi được, nên nếu chỉ tin vào chữ ký thì một tài khoản vừa bị khóa vẫn dùng tiếp được tới khi token hết hạn.
+     * Đổi lại là một truy vấn nhỏ vào database cho mỗi request có đăng nhập.
+     */
+    private static Converter<Jwt, AbstractAuthenticationToken> activeAccountsOnly(UserRepository users) {
+        JwtAuthenticationConverter converter = jwtAuthenticationConverter();
+        return jwt -> {
+            UUID userId;
+            try {
+                userId = UUID.fromString(jwt.getSubject());
+            } catch (RuntimeException e) {
+                throw new BadCredentialsException("The token has no valid subject.");
+            }
+            if (!users.existsByIdAndStatus(userId, UserStatus.ACTIVE)) {
+                throw new DisabledException("The account is locked or no longer exists.");
+            }
+            return converter.convert(jwt);
+        };
     }
 
     /** Chuyển claim {@code roles} trong token thành quyền của Spring Security (USER thành ROLE_USER). */

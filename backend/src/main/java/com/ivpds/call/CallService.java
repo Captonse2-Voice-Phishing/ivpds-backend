@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -45,13 +46,15 @@ public class CallService {
     private final AudioFileRepository audioFiles;
     private final AudioStorage storage;
     private final TransactionTemplate transaction;
+    private final ApplicationEventPublisher events;
 
     public CallService(CallRecordRepository calls, AudioFileRepository audioFiles, AudioStorage storage,
-            PlatformTransactionManager transactionManager) {
+            PlatformTransactionManager transactionManager, ApplicationEventPublisher events) {
         this.calls = calls;
         this.audioFiles = audioFiles;
         this.storage = storage;
         this.transaction = new TransactionTemplate(transactionManager);
+        this.events = events;
     }
 
     /**
@@ -60,11 +63,19 @@ public class CallService {
      *
      * <p>Kho lưu trữ và database không dùng chung transaction được, nên nếu bước ghi database thất
      * bại thì object vừa tải lên sẽ bị xóa lại, tránh để lại file không ai tham chiếu.
+     *
+     * <p>Sau khi lưu xong, phát sự kiện {@link CallCreatedEvent}; module phân tích nghe sự kiện này để tự bắt
+     * đầu phân tích. Module cuộc gọi không gọi trực tiếp sang module phân tích.
      */
     public CallResponse create(UUID userId, MultipartFile file, String callerNumber, Instant calledAt,
             CallSource source) {
         if (file == null || file.isEmpty()) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "EMPTY_AUDIO", "The audio file is empty.");
+        }
+        if (source == CallSource.LIVE) {
+            // Cuộc gọi trực tiếp do backend tự tạo khi mở phiên; không ai được gửi file với nguồn này.
+            throw new ApiException(HttpStatus.BAD_REQUEST, "INVALID_CALL_SOURCE",
+                    "source must be RECORDED or UPLOADED.");
         }
         String normalizedCaller = normalizeCaller(callerNumber);
         Inspection inspection = inspect(file);
@@ -74,8 +85,9 @@ public class CallService {
         String key = "calls/%s/%s.%s".formatted(userId, UUID.randomUUID(), format.extension());
         storage.put(key, file, file.getSize(), format.contentType());
 
+        CallResponse created;
         try {
-            return transaction.execute(status -> {
+            created = transaction.execute(status -> {
                 CallRecord call = calls.save(new CallRecord(userId, normalizedCaller, calledAt, source));
                 AudioFile audio = audioFiles.save(new AudioFile(call.getId(), storage.bucket(), key,
                         cleanFilename(file.getOriginalFilename()), format.contentType(), file.getSize(),
@@ -87,6 +99,9 @@ public class CallService {
             storage.deleteQuietly(key);
             throw e;
         }
+        // Báo cho các module khác (phân tích) sau khi transaction đã commit, để họ đọc được cuộc gọi vừa lưu.
+        events.publishEvent(new CallCreatedEvent(created.id(), userId, normalizedCaller, source));
+        return created;
     }
 
     /**
@@ -127,6 +142,27 @@ public class CallService {
                     "The audio file of this call is no longer available.");
         });
         return new AudioDownload(content, audio.getContentType(), audio.getSizeBytes(), audio.getOriginalFilename());
+    }
+
+    /**
+     * Xóa một cuộc gọi của chính người dùng cùng mọi dữ liệu của nó: transcript, kết quả phân tích (database tự
+     * xóa theo khóa ngoại) và file audio trong kho lưu trữ. Không xóa được khi cuộc gọi đang được phân tích.
+     */
+    public void delete(UUID userId, UUID callId) {
+        String objectKey = transaction.execute(status -> {
+            CallRecord call = ownedCall(userId, callId);
+            if (calls.hasUnfinishedAnalysis(callId)) {
+                throw new ApiException(HttpStatus.CONFLICT, "ANALYSIS_IN_PROGRESS",
+                        "This call is being analysed and cannot be deleted yet.");
+            }
+            String key = audioFiles.findByCallRecordId(callId).map(AudioFile::getObjectKey).orElse(null);
+            calls.delete(call);
+            return key;
+        });
+        // Xóa object sau khi database đã commit: nếu bước này lỗi thì chỉ còn một file không ai tham chiếu.
+        if (objectKey != null) {
+            storage.deleteQuietly(objectKey);
+        }
     }
 
     /** Nội dung audio kèm thông tin cần thiết để trả về cho client. */

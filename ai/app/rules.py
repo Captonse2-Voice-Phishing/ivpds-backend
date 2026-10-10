@@ -14,7 +14,7 @@ loại trừ. Rule Engine chỉ báo dấu hiệu; việc kết luận mức r�
 
 import re
 import unicodedata
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 
@@ -1027,30 +1027,65 @@ def _escalate(hits: _Hits) -> None:
                  "RA-10")
 
 
+# Mẫu do quản trị viên thêm luôn ở mức MEDIUM: đủ để góp điểm cùng các dấu hiệu khác, nhưng một mẫu nhập ẩu
+# không thể tự đưa một cuộc gọi lên mức rủi ro cao.
+CUSTOM_RULE_SEVERITY = Severity.MEDIUM
+CUSTOM_RULE_PREFIX = "CUSTOM-"
+_MIN_CUSTOM_WORDS = 2
+_WORD = re.compile(r"\w+")
+
+
+def custom_rule(pattern_id: str, indicator: Indicator, phrase: str) -> Rule:
+    """Tạo một luật từ một cụm từ do quản trị viên nhập (bảng ``phishing_patterns`` của backend).
+
+    Cụm từ được chuẩn hóa như transcript (chữ thường, bỏ dấu câu) rồi khớp nguyên cụm, đúng ranh giới từ. Lần
+    khớp nằm sau từ phủ định ("đừng đọc mã otp cho ai") bị bỏ qua, như với các luật có sẵn. Khác với luật có sẵn,
+    luật này không hiểu ngữ cảnh nào khác (ai nói, câu hỏi hay lời kể lại), nên mức nghiêm trọng của nó bị giới
+    hạn ở ``CUSTOM_RULE_SEVERITY``.
+
+    :raises ValueError: nếu cụm từ có ít hơn hai từ (một từ đơn lẻ khớp quá nhiều câu bình thường), hoặc dấu
+        hiệu là ``COORDINATED_CALLERS`` (dấu hiệu đó suy ra từ số người nói, không từ câu chữ)
+    """
+    if indicator == Indicator.COORDINATED_CALLERS:
+        raise ValueError("COORDINATED_CALLERS cannot be used for a custom pattern")
+    # Đếm từ trên cụm đúng như người quản trị gõ (chuỗi chữ, số liền nhau), trước mọi bước sửa lỗi nhận dạng. Backend
+    # đếm theo đúng cách này khi nhận mẫu, nên một mẫu backend đã nhận thì không bị từ chối ở đây.
+    if len(_WORD.findall(unicodedata.normalize("NFC", phrase))) < _MIN_CUSTOM_WORDS:
+        raise ValueError(f"a custom pattern needs at least {_MIN_CUSTOM_WORDS} words")
+    words = [word for word in normalize(phrase).split() if set(word) != {"|"}]
+    return Rule(
+        rule_id=f"{CUSTOM_RULE_PREFIX}{pattern_id}", indicator=indicator, severity=CUSTOM_RULE_SEVERITY,
+        pattern=re.compile(r"(?<!\S)" + re.escape(" ".join(words)) + r"(?!\S)"), exclusions=(_negated,),
+    )
+
+
 class RuleEngine:
     """Chạy toàn bộ bộ luật trên một transcript hoặc một hội thoại có phân biệt người nói."""
 
     version = RULESET_VERSION
 
-    def analyze(self, text: str) -> list[IndicatorMatch]:
+    def analyze(self, text: str, extra_rules: Sequence[Rule] = ()) -> list[IndicatorMatch]:
         """Trả về các dấu hiệu tìm thấy, mỗi dấu hiệu một mục, theo thứ tự cố định của ``Indicator``.
 
         Nếu văn bản có nhãn người nói ("A: ... B: ...") thì nó được phân tích như một hội thoại. Mức
         nghiêm trọng của một dấu hiệu là mức cao nhất trong các luật đã khớp. Văn bản rỗng hoặc không
         có dấu hiệu nào cho danh sách rỗng.
-        """
-        return self.analyze_text(text).indicators
 
-    def analyze_text(self, text: str) -> ConversationAnalysis:
+        ``extra_rules`` là các luật bổ sung cho riêng lần gọi này (mẫu do quản trị viên quản lý, tạo bằng
+        ``custom_rule``); chúng được chạy cùng bộ luật có sẵn và ghi mã luật dạng ``CUSTOM-...``.
+        """
+        return self.analyze_text(text, extra_rules).indicators
+
+    def analyze_text(self, text: str, extra_rules: Sequence[Rule] = ()) -> ConversationAnalysis:
         """Như ``analyze`` nhưng trả thêm phần tổng hợp theo từng người nói khi văn bản có nhãn người nói."""
         turns = parse_turns(text)
         if turns is not None:
-            return self.analyze_conversation(turns)
-        hits = self._scan(text)
+            return self.analyze_conversation(turns, extra_rules)
+        hits = self._scan(text, extra_rules)
         _escalate(hits)
         return ConversationAnalysis(indicators=hits.matches(), speakers=[])
 
-    def analyze_conversation(self, turns: list[Turn]) -> ConversationAnalysis:
+    def analyze_conversation(self, turns: list[Turn], extra_rules: Sequence[Rule] = ()) -> ConversationAnalysis:
         """Phân tích hội thoại theo từng lượt lời, dùng được cho hai người hoặc nhiều người nói.
 
         Mỗi lượt lời được xét riêng, nên lời của người này không bị ghép với lời của người khác thành
@@ -1061,7 +1096,7 @@ class RuleEngine:
         by_speaker: dict[str, _Hits] = {}
         turn_counts: dict[str, int] = {}
         for turn in turns:
-            by_speaker.setdefault(turn.speaker, _Hits()).merge(self._scan(turn.text))
+            by_speaker.setdefault(turn.speaker, _Hits()).merge(self._scan(turn.text, extra_rules))
             turn_counts[turn.speaker] = turn_counts.get(turn.speaker, 0) + 1
 
         # Người chỉ hỏi số tài khoản, trong khi người khác là bên đòi tiền, chính là người sắp trả tiền:
@@ -1094,11 +1129,11 @@ class RuleEngine:
         return ConversationAnalysis(indicators=total.matches(), speakers=speakers)
 
     @staticmethod
-    def _scan(text: str) -> _Hits:
+    def _scan(text: str, extra_rules: Sequence[Rule] = ()) -> _Hits:
         """Chạy mọi luật trên một đoạn văn bản của một người nói (hoặc transcript không rõ người nói)."""
         normalized = normalize(text)
         hits = _Hits()
-        for rule in RULES:
+        for rule in (*RULES, *extra_rules):
             for match in rule.pattern.finditer(normalized):
                 if any(excluded(normalized, match) for excluded in rule.exclusions):
                     continue

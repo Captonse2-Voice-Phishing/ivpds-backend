@@ -32,8 +32,8 @@ def test_info_reports_the_real_state_of_each_component(client, auth):
         "ruleEngine": "READY",
         # Implemented, but this client has no fine-tuned artifact to load.
         "nlpModel": "UNAVAILABLE",
-        # Not built yet, and the service must say so.
-        "riskEngine": "NOT_IMPLEMENTED",
+        # Needs the NLP model, so it is unavailable for the same reason.
+        "riskEngine": "UNAVAILABLE",
     }
     assert body["nlpModel"] is None
 

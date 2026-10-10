@@ -114,6 +114,12 @@ public class User {
         this.blacklistAlertEnabled = enabled;
     }
 
+    /** Đổi trạng thái tài khoản (khóa hoặc mở khóa); chỉ quản trị viên được làm việc này. */
+    public void changeStatus(UserStatus status) {
+        this.status = status;
+        this.updatedAt = Instant.now();
+    }
+
     /** Tài khoản có đang hoạt động (không bị khóa) hay không. */
     public boolean isActive() {
         return status == UserStatus.ACTIVE;

@@ -3,3 +3,10 @@ ivpds:
   security:
     jwt:
       secret: test-only-jwt-secret-0123456789-abcdefghijklmnopqrstuvwxyz
+  ai:
+    # Nothing listens here; tests that need the AI service start their own stub and override this.
+    base-url: http://127.0.0.1:9
+    api-key: test-ai-api-key-0123456789
+  analysis:
+    # Tests of other modules must not start analyses in the background.
+    auto-start: false

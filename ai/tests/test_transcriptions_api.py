@@ -244,6 +244,6 @@ def test_info_reports_ready_components_once_the_model_is_loaded(auth, whisper):
         "ruleEngine": "READY",
         # No fine-tuned artifact is given to this client.
         "nlpModel": "UNAVAILABLE",
-        "riskEngine": "NOT_IMPLEMENTED",
+        "riskEngine": "UNAVAILABLE",
     }
     assert body["sttModel"] == expected_model_name()

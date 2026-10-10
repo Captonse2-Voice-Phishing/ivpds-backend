@@ -102,6 +102,37 @@ class ConversationTurn(ApiModel):
     text: str = Field(max_length=20_000)
 
 
+class CustomPattern(ApiModel):
+    """Một mẫu lừa đảo do quản trị viên quản lý, gửi kèm yêu cầu để Rule Engine dùng thêm cho lần phân tích đó.
+
+    AI service không lưu các mẫu này: backend gửi danh sách đang bật trong mỗi yêu cầu, nên sửa mẫu ở trang quản
+    trị là có hiệu lực ngay ở lần phân tích kế tiếp.
+    """
+
+    # Mã định danh của mẫu ở backend; xuất hiện trong ``ruleIds`` của kết quả dưới dạng ``CUSTOM-<id>``.
+    id: str = Field(min_length=1, max_length=64, pattern=r"^[A-Za-z0-9-]+$")
+    # Dấu hiệu mà mẫu này báo; phải là một mã Rule Engine biết.
+    indicator_code: str
+    # Cụm từ cần khớp, ít nhất hai từ.
+    phrase: str = Field(min_length=3, max_length=200)
+
+    @model_validator(mode="after")
+    def _must_compile(self) -> "CustomPattern":
+        """Từ chối ngay mẫu không dùng được, để lỗi cấu hình không bị bỏ qua trong im lặng."""
+        self.to_rule()
+        return self
+
+    def to_rule(self):
+        """Chuyển thành luật của Rule Engine."""
+        from app.rules import Indicator, custom_rule
+
+        try:
+            indicator = Indicator(self.indicator_code)
+        except ValueError:
+            raise ValueError(f"unknown indicator code {self.indicator_code!r}") from None
+        return custom_rule(self.id, indicator, self.phrase)
+
+
 class IndicatorRequest(ApiModel):
     """Nội dung cần tìm dấu hiệu lừa đảo. Gửi đúng một trong hai trường ``text`` hoặc ``turns``.
 
@@ -111,6 +142,12 @@ class IndicatorRequest(ApiModel):
 
     text: str | None = Field(default=None, max_length=_MAX_TEXT_LENGTH)
     turns: list[ConversationTurn] | None = Field(default=None, min_length=1, max_length=2_000)
+    # Các mẫu bổ sung do quản trị viên quản lý; bỏ trống thì chỉ dùng bộ luật có sẵn.
+    custom_patterns: list[CustomPattern] | None = Field(default=None, max_length=500)
+
+    def extra_rules(self) -> list:
+        """Các luật bổ sung của yêu cầu này."""
+        return [pattern.to_rule() for pattern in self.custom_patterns or []]
 
     @model_validator(mode="after")
     def _exactly_one_input(self) -> "IndicatorRequest":
@@ -155,6 +192,43 @@ class IndicatorResponse(ApiModel):
     # Theo thứ tự xuất hiện; rỗng khi không biết ai nói câu nào (transcript liền không có nhãn người nói).
     speakers: list[SpeakerResult]
     speaker_count: int
+
+
+class RiskAssessmentRequest(IndicatorRequest):
+    """Nội dung cuộc gọi cần đánh giá rủi ro. Giống ``IndicatorRequest``: gửi ``text`` hoặc ``turns``."""
+
+
+class RiskComponents(ApiModel):
+    """Ba thành phần cộng lại thành điểm rủi ro, để giải thích được vì sao điểm cao hay thấp."""
+
+    # Xác suất lừa đảo do NLP Model tính (0 đến 1), và số điểm nó đóng góp.
+    model_probability: float
+    model_points: float
+    # Điểm theo số lượng và loại dấu hiệu Rule Engine tìm thấy.
+    rule_score: float
+    # Mức nghiêm trọng cao nhất trong các dấu hiệu (None nếu không có dấu hiệu), và số điểm nó đóng góp.
+    highest_severity: str | None
+    severity_points: float
+
+
+class RiskAssessmentResponse(ApiModel):
+    """Kết quả của Risk Engine. Ba trường đầu và ``indicators`` theo đúng API contract trong README."""
+
+    # Điểm rủi ro cuối cùng, từ 0 đến 100.
+    risk_score: int
+    # LOW (0-29), MEDIUM (30-59) hoặc HIGH (60-100).
+    risk_level: str
+    # Mức chắc chắn của kết quả (0 đến 1): cao khi model dứt khoát và Rule Engine không nói ngược lại.
+    # Đây không phải xác suất lừa đảo.
+    confidence: float
+    # Mã các dấu hiệu Rule Engine tìm thấy.
+    indicators: list[str]
+    # Chi tiết từng dấu hiệu (mức nghiêm trọng, bằng chứng, luật đã khớp).
+    indicator_details: list[IndicatorResult]
+    components: RiskComponents
+    model_version: str
+    ruleset_version: str
+    risk_engine_version: str
 
 
 class AudioMetadata(ApiModel):

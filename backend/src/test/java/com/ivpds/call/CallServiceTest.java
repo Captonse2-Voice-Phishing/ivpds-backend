@@ -46,7 +46,7 @@ class CallServiceTest {
         transactionManager = mock(PlatformTransactionManager.class);
         when(transactionManager.getTransaction(any())).thenReturn(mock(TransactionStatus.class));
         when(storage.bucket()).thenReturn("ivpds-audio");
-        service = new CallService(calls, audioFiles, storage, transactionManager);
+        service = new CallService(calls, audioFiles, storage, transactionManager, event -> { });
     }
 
     @Test
