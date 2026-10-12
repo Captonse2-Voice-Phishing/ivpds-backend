@@ -417,3 +417,13 @@ Ba phần này nằm ngoài danh sách chức năng của README và được l�
 - Sửa một lỗi hiển thị của Swagger: hai cặp request trùng tên (`RegisterRequest`, `UpdateRequest`) ghi đè lên nhau, làm Swagger hiện sai body của API đăng ký tài khoản. Bản thân API không sai.
 - Luồng quên mật khẩu không thử trên hệ thống thật vì `.env` đang gửi mail thật qua Gmail; luồng này có test tự động với Mailpit.
 
+## 15. Báo nhầm với đoạn ghi âm ngắn một người nói (12/10/2026)
+
+Phản hồi từ phiên làm ứng dụng mobile: đoạn ghi âm khoảng 10 giây chỉ có lời người gọi nhờ đặt cọc, nhắc đóng phí... bị chấm mức cao. Kiểm tra lại thì đúng với một phần các đoạn như vậy; cùng nội dung ở dạng hội thoại hai bên thì không bị.
+
+- **Chốt chặn ở Risk Engine (bản 2026.10.2, đã triển khai).** Với nội dung dưới 45 từ, riêng NLP Model không đủ để lên HIGH; phải có Rule Engine thấy một dấu hiệu mức HIGH hoặc ít nhất hai dấu hiệu, nếu không thì dừng ở MEDIUM (59 điểm). Chốt này chỉ hạ HIGH xuống MEDIUM, không hạ xuống LOW. Kết quả API có thêm `components.shortTextCapped`. Áp dụng cả cho cuộc gọi trực tiếp: vài câu đầu chưa đủ để báo mức cao trừ khi có dấu hiệu rõ.
+- **Huấn luyện đợt 7 và 7b: không triển khai.** Thêm đoạn ngắn bình thường làm model sót cuộc gọi lừa đảo thật (đợt 7: 4/16; đợt 7b: 1/16; đợt 6 đang dùng: 0/16). Chi tiết và bảng so sánh ở `ai/training/README.md`.
+- Bộ test mới `short_monologues` (59 đoạn viết tay, chỉ để test). Với model đang dùng: trước khi sửa 13/36 đoạn bình thường bị HIGH; sau khi có chốt chặn 0 đoạn HIGH, 14 đoạn MEDIUM, 22 đoạn LOW; 23/23 đoạn lừa đảo vẫn được phát hiện (20 HIGH, 3 MEDIUM).
+- Cái giá của chốt chặn: trên năm bộ cuộc gọi tiếng Việt, 7/80 cuộc lừa đảo chuyển từ HIGH sang MEDIUM (vẫn được cảnh báo "đáng ngờ"); số ca sót không đổi (1).
+- **KNOWN BUG còn lại:** 14/36 đoạn ngắn bình thường vẫn bị báo "đáng ngờ".
+

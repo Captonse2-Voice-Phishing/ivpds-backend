@@ -52,7 +52,7 @@ def main() -> int:
     rows = [json.loads(line) for line in SIGNALS.read_text(encoding="utf-8").splitlines() if line.strip()]
     for row in rows:
         matches = [IndicatorMatch(Indicator(code), Severity(severity), [], []) for code, severity in row["indicators"]]
-        result = assess(matches, row["probability"])
+        result = assess(matches, row["probability"], words=row["words"])
         row["level"], row["score"] = result.risk_level.value, result.risk_score
 
     groups: dict[str, list[dict]] = {}

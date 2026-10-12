@@ -14,8 +14,8 @@ from fastapi.testclient import TestClient
 
 from app.main import create_app
 from app.nlp import CONFIG_FILE, LABELS, Prediction
-from app.risk import (HIGH_THRESHOLD, MEDIUM_THRESHOLD, MODEL_WEIGHT, RISK_ENGINE_VERSION, RiskLevel, assess,
-                      level_of)
+from app.risk import (HIGH_THRESHOLD, MEDIUM_THRESHOLD, MODEL_WEIGHT, RISK_ENGINE_VERSION, SHORT_TEXT_WORDS,
+                      RiskLevel, assess, level_of)
 from app.rules import Indicator, IndicatorMatch, Severity
 
 URL = "/v1/risk-assessments"
@@ -133,6 +133,59 @@ def test_confidence_is_not_the_model_probability_and_reflects_agreement():
         assert 0.0 <= result.confidence <= 1.0
 
 
+# ---------------------------------------------------------------------------- short-clip guard
+
+
+def test_on_a_short_clip_the_model_alone_stops_at_medium():
+    # "Please transfer a deposit so we hold your room": ten seconds of one voice cannot tell a hotel from a scam.
+    short = assess([], 1.0, words=30)
+
+    assert short.risk_level == RiskLevel.MEDIUM
+    assert short.risk_score == HIGH_THRESHOLD - 1
+    assert short.short_text_capped is True
+    # The components still say what the model thought; only the final score is held back.
+    assert short.model_points == MODEL_WEIGHT
+    # A held-back result cannot claim to be certain.
+    assert short.confidence <= 0.5
+
+
+def test_one_medium_indicator_is_not_enough_to_lift_the_guard():
+    # A bare "transfer the money" is said by landlords and hotels every day.
+    result = assess(found(Severity.MEDIUM), 1.0, words=30)
+
+    assert result.risk_level == RiskLevel.MEDIUM and result.short_text_capped
+
+
+def test_strong_or_repeated_indicators_lift_the_guard_on_a_short_clip():
+    # README case D is short too: "read me the OTP" from a "bank" must stay HIGH.
+    for indicators in (found(Severity.HIGH), found(Severity.MEDIUM, Severity.LOW),
+                       found(Severity.MEDIUM, Severity.MEDIUM)):
+        result = assess(indicators, 1.0, words=12)
+        assert result.risk_level == RiskLevel.HIGH, indicators
+        assert result.short_text_capped is False
+    bank_asks_otp = [IndicatorMatch(Indicator.BANK_IMPERSONATION, Severity.LOW, [], []),
+                     IndicatorMatch(Indicator.OTP_REQUEST, Severity.HIGH, [], [])]
+    assert assess(bank_asks_otp, 0.9, words=12).risk_level == RiskLevel.HIGH
+
+
+def test_the_guard_only_applies_below_the_length_limit_and_only_when_told_the_length():
+    assert assess([], 1.0, words=SHORT_TEXT_WORDS - 1).risk_level == RiskLevel.MEDIUM
+    assert assess([], 1.0, words=SHORT_TEXT_WORDS).risk_level == RiskLevel.HIGH
+    assert assess([], 1.0, words=2_000).risk_level == RiskLevel.HIGH
+    assert assess([], 1.0).risk_level == RiskLevel.HIGH
+    assert assess([], 1.0, words=SHORT_TEXT_WORDS).short_text_capped is False
+
+
+def test_the_guard_never_lowers_a_result_below_medium_and_never_touches_lower_scores():
+    for probability in (0.0, 0.2, 0.45, 0.6, 0.85):
+        for indicators in ([], found(Severity.LOW), found(Severity.MEDIUM)):
+            with_guard, without = assess(indicators, probability, words=10), assess(indicators, probability)
+            if without.risk_level != RiskLevel.HIGH:
+                assert with_guard == without
+            else:
+                assert with_guard.risk_level == RiskLevel.MEDIUM
+
+
 def test_a_probability_outside_0_to_1_is_rejected():
     for value in (-0.01, 1.01, float("nan")):
         with pytest.raises(ValueError):
@@ -196,7 +249,8 @@ def test_response_follows_the_readme_contract_in_camel_case(auth):
     assert "OTP_REQUEST" in body["indicators"] and "BANK_IMPERSONATION" in body["indicators"]
     assert [detail["code"] for detail in body["indicatorDetails"]] == body["indicators"]
     assert set(body["components"]) == {"modelProbability", "modelPoints", "ruleScore", "highestSeverity",
-                                       "severityPoints"}
+                                       "severityPoints", "shortTextCapped"}
+    assert body["components"]["shortTextCapped"] is False
     assert body["components"]["modelProbability"] == 0.98
     assert body["modelVersion"] == "test-version"
     assert body["riskEngineVersion"] == RISK_ENGINE_VERSION
@@ -209,6 +263,18 @@ def test_score_in_the_response_is_the_sum_of_the_reported_components(auth):
 
     parts = body["components"]
     assert body["riskScore"] == min(100, round(parts["modelPoints"] + parts["ruleScore"] + parts["severityPoints"]))
+
+
+def test_the_api_holds_a_short_clip_at_medium_and_says_so(auth):
+    client, _ = client_with(1.0)
+
+    short = client.post(URL, headers=auth, json={"text": "Anh ghé cửa hàng lấy cái tủ lạnh hôm nay nhé."}).json()
+    longer = client.post(URL, headers=auth, json={"text": "Anh ghé cửa hàng lấy cái tủ lạnh hôm nay nhé. " * 6}).json()
+
+    assert (short["riskLevel"], short["riskScore"]) == ("MEDIUM", HIGH_THRESHOLD - 1)
+    assert short["components"]["shortTextCapped"] is True
+    assert short["components"]["modelPoints"] == MODEL_WEIGHT
+    assert longer["riskLevel"] == "HIGH" and longer["components"]["shortTextCapped"] is False
 
 
 def test_text_without_any_signal_is_low_with_an_empty_indicator_list(auth):
@@ -321,3 +387,29 @@ def test_reported_scam_wording_in_a_family_call_is_not_high(real_client, auth):
                 "Dạ không, con tắt máy rồi chặn số luôn. Giỏi, nhớ đừng đọc mã OTP cho ai nhé con.")
 
     assert body["riskLevel"] != "HIGH"
+
+
+@needs_artifact
+@pytest.mark.parametrize("text", [
+    "Dạ em chào anh, em gọi từ khách sạn Hoa Mai ạ. Anh đặt phòng ngày hai mươi tháng này, anh vui lòng chuyển khoản "
+    "đặt cọc năm trăm nghìn để bên em giữ phòng cho anh nhé.",
+    "Chào chị, em bên cửa hàng điện máy. Cái tủ lạnh chị hỏi hôm qua còn đúng một cái, chị đặt cọc trước ba trăm "
+    "nghìn thì em giữ hàng cho chị đến cuối tuần.",
+    "Chào phụ huynh, em là giáo vụ của trường. Em xin nhắc gia đình đóng học phí học kỳ một cho cháu trong tuần này "
+    "ạ, hạn cuối là thứ sáu.",
+])
+def test_a_short_one_sided_payment_request_from_daily_life_is_not_high(real_client, auth, text):
+    # Reported from the mobile app on 2026-10-12: clips with only the caller's voice were rated HIGH.
+    assert risk(real_client, auth, text)["riskLevel"] != "HIGH"
+
+
+@needs_artifact
+@pytest.mark.parametrize("text", [
+    "Em gọi từ ngân hàng, tài khoản của anh vừa có giao dịch lạ. Anh đọc giúp em mã OTP vừa gửi về máy để em hủy "
+    "giao dịch ngay.",
+    "Tôi gọi từ cơ quan điều tra, anh đang liên quan một đường dây rửa tiền. Anh chuyển toàn bộ tiền sang tài khoản "
+    "tạm giữ ngay bây giờ và không được nói với ai.",
+])
+def test_a_short_one_sided_scam_is_still_flagged(real_client, auth, text):
+    assert risk(real_client, auth, text)["riskLevel"] in ("MEDIUM", "HIGH")
+

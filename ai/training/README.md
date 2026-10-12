@@ -320,3 +320,39 @@ Giữ toàn bộ dữ liệu của 5d và thêm hai nguồn theo yêu cầu củ
 Sáu case bắt buộc qua API thật: A, B, F là LOW; C, D, E là HIGH (Case C nay model tự cho PHISHING). `pytest` với model này: 397 passed.
 
 Điểm kém hơn 5d: báo nhầm trên bộ dịch máy tăng (364 → 444 trên 500) và có 3 câu ngắn bình thường bị báo nhầm. Kho `hoangvt2501/data_scam` không có giấy phép nên không đưa vào huấn luyện; chỉ dùng 38 hội thoại `gendata` để test.
+
+### Đợt 7 và 7b (12/10/2026): đoạn ngắn một người nói — KHÔNG triển khai, vẫn dùng `phobert-base-r6`
+
+**Vấn đề.** Phản hồi từ ứng dụng mobile: một đoạn ghi âm khoảng 10 giây chỉ có lời người gọi ("anh chuyển khoản đặt cọc để em giữ phòng") bị báo mức cao. Đo lại bằng bộ test mới `data/extra_tests/short_monologues.jsonl` (`tools/short_monologues_build.py`: 59 đoạn viết tay, 36 bình thường và 23 lừa đảo, chỉ để test): `phobert-base-r6` cho xác suất lừa đảo trên 0,5 với 13/36 đoạn bình thường. Cùng nội dung, khi có người nghe đáp lại thành hội thoại, model cho xác suất gần 0. Nguyên nhân nhiều khả năng: từ đợt 5b, mọi đoạn ngắn một chiều có nhắc tới tiền trong dữ liệu huấn luyện đều là lừa đảo.
+
+**Dữ liệu thêm.** `tools/dataset_synthesize_vi_short.py` sinh đoạn ngắn một người nói từ 22 kịch bản bình thường (đặt cọc, học phí, bảo hiểm, tiền trọ, mượn tiền, giao hàng...) và 13 kịch bản lừa đảo cùng chủ đề; khoảng một phần ba viết thường không dấu câu như transcript Whisper. Toàn bộ là dữ liệu tổng hợp (`synthetic = true`). Dữ liệu các đợt trước giữ nguyên.
+
+| | Đoạn thêm (bình thường / lừa đảo) | Train |
+|---|---|---|
+| Đợt 7 (`python -m tools.dataset_synthesize_vi_short 30 24`) | 660 / 312 | 13.078 dòng |
+| Đợt 7b (mặc định, 10 / 10 mỗi kịch bản) | 220 / 130 | 12.554 dòng |
+
+**Kết quả.** Mức rủi ro cuối cùng của Risk Engine bản 2026.10.2 (có chốt chặn cho đoạn ngắn). "Sót" là cuộc lừa đảo bị xếp LOW; "báo nhầm" là cuộc bình thường bị xếp MEDIUM hoặc HIGH.
+
+| Bộ test | `r6` (đang dùng) | `r7` | `r7b` |
+|---|---|---|---|
+| `short_monologues` (23 lừa đảo / 36 bình thường) | sót 0, báo nhầm 14 | sót 0, báo nhầm 4 | sót 0, báo nhầm 1 |
+| `real_calls` (16 / 8) | **sót 0**, báo nhầm 6 | **sót 4**, báo nhầm 5 | **sót 1**, báo nhầm 5 |
+| `handwritten_holdout` (56 / 50) | sót 0, báo nhầm 1 | sót 2, báo nhầm 3 | sót 0, báo nhầm 2 |
+| `user_gendata` (38 / 0) | sót 0 | sót 1 | sót 0 |
+| `short_requests` (18 / 18) | sót 1, báo nhầm 4 | sót 1, báo nhầm 7 | sót 0, báo nhầm 4 |
+| `short_sentences` (14 / 23) | sót 0, báo nhầm 3 | sót 0, báo nhầm 7 | sót 0, báo nhầm 3 |
+| `context_pairs` (20 / 26) | sót 0, báo nhầm 3 | sót 0, báo nhầm 5 | sót 0, báo nhầm 4 |
+| `everyday_calls` (12 / 44) | sót 0, báo nhầm 0 | sót 0, báo nhầm 1 | sót 0, báo nhầm 0 |
+| `test` + `test_vi_context` (320 / 306) | sót 0, báo nhầm 11 | sót 0, báo nhầm 9 | sót 0, báo nhầm 10 |
+| **Tổng các bộ trên (517 / 511)** | **sót 1, báo nhầm 42** | sót 8, báo nhầm 41 | sót 1, báo nhầm 29 |
+
+**Quyết định.** Giữ `phobert-base-r6`.
+
+- `r7` bị loại: sót 4/16 cuộc gọi lừa đảo thật. Đây là lần thứ hai hiện tượng này xảy ra (lần trước là đợt 5c): thêm nhiều mẫu ngắn bình thường làm model bỏ sót cuộc gọi thật.
+- `r7b` giảm báo nhầm (42 → 29) và có cùng tổng số ca sót với `r6`, nhưng ca sót của nó là một **cuộc gọi lừa đảo thật** dài 1.329 từ (xác suất tụt từ 0,999 xuống 0,351), còn ca sót của `r6` là một câu tổng hợp 26 từ. Mục tiêu số một của dự án là không sót cuộc gọi lừa đảo thật, và chỉ có 16 cuộc thật để đo, nên chưa đủ cơ sở để đổi. Artifact `models/phobert-base-r7b` được giữ lại; muốn dùng thử thì đặt `AI_NLP_MODEL_NAME=phobert-base-r7b`.
+- Phần báo nhầm ở mức HIGH với đoạn ngắn được xử lý bằng chốt chặn của Risk Engine (xem `app/risk.py`): với `r6`, 13 đoạn bình thường từng bị HIGH nay là MEDIUM. 14/36 đoạn ngắn bình thường vẫn bị báo "đáng ngờ": đây là **KNOWN BUG** còn lại.
+
+**Lưu ý khi chạy lại.** `data/processed/` hiện là dữ liệu của đợt 7b. Để dựng lại đúng dữ liệu đã huấn luyện `phobert-base-r6`, xóa `data/synthetic/vi_generated_short.jsonl` rồi chạy `python -m tools.dataset_prepare`.
+
+Điều rút ra: kết quả giữa hai lần huấn luyện dao động mạnh trên 24 cuộc gọi thật (cùng một cuộc có thể từ 0,999 xuống 0,35). Muốn chọn model chắc chắn hơn cần thêm cuộc gọi thật có nhãn, không phải thêm dữ liệu tổng hợp.

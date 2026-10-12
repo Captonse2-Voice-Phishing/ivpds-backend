@@ -32,7 +32,7 @@ def assess_risk(request: Request, body: RiskAssessmentRequest) -> RiskAssessment
         analysis = engine.analyze_text(body.text, extra_rules)
         text = body.text
     prediction = classifier.predict(text)
-    result = assess(analysis.indicators, prediction.phishing_probability)
+    result = assess(analysis.indicators, prediction.phishing_probability, words=len(text.split()))
     return RiskAssessmentResponse(
         risk_score=result.risk_score,
         risk_level=result.risk_level.value,
@@ -48,6 +48,7 @@ def assess_risk(request: Request, body: RiskAssessmentRequest) -> RiskAssessment
             rule_score=result.rule_score,
             highest_severity=result.highest_severity.value if result.highest_severity else None,
             severity_points=result.severity_points,
+            short_text_capped=result.short_text_capped,
         ),
         model_version=classifier.config["version"],
         ruleset_version=engine.version,

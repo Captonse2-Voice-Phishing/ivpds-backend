@@ -1,5 +1,5 @@
 {
-  "risk_engine_version": "2026.10.1",
+  "risk_engine_version": "2026.10.2",
   "ruleset_version": "2026.10.5",
   "parameters": {
     "model_weight": 70.0,
@@ -22,29 +22,30 @@
   "sets": {
     "validation": {
       "scam": {
-        "total": 1115,
+        "total": 1135,
         "levels": {
-          "HIGH": 1115
+          "HIGH": 866,
+          "MEDIUM": 269
         }
       },
       "normal": {
-        "total": 1181,
+        "total": 1211,
         "levels": {
-          "LOW": 1158,
-          "HIGH": 16,
-          "MEDIUM": 7
+          "LOW": 1170,
+          "HIGH": 3,
+          "MEDIUM": 38
         }
       },
       "risk_engine": {
         "scam_missed": 0,
-        "normal_flagged": 23
+        "normal_flagged": 41
       },
       "model_only": {
         "scam_missed": 0,
-        "normal_flagged": 18
+        "normal_flagged": 36
       },
       "rule_only": {
-        "scam_missed": 370,
+        "scam_missed": 373,
         "normal_flagged": 7
       }
     },
@@ -188,14 +189,15 @@
       "scam": {
         "total": 14,
         "levels": {
-          "HIGH": 14
+          "HIGH": 13,
+          "MEDIUM": 1
         }
       },
       "normal": {
         "total": 23,
         "levels": {
           "LOW": 20,
-          "HIGH": 3
+          "MEDIUM": 3
         }
       },
       "risk_engine": {
@@ -215,15 +217,17 @@
       "scam": {
         "total": 18,
         "levels": {
-          "HIGH": 17,
-          "LOW": 1
+          "HIGH": 11,
+          "LOW": 1,
+          "MEDIUM": 6
         }
       },
       "normal": {
         "total": 18,
         "levels": {
           "LOW": 14,
-          "HIGH": 4
+          "MEDIUM": 3,
+          "HIGH": 1
         }
       },
       "risk_engine": {
@@ -296,11 +300,37 @@
         "normal_flagged": 53
       }
     },
+    "vlsp_ordinary_speech": {
+      "scam": {
+        "total": 0,
+        "levels": {}
+      },
+      "normal": {
+        "total": 889,
+        "levels": {
+          "LOW": 887,
+          "HIGH": 2
+        }
+      },
+      "risk_engine": {
+        "scam_missed": 0,
+        "normal_flagged": 2
+      },
+      "model_only": {
+        "scam_missed": 0,
+        "normal_flagged": 2
+      },
+      "rule_only": {
+        "scam_missed": 0,
+        "normal_flagged": 0
+      }
+    },
     "handwritten_holdout": {
       "scam": {
         "total": 56,
         "levels": {
-          "HIGH": 56
+          "HIGH": 43,
+          "MEDIUM": 13
         }
       },
       "normal": {
@@ -352,9 +382,9 @@
       "scam": {
         "total": 400,
         "levels": {
-          "HIGH": 393,
+          "HIGH": 391,
           "LOW": 5,
-          "MEDIUM": 2
+          "MEDIUM": 4
         }
       },
       "normal": {
@@ -378,12 +408,40 @@
         "normal_flagged": 33
       }
     },
+    "short_monologues": {
+      "scam": {
+        "total": 23,
+        "levels": {
+          "HIGH": 20,
+          "MEDIUM": 3
+        }
+      },
+      "normal": {
+        "total": 36,
+        "levels": {
+          "MEDIUM": 14,
+          "LOW": 22
+        }
+      },
+      "risk_engine": {
+        "scam_missed": 0,
+        "normal_flagged": 14
+      },
+      "model_only": {
+        "scam_missed": 0,
+        "normal_flagged": 13
+      },
+      "rule_only": {
+        "scam_missed": 3,
+        "normal_flagged": 1
+      }
+    },
     "TOTAL vietnamese call sets": {
       "scam": {
         "total": 80,
         "levels": {
-          "HIGH": 77,
-          "MEDIUM": 2,
+          "HIGH": 70,
+          "MEDIUM": 9,
           "LOW": 1
         }
       },
@@ -391,8 +449,8 @@
         "total": 119,
         "levels": {
           "LOW": 103,
-          "HIGH": 12,
-          "MEDIUM": 4
+          "HIGH": 6,
+          "MEDIUM": 10
         }
       },
       "risk_engine": {
@@ -410,29 +468,30 @@
     },
     "TOTAL tuning sets": {
       "scam": {
-        "total": 1181,
+        "total": 1201,
         "levels": {
-          "HIGH": 1181
+          "HIGH": 932,
+          "MEDIUM": 269
         }
       },
       "normal": {
-        "total": 1215,
+        "total": 1245,
         "levels": {
-          "LOW": 1189,
-          "HIGH": 19,
-          "MEDIUM": 7
+          "LOW": 1201,
+          "HIGH": 6,
+          "MEDIUM": 38
         }
       },
       "risk_engine": {
         "scam_missed": 0,
-        "normal_flagged": 26
+        "normal_flagged": 44
       },
       "model_only": {
         "scam_missed": 0,
-        "normal_flagged": 21
+        "normal_flagged": 39
       },
       "rule_only": {
-        "scam_missed": 370,
+        "scam_missed": 373,
         "normal_flagged": 7
       }
     },
@@ -440,8 +499,8 @@
       "scam": {
         "total": 494,
         "levels": {
-          "HIGH": 486,
-          "MEDIUM": 3,
+          "HIGH": 471,
+          "MEDIUM": 18,
           "LOW": 5
         }
       },
