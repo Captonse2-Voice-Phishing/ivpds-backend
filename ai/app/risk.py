@@ -23,6 +23,14 @@ Vì sao trọng số được chọn như vậy (số liệu đo trên tập val
   thường xuyên trong cuộc gọi bình thường.
 * Tổ hợp "giả danh + đòi hỏi" đủ để lên MEDIUM dù từng dấu hiệu chỉ ở mức LOW. Trong tập validation, tổ hợp này
   có ở 232 cuộc lừa đảo và không có ở cuộc bình thường nào.
+
+Chốt chặn cho đoạn ngắn (thêm ở bản 2026.10.2): với nội dung dưới ``SHORT_TEXT_WORDS`` từ (khoảng mười lăm giây lời
+nói), riêng NLP Model không đủ để lên HIGH; phải có Rule Engine cùng thấy một dấu hiệu mức HIGH hoặc ít nhất hai dấu
+hiệu. Thiếu thì điểm dừng ở sát ngưỡng HIGH (mức MEDIUM, "đáng ngờ"). Lý do: một đoạn ghi âm ngắn chỉ có lời người
+gọi ("anh chuyển khoản đặt cọc để em giữ phòng") không có đủ ngữ cảnh để phân biệt khách sạn thật với kẻ lừa đảo,
+và model từng báo mức cao cho 13/36 đoạn bình thường như vậy. Chốt này chỉ hạ HIGH xuống MEDIUM, không bao giờ hạ
+xuống LOW, nên không làm sót thêm cuộc lừa đảo nào; cái giá là một số đoạn lừa đảo ngắn không có dấu hiệu rõ được
+báo "đáng ngờ" thay vì "nguy cơ cao".
 """
 
 from dataclasses import dataclass
@@ -30,7 +38,7 @@ from enum import StrEnum
 
 from app.rules import Indicator, IndicatorMatch, Severity
 
-RISK_ENGINE_VERSION = "2026.10.1"
+RISK_ENGINE_VERSION = "2026.10.2"
 
 # Điểm tối đa của thành phần Model Probability. Lớn hơn ngưỡng HIGH để model rất chắc chắn thì tự lên HIGH.
 MODEL_WEIGHT = 70.0
@@ -47,6 +55,12 @@ SEVERITY_POINTS = {Severity.LOW: 3.0, Severity.MEDIUM: 8.0, Severity.HIGH: 20.0}
 # Ngưỡng ban đầu theo README: 0-29 LOW, 30-59 MEDIUM, 60-100 HIGH.
 MEDIUM_THRESHOLD = 30
 HIGH_THRESHOLD = 60
+
+# Chốt chặn cho đoạn ngắn: dưới chừng này từ thì model một mình không lên được HIGH...
+SHORT_TEXT_WORDS = 45
+# ...trừ khi Rule Score + Indicator Severity đạt mức này. Một dấu hiệu MEDIUM đứng riêng cho 8 + 8 = 16 điểm (chưa
+# đủ); một dấu hiệu HIGH cho 15 + 20 = 35, hai dấu hiệu MEDIUM và LOW cho 11 + 8 = 19 (đủ).
+SHORT_TEXT_SUPPORT = 17.0
 
 _SEVERITY_ORDER = {Severity.LOW: 0, Severity.MEDIUM: 1, Severity.HIGH: 2}
 
@@ -75,6 +89,8 @@ class RiskAssessment:
     # Xác suất model đưa vào, và mức nghiêm trọng cao nhất trong các dấu hiệu (None nếu không có dấu hiệu).
     model_probability: float
     highest_severity: Severity | None
+    # Điểm đã bị giữ dưới ngưỡng HIGH vì nội dung quá ngắn và Rule Engine không thấy đủ dấu hiệu.
+    short_text_capped: bool = False
 
 
 def level_of(score: int) -> RiskLevel:
@@ -116,11 +132,12 @@ def _confidence(model_probability: float, rule_points: float) -> float:
     return round(0.5 * decisiveness + 0.5 * support, 2)
 
 
-def assess(indicators: list[IndicatorMatch], model_probability: float) -> RiskAssessment:
+def assess(indicators: list[IndicatorMatch], model_probability: float, words: int | None = None) -> RiskAssessment:
     """Tính điểm và mức rủi ro từ các dấu hiệu của Rule Engine và xác suất của NLP Model.
 
     :param indicators: các dấu hiệu Rule Engine tìm thấy (có thể rỗng)
     :param model_probability: xác suất lừa đảo do NLP Model tính, từ 0 đến 1
+    :param words: số từ của nội dung được đánh giá, để áp dụng chốt chặn cho đoạn ngắn; ``None`` thì không áp dụng
     :raises ValueError: nếu xác suất nằm ngoài khoảng 0 đến 1
     """
     if not 0.0 <= model_probability <= 1.0:
@@ -134,13 +151,21 @@ def assess(indicators: list[IndicatorMatch], model_probability: float) -> RiskAs
     severity_points = SEVERITY_POINTS[highest] if highest is not None else 0.0
 
     score = int(round(min(100.0, model_points + rule_score + severity_points)))
+    confidence = _confidence(model_probability, rule_score + severity_points)
+    capped = (words is not None and words < SHORT_TEXT_WORDS and score >= HIGH_THRESHOLD
+              and rule_score + severity_points < SHORT_TEXT_SUPPORT)
+    if capped:
+        score = HIGH_THRESHOLD - 1
+        # Kết luận đã bị hạ vì thiếu ngữ cảnh, nên không thể báo là chắc chắn.
+        confidence = min(confidence, 0.5)
     return RiskAssessment(
         risk_score=score,
         risk_level=level_of(score),
-        confidence=_confidence(model_probability, rule_score + severity_points),
+        confidence=confidence,
         model_points=round(model_points, 2),
         rule_score=round(rule_score, 2),
         severity_points=round(severity_points, 2),
         model_probability=model_probability,
         highest_severity=highest,
+        short_text_capped=capped,
     )

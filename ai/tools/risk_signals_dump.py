@@ -24,11 +24,14 @@ SETS = {
     "report": ["data/processed/test.jsonl", "data/processed/test_vi_context.jsonl",
                "data/extra_tests/real_calls.jsonl", "data/extra_tests/everyday_calls.jsonl",
                "data/extra_tests/short_sentences.jsonl", "data/extra_tests/short_requests.jsonl",
-               "data/extra_tests/context_pairs.jsonl", "data/extra_tests/translated_calls.jsonl"],
+               "data/extra_tests/context_pairs.jsonl", "data/extra_tests/translated_calls.jsonl",
+               "data/extra_tests/vlsp_ordinary_speech.jsonl"],
     # Bộ test làm sau khi đã chốt công thức Risk Engine. ``generated_test_calls`` đã chuyển sang huấn luyện từ đợt 6
     # nên không còn ở đây; thay vào đó là phần giữ lại của bộ viết tay và 38 hội thoại của kho data_scam/gendata.
     "final": ["data/extra_tests/handwritten_holdout.jsonl", "data/extra_tests/user_gendata.jsonl",
               "data/extra_tests/translated_calls_rest.jsonl"],
+    # Đoạn ngắn chỉ có lời người gọi (12/10/2026), để đo báo nhầm với lời đề nghị thanh toán đời thường.
+    "short": ["data/extra_tests/short_monologues.jsonl"],
 }
 
 

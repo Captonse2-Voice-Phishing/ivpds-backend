@@ -233,8 +233,11 @@ class LiveSession:
         """Chạy Rule Engine, NLP Model và Risk Engine trên toàn bộ hội thoại đã nghe được."""
         analysis = self.rules.analyze_conversation([Turn(turn.speaker.value, turn.text) for turn in self.turns],
                                                    self.extra_rules)
-        probability = self._model_probability(" ".join(turn.text for turn in self.turns))
-        result = assess(analysis.indicators, probability)
+        text = " ".join(turn.text for turn in self.turns)
+        probability = self._model_probability(text)
+        # Đầu cuộc gọi mới nghe được vài câu: chốt chặn cho đoạn ngắn của Risk Engine giữ mức ở MEDIUM cho tới khi
+        # có thêm lời nói hoặc Rule Engine thấy dấu hiệu rõ.
+        result = assess(analysis.indicators, probability, words=len(text.split()))
 
         codes = [match.code.value for match in analysis.indicators]
         new_codes = [code for code in codes if code not in self.indicators]

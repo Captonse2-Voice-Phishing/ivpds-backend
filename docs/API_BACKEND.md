@@ -365,7 +365,7 @@ Lỗi: `404 CALL_NOT_FOUND`, `409 ANALYSIS_IN_PROGRESS`, `409 CALL_HAS_NO_AUDIO`
     "modelProbability": 0.999912,
     "nlpModelVersion": "2026.10.09-phobert-base-r6",
     "rulesetVersion": "2026.10.5",
-    "riskEngineVersion": "2026.10.1"
+    "riskEngineVersion": "2026.10.2"
   }
 }
 ```
@@ -379,6 +379,8 @@ Lỗi: `404 CALL_NOT_FOUND`, `409 ANALYSIS_IN_PROGRESS`, `409 CALL_HAS_NO_AUDIO`
 | `details.modelProbability` | Xác suất lừa đảo do NLP Model tính. **Không phải** điểm rủi ro: điểm rủi ro còn tính cả các dấu hiệu |
 
 Ba con số `riskScore`, `confidence`, `modelProbability` là ba thứ khác nhau; giao diện nên hiển thị `riskLevel` và `riskScore`.
+
+**Đoạn ghi âm ngắn.** Với nội dung dưới 45 từ (khoảng 15 giây lời nói), hệ thống không kết luận mức HIGH chỉ dựa vào NLP Model; cần thêm dấu hiệu rõ từ Rule Engine, nếu không kết quả dừng ở MEDIUM với 59 điểm. Một đoạn ngắn chỉ có lời người gọi không đủ ngữ cảnh để phân biệt, ví dụ, khách sạn thật nhờ đặt cọc với kẻ lừa đảo. Ứng dụng nên khuyên người dùng ghi âm đủ dài và có cả hai bên nói.
 
 Khi `status` là `FAILED`: `errorCode` và `errorMessage` có giá trị; `riskScore`, `riskLevel`, `confidence`, `indicators` đều là `null`. **Backend không bao giờ bịa ra một mức rủi ro khi phân tích lỗi.** `transcript` có thể vẫn có nếu lỗi xảy ra sau bước nhận dạng giọng nói. Các `errorCode` ở [mục 12.3](#123-mã-lỗi-của-một-lần-phân-tích-errorcode).
 

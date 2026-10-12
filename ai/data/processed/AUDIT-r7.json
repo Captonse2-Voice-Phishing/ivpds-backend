@@ -1,0 +1,1974 @@
+{
+  "seed": 20261008,
+  "label_schema": {
+    "0": "NORMAL",
+    "1": "PHISHING"
+  },
+  "sources": {
+    "adamtc_scam_dialogues": {
+      "rows_in_raw_file": 3840,
+      "raw_label_values": {
+        "1": 1920,
+        "0": 1920
+      },
+      "missing_text": 0,
+      "empty_text": 0,
+      "invalid_label": 0,
+      "exact_duplicates_removed": 3,
+      "label_conflicting_duplicates_removed": 0,
+      "near_duplicates": {
+        "threshold_jaccard": 0.85,
+        "clusters_with_more_than_one_row": 145,
+        "rows_in_such_clusters": 290,
+        "largest_cluster": 2,
+        "clusters_mixing_both_labels": 0
+      },
+      "length_in_words": {
+        "min": 75,
+        "p05": 139,
+        "median": 391,
+        "p95": 1318,
+        "max": 3199,
+        "mean": 472.5
+      },
+      "shorter_than_3_words": 0,
+      "longer_than_1500_words": 131,
+      "without_vietnamese_diacritics": 0,
+      "rows_containing": {
+        "phone_number": 28,
+        "email": 34,
+        "url": 29,
+        "long_digit_run": 230
+      },
+      "rows_after_cleaning": 3837,
+      "class_distribution": {
+        "NORMAL": 1918,
+        "PHISHING": 1919,
+        "total": 3837
+      },
+      "by_type": {
+        "bảo hiểm": {
+          "NORMAL": 479,
+          "PHISHING": 0,
+          "total": 479
+        },
+        "cuộc hẹn": {
+          "NORMAL": 320,
+          "PHISHING": 0,
+          "total": 320
+        },
+        "hỗ trợ kỹ thuật": {
+          "NORMAL": 0,
+          "PHISHING": 480,
+          "total": 480
+        },
+        "phần thưởng": {
+          "NORMAL": 0,
+          "PHISHING": 480,
+          "total": 480
+        },
+        "sai số": {
+          "NORMAL": 479,
+          "PHISHING": 0,
+          "total": 479
+        },
+        "số an sinh xã hội": {
+          "NORMAL": 0,
+          "PHISHING": 480,
+          "total": 480
+        },
+        "tiếp thị qua điện thoại": {
+          "NORMAL": 160,
+          "PHISHING": 0,
+          "total": 160
+        },
+        "vận chuyển": {
+          "NORMAL": 480,
+          "PHISHING": 0,
+          "total": 480
+        },
+        "đền bù": {
+          "NORMAL": 0,
+          "PHISHING": 479,
+          "total": 479
+        }
+      },
+      "provenance": {
+        "page": "https://huggingface.co/datasets/adamtc/scam_dialogues",
+        "revision": "123b204a85b280439da8c1901b0703cec0fe3b0b",
+        "license": "apache-2.0"
+      },
+      "label_mapping": "0 -> NORMAL, 1 -> PHISHING (theo cột label gốc)",
+      "rows_read_while_tuning_rules": 1733
+    },
+    "ivpds_authored": {
+      "rows_in_raw_file": 150,
+      "raw_label_values": {
+        "1": 98,
+        "0": 52
+      },
+      "missing_text": 0,
+      "empty_text": 0,
+      "invalid_label": 0,
+      "exact_duplicates_removed": 0,
+      "label_conflicting_duplicates_removed": 0,
+      "near_duplicates": {
+        "threshold_jaccard": 0.85,
+        "clusters_with_more_than_one_row": 0,
+        "rows_in_such_clusters": 0,
+        "largest_cluster": 1,
+        "clusters_mixing_both_labels": 0
+      },
+      "length_in_words": {
+        "min": 48,
+        "p05": 60,
+        "median": 102,
+        "p95": 139,
+        "max": 166,
+        "mean": 100.8
+      },
+      "shorter_than_3_words": 0,
+      "longer_than_1500_words": 0,
+      "without_vietnamese_diacritics": 0,
+      "rows_containing": {
+        "phone_number": 0,
+        "email": 0,
+        "url": 0,
+        "long_digit_run": 0
+      },
+      "rows_after_cleaning": 150,
+      "class_distribution": {
+        "NORMAL": 52,
+        "PHISHING": 98,
+        "total": 150
+      },
+      "by_type": {
+        "bán số lô đề": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "bạn bè": {
+          "NORMAL": 4,
+          "PHISHING": 0,
+          "total": 4
+        },
+        "bạn bè nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "bảo hiểm thật nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "bắt cóc tống tiền": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "bệnh viện": {
+          "NORMAL": 1,
+          "PHISHING": 0,
+          "total": 1
+        },
+        "bệnh viện thật nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "chuyển nhầm tiền": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "chủ trọ": {
+          "NORMAL": 1,
+          "PHISHING": 0,
+          "total": 1
+        },
+        "combo du lịch": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "con cấp cứu nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "có người nhà can ngăn": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "công an thật": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "công việc nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "cửa hàng": {
+          "NORMAL": 1,
+          "PHISHING": 0,
+          "total": 1
+        },
+        "dịch vụ lấy lại tiền": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "dịch vụ lấy lại tiền nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "dịch vụ thật nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "gia đình": {
+          "NORMAL": 4,
+          "PHISHING": 0,
+          "total": 4
+        },
+        "gia đình nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "giao hàng thật": {
+          "NORMAL": 3,
+          "PHISHING": 0,
+          "total": 3
+        },
+        "giả bưu điện, công an, viện kiểm sát": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả bảo hiểm xã hội": {
+          "NORMAL": 0,
+          "PHISHING": 3,
+          "total": 3
+        },
+        "giả công an cài ứng dụng": {
+          "NORMAL": 0,
+          "PHISHING": 3,
+          "total": 3
+        },
+        "giả cơ quan nhà nước nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả cơ quan thuế": {
+          "NORMAL": 0,
+          "PHISHING": 3,
+          "total": 3
+        },
+        "giả danh công an": {
+          "NORMAL": 0,
+          "PHISHING": 4,
+          "total": 4
+        },
+        "giả danh ngân hàng": {
+          "NORMAL": 0,
+          "PHISHING": 4,
+          "total": 4
+        },
+        "giả hỗ trợ kỹ thuật": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả hỗ trợ kỹ thuật nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả ngân hàng rồi công an": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả người quen": {
+          "NORMAL": 0,
+          "PHISHING": 4,
+          "total": 4
+        },
+        "giả nhà mạng rồi công an": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả shipper": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả tòa án": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "giả ví điện tử": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả điện lực": {
+          "NORMAL": 0,
+          "PHISHING": 4,
+          "total": 4
+        },
+        "giả điện lực nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "hoàn tiền": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "hoàn tiền nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "hoàn tiền thật": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "hỗ trợ kỹ thuật thật": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "khóa SIM": {
+          "NORMAL": 0,
+          "PHISHING": 4,
+          "total": 4
+        },
+        "làm nhiệm vụ nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "mua bán nhà": {
+          "NORMAL": 1,
+          "PHISHING": 0,
+          "total": 1
+        },
+        "mua bán thật nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "ngân hàng thật": {
+          "NORMAL": 5,
+          "PHISHING": 0,
+          "total": 5
+        },
+        "ngân hàng thật nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "người thân cấp cứu": {
+          "NORMAL": 0,
+          "PHISHING": 4,
+          "total": 4
+        },
+        "nâng hạn mức thẻ": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "phòng khám": {
+          "NORMAL": 1,
+          "PHISHING": 0,
+          "total": 1
+        },
+        "quà từ nước ngoài": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "quà từ nước ngoài nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "tiếp thị thật": {
+          "NORMAL": 1,
+          "PHISHING": 0,
+          "total": 1
+        },
+        "trúng thưởng": {
+          "NORMAL": 0,
+          "PHISHING": 3,
+          "total": 3
+        },
+        "trúng thưởng nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "trường học": {
+          "NORMAL": 1,
+          "PHISHING": 0,
+          "total": 1
+        },
+        "trường học thật nhiều người": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "tuyển cộng tác viên": {
+          "NORMAL": 0,
+          "PHISHING": 3,
+          "total": 3
+        },
+        "tuyển dụng thật": {
+          "NORMAL": 2,
+          "PHISHING": 0,
+          "total": 2
+        },
+        "vay tiền nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "vay tiền online": {
+          "NORMAL": 0,
+          "PHISHING": 3,
+          "total": 3
+        },
+        "xuất khẩu lao động": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "điện lực thật": {
+          "NORMAL": 3,
+          "PHISHING": 0,
+          "total": 3
+        },
+        "đòi nợ đe dọa": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "đầu tư lợi nhuận cao": {
+          "NORMAL": 0,
+          "PHISHING": 4,
+          "total": 4
+        },
+        "đầu tư nhiều người": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "đặt cọc": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        }
+      }
+    },
+    "ivpds_generated_vi": {
+      "rows_in_raw_file": 13471,
+      "raw_label_values": {
+        "1": 8460,
+        "0": 5011
+      },
+      "missing_text": 0,
+      "empty_text": 0,
+      "invalid_label": 0,
+      "exact_duplicates_removed": 3528,
+      "label_conflicting_duplicates_removed": 0,
+      "near_duplicates": {
+        "threshold_jaccard": 0.85,
+        "clusters_with_more_than_one_row": 461,
+        "rows_in_such_clusters": 1072,
+        "largest_cluster": 8,
+        "clusters_mixing_both_labels": 0
+      },
+      "length_in_words": {
+        "min": 2,
+        "p05": 10,
+        "median": 42,
+        "p95": 81,
+        "max": 146,
+        "mean": 42.8
+      },
+      "shorter_than_3_words": 4,
+      "longer_than_1500_words": 0,
+      "without_vietnamese_diacritics": 0,
+      "rows_containing": {
+        "phone_number": 0,
+        "email": 0,
+        "url": 0,
+        "long_digit_run": 0
+      },
+      "rows_after_cleaning": 9943,
+      "class_distribution": {
+        "NORMAL": 4327,
+        "PHISHING": 5616,
+        "total": 9943
+      },
+      "by_type": {
+        "ban quản lý nhắc phí": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "bác sĩ và nhà thuốc thật": {
+          "NORMAL": 67,
+          "PHISHING": 0,
+          "total": 67
+        },
+        "bưu phẩm chưa nhận (hợp pháp)": {
+          "NORMAL": 33,
+          "PHISHING": 0,
+          "total": 33
+        },
+        "bưu phẩm chưa nhận (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 79,
+          "total": 79
+        },
+        "bạn bè chia tiền": {
+          "NORMAL": 9,
+          "PHISHING": 0,
+          "total": 9
+        },
+        "bạn bè mượn tiền": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "bạn bè tâm sự": {
+          "NORMAL": 6,
+          "PHISHING": 0,
+          "total": 6
+        },
+        "bạn bè vay và trả tiền": {
+          "NORMAL": 29,
+          "PHISHING": 0,
+          "total": 29
+        },
+        "bảo hiểm nhắc đóng phí": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "bảo hiểm thật": {
+          "NORMAL": 62,
+          "PHISHING": 0,
+          "total": 62
+        },
+        "bảo hành điện máy hẹn lịch": {
+          "NORMAL": 66,
+          "PHISHING": 0,
+          "total": 66
+        },
+        "bảo trì máy lọc nước thật": {
+          "NORMAL": 68,
+          "PHISHING": 0,
+          "total": 68
+        },
+        "bệnh viện báo người nhà (hợp pháp)": {
+          "NORMAL": 18,
+          "PHISHING": 0,
+          "total": 18
+        },
+        "bệnh viện báo người nhà (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 71,
+          "total": 71
+        },
+        "bố mẹ hỏi con về tiền học": {
+          "NORMAL": 46,
+          "PHISHING": 0,
+          "total": 46
+        },
+        "chia tiền ăn uống": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "chủ nhà nhắc tiền thuê": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "chủ trọ thật nhắc tiền nhà": {
+          "NORMAL": 5,
+          "PHISHING": 0,
+          "total": 5
+        },
+        "con cái xin tiền bố mẹ": {
+          "NORMAL": 28,
+          "PHISHING": 0,
+          "total": 28
+        },
+        "con xin tiền sinh hoạt": {
+          "NORMAL": 23,
+          "PHISHING": 0,
+          "total": 23
+        },
+        "cuộc gọi tự động": {
+          "NORMAL": 0,
+          "PHISHING": 51,
+          "total": 51
+        },
+        "công an liên hệ (hợp pháp)": {
+          "NORMAL": 64,
+          "PHISHING": 0,
+          "total": 64
+        },
+        "công an liên hệ (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 81,
+          "total": 81
+        },
+        "công an phường thật": {
+          "NORMAL": 69,
+          "PHISHING": 0,
+          "total": 69
+        },
+        "công ty du lịch nhắc thanh toán": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "công ty xuất khẩu lao động hẹn làm hồ sơ": {
+          "NORMAL": 65,
+          "PHISHING": 0,
+          "total": 65
+        },
+        "công việc ba người": {
+          "NORMAL": 44,
+          "PHISHING": 0,
+          "total": 44
+        },
+        "cơ quan thuế liên hệ (hợp pháp)": {
+          "NORMAL": 69,
+          "PHISHING": 0,
+          "total": 69
+        },
+        "cơ quan thuế liên hệ (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 82,
+          "total": 82
+        },
+        "cảnh sát giao thông mời lên trụ sở": {
+          "NORMAL": 73,
+          "PHISHING": 0,
+          "total": 73
+        },
+        "cấp nước hẹn thay đồng hồ": {
+          "NORMAL": 68,
+          "PHISHING": 0,
+          "total": 68
+        },
+        "cửa hàng nhờ đặt cọc giữ hàng": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "dặn người nhà cảnh giác": {
+          "NORMAL": 3,
+          "PHISHING": 0,
+          "total": 3
+        },
+        "dịch vụ lấy lại tiền": {
+          "NORMAL": 0,
+          "PHISHING": 76,
+          "total": 76
+        },
+        "gara báo sửa xe xong": {
+          "NORMAL": 66,
+          "PHISHING": 0,
+          "total": 66
+        },
+        "gia đình ba người": {
+          "NORMAL": 20,
+          "PHISHING": 0,
+          "total": 20
+        },
+        "gia đình chuyển tiền": {
+          "NORMAL": 63,
+          "PHISHING": 0,
+          "total": 63
+        },
+        "giao hàng thu hộ": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "giả bác sĩ bán thuốc": {
+          "NORMAL": 0,
+          "PHISHING": 87,
+          "total": 87
+        },
+        "giả bạn đổi số vay gấp": {
+          "NORMAL": 0,
+          "PHISHING": 23,
+          "total": 23
+        },
+        "giả bảo hiểm hoàn phí": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "giả bảo hiểm trả lãi đóng phí trước": {
+          "NORMAL": 0,
+          "PHISHING": 87,
+          "total": 87
+        },
+        "giả bảo hiểm xã hội": {
+          "NORMAL": 0,
+          "PHISHING": 78,
+          "total": 78
+        },
+        "giả bảo hành điện máy thu phí": {
+          "NORMAL": 0,
+          "PHISHING": 73,
+          "total": 73
+        },
+        "giả bảo trì máy lọc nước": {
+          "NORMAL": 0,
+          "PHISHING": 84,
+          "total": 84
+        },
+        "giả chuyển nhầm tiền đòi lại": {
+          "NORMAL": 0,
+          "PHISHING": 87,
+          "total": 87
+        },
+        "giả chủ trọ đổi tài khoản": {
+          "NORMAL": 0,
+          "PHISHING": 62,
+          "total": 62
+        },
+        "giả con xin tiền học": {
+          "NORMAL": 0,
+          "PHISHING": 72,
+          "total": 72
+        },
+        "giả cán bộ phòng cháy chữa cháy": {
+          "NORMAL": 0,
+          "PHISHING": 87,
+          "total": 87
+        },
+        "giả công an phường cài ứng dụng": {
+          "NORMAL": 0,
+          "PHISHING": 86,
+          "total": 86
+        },
+        "giả công an điều tra": {
+          "NORMAL": 0,
+          "PHISHING": 87,
+          "total": 87
+        },
+        "giả công an, tài khoản an toàn": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "giả cơ quan thuế": {
+          "NORMAL": 0,
+          "PHISHING": 88,
+          "total": 88
+        },
+        "giả cảnh báo rò rỉ dữ liệu": {
+          "NORMAL": 0,
+          "PHISHING": 80,
+          "total": 80
+        },
+        "giả cảnh sát giao thông phạt nguội": {
+          "NORMAL": 0,
+          "PHISHING": 84,
+          "total": 84
+        },
+        "giả cấp nước cài ứng dụng": {
+          "NORMAL": 0,
+          "PHISHING": 79,
+          "total": 79
+        },
+        "giả dịch vụ xóa nợ xấu": {
+          "NORMAL": 0,
+          "PHISHING": 89,
+          "total": 89
+        },
+        "giả giao hàng gửi link": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "giả giáo viên thu học phí": {
+          "NORMAL": 0,
+          "PHISHING": 81,
+          "total": 81
+        },
+        "giả hãng bay hủy chuyến": {
+          "NORMAL": 0,
+          "PHISHING": 81,
+          "total": 81
+        },
+        "giả hỗ trợ kỹ thuật": {
+          "NORMAL": 0,
+          "PHISHING": 80,
+          "total": 80
+        },
+        "giả khách sạn hoàn tiền": {
+          "NORMAL": 0,
+          "PHISHING": 70,
+          "total": 70
+        },
+        "giả khách sạn, phòng vé đòi thẻ": {
+          "NORMAL": 0,
+          "PHISHING": 23,
+          "total": 23
+        },
+        "giả kêu gọi từ thiện": {
+          "NORMAL": 0,
+          "PHISHING": 72,
+          "total": 72
+        },
+        "giả ngân hàng báo có người vay tên mình": {
+          "NORMAL": 0,
+          "PHISHING": 90,
+          "total": 90
+        },
+        "giả ngân hàng lấy otp": {
+          "NORMAL": 0,
+          "PHISHING": 73,
+          "total": 73
+        },
+        "giả ngân hàng rồi công an": {
+          "NORMAL": 0,
+          "PHISHING": 101,
+          "total": 101
+        },
+        "giả ngân hàng đòi mã": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "giả người nhà cấp cứu": {
+          "NORMAL": 0,
+          "PHISHING": 22,
+          "total": 22
+        },
+        "giả người quen mượn tiền": {
+          "NORMAL": 0,
+          "PHISHING": 73,
+          "total": 73
+        },
+        "giả nhà hàng thu cọc": {
+          "NORMAL": 0,
+          "PHISHING": 79,
+          "total": 79
+        },
+        "giả nhà mạng khóa sim": {
+          "NORMAL": 0,
+          "PHISHING": 82,
+          "total": 82
+        },
+        "giả nhà mạng khóa thuê bao": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "giả nâng hạn mức thẻ tín dụng": {
+          "NORMAL": 0,
+          "PHISHING": 67,
+          "total": 67
+        },
+        "giả phòng khám báo kết quả xấu": {
+          "NORMAL": 0,
+          "PHISHING": 90,
+          "total": 90
+        },
+        "giả shipper": {
+          "NORMAL": 0,
+          "PHISHING": 81,
+          "total": 81
+        },
+        "giả sếp yêu cầu chuyển khoản": {
+          "NORMAL": 0,
+          "PHISHING": 82,
+          "total": 82
+        },
+        "giả thông báo trúng tuyển": {
+          "NORMAL": 0,
+          "PHISHING": 76,
+          "total": 76
+        },
+        "giả tòa án báo nợ thẻ": {
+          "NORMAL": 0,
+          "PHISHING": 71,
+          "total": 71
+        },
+        "giả ví trả sau": {
+          "NORMAL": 0,
+          "PHISHING": 77,
+          "total": 77
+        },
+        "giả điện lực": {
+          "NORMAL": 0,
+          "PHISHING": 80,
+          "total": 80
+        },
+        "giả điện lực dọa cắt điện": {
+          "NORMAL": 0,
+          "PHISHING": 23,
+          "total": 23
+        },
+        "giả đại lý vé máy bay giá rẻ": {
+          "NORMAL": 0,
+          "PHISHING": 83,
+          "total": 83
+        },
+        "giả định danh điện tử": {
+          "NORMAL": 0,
+          "PHISHING": 78,
+          "total": 78
+        },
+        "giả đối tác đổi số tài khoản": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "giả đổi sim 5G": {
+          "NORMAL": 0,
+          "PHISHING": 83,
+          "total": 83
+        },
+        "giữ chỗ nhà hàng, sân bóng": {
+          "NORMAL": 29,
+          "PHISHING": 0,
+          "total": 29
+        },
+        "hoàn tiền sàn thương mại": {
+          "NORMAL": 0,
+          "PHISHING": 84,
+          "total": 84
+        },
+        "hoàn tiền đơn hàng (hợp pháp)": {
+          "NORMAL": 64,
+          "PHISHING": 0,
+          "total": 64
+        },
+        "hoàn tiền đơn hàng (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 76,
+          "total": 76
+        },
+        "hãng bay báo đổi giờ": {
+          "NORMAL": 70,
+          "PHISHING": 0,
+          "total": 70
+        },
+        "học bổng và hoàn học phí": {
+          "NORMAL": 0,
+          "PHISHING": 67,
+          "total": 67
+        },
+        "hỏi nhau về học phí": {
+          "NORMAL": 14,
+          "PHISHING": 0,
+          "total": 14
+        },
+        "hội nhóm, họ hàng góp tiền": {
+          "NORMAL": 28,
+          "PHISHING": 0,
+          "total": 28
+        },
+        "khách gọi ngân hàng tra soát": {
+          "NORMAL": 71,
+          "PHISHING": 0,
+          "total": 71
+        },
+        "khách sạn nhờ đặt cọc": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "khách sạn thật xác nhận đặt phòng": {
+          "NORMAL": 68,
+          "PHISHING": 0,
+          "total": 68
+        },
+        "kể chuyện bị gọi lừa đảo": {
+          "NORMAL": 14,
+          "PHISHING": 0,
+          "total": 14
+        },
+        "kỹ thuật internet thật": {
+          "NORMAL": 67,
+          "PHISHING": 0,
+          "total": 67
+        },
+        "làm nhiệm vụ cộng tác viên": {
+          "NORMAL": 0,
+          "PHISHING": 84,
+          "total": 84
+        },
+        "lương thưởng ở công ty": {
+          "NORMAL": 16,
+          "PHISHING": 0,
+          "total": 16
+        },
+        "lừa đặt cọc": {
+          "NORMAL": 0,
+          "PHISHING": 76,
+          "total": 76
+        },
+        "mua bán đồ cũ": {
+          "NORMAL": 71,
+          "PHISHING": 0,
+          "total": 71
+        },
+        "ngân hàng báo giao dịch lạ (hợp pháp)": {
+          "NORMAL": 66,
+          "PHISHING": 0,
+          "total": 66
+        },
+        "ngân hàng báo giao dịch lạ (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 72,
+          "total": 72
+        },
+        "ngân hàng mời nâng hạn mức tự làm": {
+          "NORMAL": 65,
+          "PHISHING": 0,
+          "total": 65
+        },
+        "ngân hàng thật báo đổi thẻ": {
+          "NORMAL": 65,
+          "PHISHING": 0,
+          "total": 65
+        },
+        "ngân hàng thật cảnh báo lừa đảo": {
+          "NORMAL": 40,
+          "PHISHING": 0,
+          "total": 40
+        },
+        "ngân hàng thật nhắc kỳ trả góp": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "ngân hàng thật nhắc nợ": {
+          "NORMAL": 68,
+          "PHISHING": 0,
+          "total": 68
+        },
+        "ngân hàng thật thông báo": {
+          "NORMAL": 65,
+          "PHISHING": 0,
+          "total": 65
+        },
+        "ngân hàng xác nhận tất toán tại quầy": {
+          "NORMAL": 74,
+          "PHISHING": 0,
+          "total": 74
+        },
+        "người bán hàng chốt đơn": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "người nhận nhầm tiền trả lại qua ngân hàng": {
+          "NORMAL": 74,
+          "PHISHING": 0,
+          "total": 74
+        },
+        "người thân cấp cứu": {
+          "NORMAL": 0,
+          "PHISHING": 82,
+          "total": 82
+        },
+        "người yêu hẹn nhau": {
+          "NORMAL": 55,
+          "PHISHING": 0,
+          "total": 55
+        },
+        "nhà hàng thật xác nhận đặt bàn": {
+          "NORMAL": 66,
+          "PHISHING": 0,
+          "total": 66
+        },
+        "nhà mạng báo thông tin thuê bao (hợp pháp)": {
+          "NORMAL": 68,
+          "PHISHING": 0,
+          "total": 68
+        },
+        "nhà mạng báo thông tin thuê bao (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 81,
+          "total": 81
+        },
+        "nhà mạng mời đổi sim tại cửa hàng": {
+          "NORMAL": 70,
+          "PHISHING": 0,
+          "total": 70
+        },
+        "nhà mạng thật tư vấn": {
+          "NORMAL": 67,
+          "PHISHING": 0,
+          "total": 67
+        },
+        "nhà trường báo việc của con (hợp pháp)": {
+          "NORMAL": 6,
+          "PHISHING": 0,
+          "total": 6
+        },
+        "nhà trường báo việc của con (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 76,
+          "total": 76
+        },
+        "nhà xe, vé nhờ thanh toán": {
+          "NORMAL": 28,
+          "PHISHING": 0,
+          "total": 28
+        },
+        "phòng cháy chữa cháy kiểm tra thật": {
+          "NORMAL": 62,
+          "PHISHING": 0,
+          "total": 62
+        },
+        "phòng khám báo chi phí": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "phòng khám nhắc lịch": {
+          "NORMAL": 64,
+          "PHISHING": 0,
+          "total": 64
+        },
+        "phường mời họp tổ dân phố": {
+          "NORMAL": 66,
+          "PHISHING": 0,
+          "total": 66
+        },
+        "quyên góp qua tổ chức chính thức": {
+          "NORMAL": 69,
+          "PHISHING": 0,
+          "total": 69
+        },
+        "quà từ nước ngoài": {
+          "NORMAL": 0,
+          "PHISHING": 77,
+          "total": 77
+        },
+        "shipper thật": {
+          "NORMAL": 72,
+          "PHISHING": 0,
+          "total": 72
+        },
+        "shop hoàn tiền thật": {
+          "NORMAL": 72,
+          "PHISHING": 0,
+          "total": 72
+        },
+        "spa, làm đẹp nhắc lịch": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "sếp giao việc cho nhân viên": {
+          "NORMAL": 39,
+          "PHISHING": 0,
+          "total": 39
+        },
+        "thuê nhà thật": {
+          "NORMAL": 63,
+          "PHISHING": 0,
+          "total": 63
+        },
+        "thuê xe, thuê đồ": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "thợ sửa chữa báo giá": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "trung tâm học nhắc gia hạn": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "trung tâm tiếng Anh báo lịch học": {
+          "NORMAL": 67,
+          "PHISHING": 0,
+          "total": 67
+        },
+        "trúng thưởng": {
+          "NORMAL": 0,
+          "PHISHING": 89,
+          "total": 89
+        },
+        "trúng thưởng đóng phí": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "trường báo trúng tuyển thật": {
+          "NORMAL": 66,
+          "PHISHING": 0,
+          "total": 66
+        },
+        "trường học thông báo": {
+          "NORMAL": 65,
+          "PHISHING": 0,
+          "total": 65
+        },
+        "trường nhắc học phí": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "tuyển dụng thật": {
+          "NORMAL": 64,
+          "PHISHING": 0,
+          "total": 64
+        },
+        "tình cảm qua mạng xin tiền": {
+          "NORMAL": 0,
+          "PHISHING": 74,
+          "total": 74
+        },
+        "tòa án xác nhận người làm chứng": {
+          "NORMAL": 67,
+          "PHISHING": 0,
+          "total": 67
+        },
+        "tư vấn bán hàng thật": {
+          "NORMAL": 63,
+          "PHISHING": 0,
+          "total": 63
+        },
+        "tự kể chuyện giao dịch của mình": {
+          "NORMAL": 16,
+          "PHISHING": 0,
+          "total": 16
+        },
+        "vay tiền online": {
+          "NORMAL": 0,
+          "PHISHING": 84,
+          "total": 84
+        },
+        "vay tiền đóng phí trước": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "việc làm nạp tiền nhiệm vụ": {
+          "NORMAL": 0,
+          "PHISHING": 24,
+          "total": 24
+        },
+        "việc làm đóng phí": {
+          "NORMAL": 0,
+          "PHISHING": 80,
+          "total": 80
+        },
+        "việc nhà và tiền chung": {
+          "NORMAL": 14,
+          "PHISHING": 0,
+          "total": 14
+        },
+        "ví điện tử thật hỗ trợ": {
+          "NORMAL": 70,
+          "PHISHING": 0,
+          "total": 70
+        },
+        "xin giấy tờ cho hồ sơ vay (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 56,
+          "total": 56
+        },
+        "xin giấy tờ chuẩn hóa thuê bao (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 67,
+          "total": 67
+        },
+        "xin mã và mật khẩu ví điện tử (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 60,
+          "total": 60
+        },
+        "xin thông tin thẻ (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 62,
+          "total": 62
+        },
+        "xin thông tin tài khoản (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 57,
+          "total": 57
+        },
+        "xuất khẩu lao động đóng phí": {
+          "NORMAL": 0,
+          "PHISHING": 79,
+          "total": 79
+        },
+        "xác minh hồ sơ vay (hợp pháp)": {
+          "NORMAL": 61,
+          "PHISHING": 0,
+          "total": 61
+        },
+        "xác minh hồ sơ vay (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 83,
+          "total": 83
+        },
+        "đe dọa tống tiền": {
+          "NORMAL": 0,
+          "PHISHING": 62,
+          "total": 62
+        },
+        "điện lực báo tiền điện (hợp pháp)": {
+          "NORMAL": 70,
+          "PHISHING": 0,
+          "total": 70
+        },
+        "điện lực báo tiền điện (lừa đảo)": {
+          "NORMAL": 0,
+          "PHISHING": 83,
+          "total": 83
+        },
+        "điện lực thật": {
+          "NORMAL": 62,
+          "PHISHING": 0,
+          "total": 62
+        },
+        "điện nước internet nhắc cước": {
+          "NORMAL": 30,
+          "PHISHING": 0,
+          "total": 30
+        },
+        "đại lý vé xác nhận đặt chỗ": {
+          "NORMAL": 74,
+          "PHISHING": 0,
+          "total": 74
+        },
+        "đầu tư có chim mồi": {
+          "NORMAL": 0,
+          "PHISHING": 98,
+          "total": 98
+        },
+        "đặt dịch vụ": {
+          "NORMAL": 68,
+          "PHISHING": 0,
+          "total": 68
+        }
+      },
+      "note": "Sinh theo kịch bản bằng tools.dataset_synthesize_vi; các hội thoại cùng kịch bản giống nhau về ý.",
+      "scenario_families": {
+        "PHISHING": 81,
+        "NORMAL": 90
+      }
+    },
+    "youtube_calls": {
+      "rows_in_raw_file": 17,
+      "raw_label_values": {
+        "1": 17
+      },
+      "missing_text": 0,
+      "empty_text": 0,
+      "invalid_label": 0,
+      "exact_duplicates_removed": 0,
+      "label_conflicting_duplicates_removed": 0,
+      "near_duplicates": {
+        "threshold_jaccard": 0.85,
+        "clusters_with_more_than_one_row": 0,
+        "rows_in_such_clusters": 0,
+        "largest_cluster": 1,
+        "clusters_mixing_both_labels": 0
+      },
+      "length_in_words": {
+        "min": 136,
+        "p05": 136,
+        "median": 577,
+        "p95": 2182,
+        "max": 2182,
+        "mean": 791.1
+      },
+      "shorter_than_3_words": 0,
+      "longer_than_1500_words": 1,
+      "without_vietnamese_diacritics": 0,
+      "rows_containing": {
+        "phone_number": 0,
+        "email": 0,
+        "url": 0,
+        "long_digit_run": 0
+      },
+      "rows_after_cleaning": 17,
+      "class_distribution": {
+        "NORMAL": 0,
+        "PHISHING": 17,
+        "total": 17
+      },
+      "by_type": {
+        "bán hàng trúng thưởng": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "giả bưu phẩm rồi công an": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "giả bưu điện": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "giả bưu điện rồi cảnh sát điều tra": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "giả công an": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "giả cục viễn thông": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "giả nhà mạng tặng quà, bấm link": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "khóa sim giả cục viễn thông": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "khóa sim rồi giả công an": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "khóa thuê bao": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "trúng thưởng": {
+          "NORMAL": 0,
+          "PHISHING": 2,
+          "total": 2
+        },
+        "trúng thưởng quà tri ân": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "tuyển cộng tác viên chạy đơn": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "tặng mã quà qua Zalo": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        },
+        "đánh cắp thông tin tài khoản": {
+          "NORMAL": 0,
+          "PHISHING": 1,
+          "total": 1
+        }
+      },
+      "note": "Transcript PhoWhisper của ghi âm công khai trên YouTube; mốc cắt chọn bằng cách đọc transcript.",
+      "videos": 17,
+      "human_verified_rows": 0,
+      "rows_marked_as_staged": 0
+    },
+    "vlsp_ordinary_speech": {
+      "rows_in_raw_file": 1870,
+      "raw_label_values": {
+        "0": 1870
+      },
+      "missing_text": 0,
+      "empty_text": 0,
+      "invalid_label": 0,
+      "exact_duplicates_removed": 0,
+      "label_conflicting_duplicates_removed": 0,
+      "near_duplicates": {
+        "threshold_jaccard": 0.85,
+        "clusters_with_more_than_one_row": 0,
+        "rows_in_such_clusters": 0,
+        "largest_cluster": 1,
+        "clusters_mixing_both_labels": 0
+      },
+      "length_in_words": {
+        "min": 6,
+        "p05": 9,
+        "median": 28,
+        "p95": 270,
+        "max": 890,
+        "mean": 65.5
+      },
+      "shorter_than_3_words": 0,
+      "longer_than_1500_words": 0,
+      "without_vietnamese_diacritics": 0,
+      "rows_containing": {
+        "phone_number": 0,
+        "email": 0,
+        "url": 0,
+        "long_digit_run": 0
+      },
+      "rows_after_cleaning": 1870,
+      "class_distribution": {
+        "NORMAL": 1870,
+        "PHISHING": 0,
+        "total": 1870
+      },
+      "by_type": {
+        "lời nói thường ngày": {
+          "NORMAL": 1447,
+          "PHISHING": 0,
+          "total": 1447
+        },
+        "lời nói thường ngày (ghép nhiều câu)": {
+          "NORMAL": 423,
+          "PHISHING": 0,
+          "total": 423
+        }
+      },
+      "note": "Transcript lời nói thường ngày, dữ liệu thật; nhãn NORMAL. Đoạn dài là các câu thật ghép lại.",
+      "composed_documents": 423,
+      "pages": 48
+    },
+    "ivpds_handwritten_vi": {
+      "rows_in_raw_file": 427,
+      "raw_label_values": {
+        "0": 200,
+        "1": 227
+      },
+      "missing_text": 0,
+      "empty_text": 0,
+      "invalid_label": 0,
+      "exact_duplicates_removed": 0,
+      "label_conflicting_duplicates_removed": 0,
+      "near_duplicates": {
+        "threshold_jaccard": 0.85,
+        "clusters_with_more_than_one_row": 0,
+        "rows_in_such_clusters": 0,
+        "largest_cluster": 1,
+        "clusters_mixing_both_labels": 0
+      },
+      "length_in_words": {
+        "min": 35,
+        "p05": 40,
+        "median": 48,
+        "p95": 82,
+        "max": 119,
+        "mean": 51.7
+      },
+      "shorter_than_3_words": 0,
+      "longer_than_1500_words": 0,
+      "without_vietnamese_diacritics": 0,
+      "rows_containing": {
+        "phone_number": 0,
+        "email": 0,
+        "url": 0,
+        "long_digit_run": 0
+      },
+      "rows_after_cleaning": 427,
+      "class_distribution": {
+        "NORMAL": 200,
+        "PHISHING": 227,
+        "total": 427
+      },
+      "by_type": {
+        "bình thường - bạn bè": {
+          "NORMAL": 20,
+          "PHISHING": 0,
+          "total": 20
+        },
+        "bình thường - công việc": {
+          "NORMAL": 20,
+          "PHISHING": 0,
+          "total": 20
+        },
+        "bình thường - dịch vụ khác": {
+          "NORMAL": 8,
+          "PHISHING": 0,
+          "total": 8
+        },
+        "bình thường - gia đình": {
+          "NORMAL": 40,
+          "PHISHING": 0,
+          "total": 40
+        },
+        "bình thường - kể chuyện cảnh báo": {
+          "NORMAL": 8,
+          "PHISHING": 0,
+          "total": 8
+        },
+        "bình thường - mua bán giao hàng": {
+          "NORMAL": 40,
+          "PHISHING": 0,
+          "total": 40
+        },
+        "bình thường - nhắc nợ tư vấn": {
+          "NORMAL": 8,
+          "PHISHING": 0,
+          "total": 8
+        },
+        "bình thường - trường học y tế": {
+          "NORMAL": 16,
+          "PHISHING": 0,
+          "total": 16
+        },
+        "bình thường - tổ chức thật": {
+          "NORMAL": 40,
+          "PHISHING": 0,
+          "total": 40
+        },
+        "lừa đảo - du lịch vé": {
+          "NORMAL": 0,
+          "PHISHING": 7,
+          "total": 7
+        },
+        "lừa đảo - giả công an": {
+          "NORMAL": 0,
+          "PHISHING": 20,
+          "total": 20
+        },
+        "lừa đảo - giả cơ quan nhà nước": {
+          "NORMAL": 0,
+          "PHISHING": 18,
+          "total": 18
+        },
+        "lừa đảo - giả ngân hàng": {
+          "NORMAL": 0,
+          "PHISHING": 20,
+          "total": 20
+        },
+        "lừa đảo - giả người thân": {
+          "NORMAL": 0,
+          "PHISHING": 15,
+          "total": 15
+        },
+        "lừa đảo - giả nhà mạng": {
+          "NORMAL": 0,
+          "PHISHING": 12,
+          "total": 12
+        },
+        "lừa đảo - giả shipper": {
+          "NORMAL": 0,
+          "PHISHING": 14,
+          "total": 14
+        },
+        "lừa đảo - giả sếp": {
+          "NORMAL": 0,
+          "PHISHING": 6,
+          "total": 6
+        },
+        "lừa đảo - giả điện nước": {
+          "NORMAL": 0,
+          "PHISHING": 10,
+          "total": 10
+        },
+        "lừa đảo - khóa tài khoản": {
+          "NORMAL": 0,
+          "PHISHING": 8,
+          "total": 8
+        },
+        "lừa đảo - lấy lại tiền": {
+          "NORMAL": 0,
+          "PHISHING": 6,
+          "total": 6
+        },
+        "lừa đảo - trúng thưởng": {
+          "NORMAL": 0,
+          "PHISHING": 10,
+          "total": 10
+        },
+        "lừa đảo - tình cảm": {
+          "NORMAL": 0,
+          "PHISHING": 7,
+          "total": 7
+        },
+        "lừa đảo - tống tiền": {
+          "NORMAL": 0,
+          "PHISHING": 8,
+          "total": 8
+        },
+        "lừa đảo - từ thiện": {
+          "NORMAL": 0,
+          "PHISHING": 8,
+          "total": 8
+        },
+        "lừa đảo - vay online": {
+          "NORMAL": 0,
+          "PHISHING": 12,
+          "total": 12
+        },
+        "lừa đảo - việc làm online": {
+          "NORMAL": 0,
+          "PHISHING": 16,
+          "total": 16
+        },
+        "lừa đảo - đầu tư": {
+          "NORMAL": 0,
+          "PHISHING": 14,
+          "total": 14
+        },
+        "lừa đảo - đặt bàn đặt phòng": {
+          "NORMAL": 0,
+          "PHISHING": 16,
+          "total": 16
+        }
+      },
+      "note": "Cuộc gọi viết tay từng cuộc bởi dự án; dữ liệu tổng hợp. Một phần năm được giữ lại làm test ở file khác."
+    }
+  },
+  "leakage": {
+    "adamtc_scam_dialogues": {
+      "near_duplicate_clusters_in_more_than_one_split": 0,
+      "identical_texts_in_more_than_one_split": 0
+    },
+    "ivpds_generated_vi": {
+      "near_duplicate_clusters_in_more_than_one_split": 0,
+      "identical_texts_in_more_than_one_split": 0
+    },
+    "youtube_calls": {
+      "near_duplicate_clusters_in_more_than_one_split": 0,
+      "identical_texts_in_more_than_one_split": 0
+    },
+    "vlsp_ordinary_speech": {
+      "near_duplicate_clusters_in_more_than_one_split": 0,
+      "identical_texts_in_more_than_one_split": 0
+    },
+    "ivpds_handwritten_vi": {
+      "near_duplicate_clusters_in_more_than_one_split": 0,
+      "identical_texts_in_more_than_one_split": 0
+    },
+    "generated_scenario_families_in_both_train_and_validation": 0,
+    "test_rows_read_while_tuning_rules": 0,
+    "vi_context_rows_near_duplicate_of_any_training_row": 0,
+    "vi_context_rows_with_jaccard_0_30_or_more_to_a_generated_row": 30
+  },
+  "splits": {
+    "train": {
+      "all": {
+        "NORMAL": 6757,
+        "PHISHING": 6321,
+        "total": 13078
+      },
+      "adamtc_scam_dialogues": {
+        "NORMAL": 1342,
+        "PHISHING": 1343,
+        "total": 2685
+      },
+      "ivpds_generated_vi": {
+        "NORMAL": 3660,
+        "PHISHING": 4741,
+        "total": 8401
+      },
+      "youtube_calls": {
+        "NORMAL": 0,
+        "PHISHING": 10,
+        "total": 10
+      },
+      "vlsp_ordinary_speech": {
+        "NORMAL": 1555,
+        "PHISHING": 0,
+        "total": 1555
+      },
+      "ivpds_handwritten_vi": {
+        "NORMAL": 200,
+        "PHISHING": 227,
+        "total": 427
+      }
+    },
+    "validation": {
+      "all": {
+        "NORMAL": 1270,
+        "PHISHING": 1163,
+        "total": 2433
+      },
+      "adamtc_scam_dialogues": {
+        "NORMAL": 288,
+        "PHISHING": 288,
+        "total": 576
+      },
+      "ivpds_generated_vi": {
+        "NORMAL": 667,
+        "PHISHING": 875,
+        "total": 1542
+      },
+      "youtube_calls": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      },
+      "vlsp_ordinary_speech": {
+        "NORMAL": 315,
+        "PHISHING": 0,
+        "total": 315
+      },
+      "ivpds_handwritten_vi": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      }
+    },
+    "test": {
+      "all": {
+        "NORMAL": 288,
+        "PHISHING": 288,
+        "total": 576
+      },
+      "adamtc_scam_dialogues": {
+        "NORMAL": 288,
+        "PHISHING": 288,
+        "total": 576
+      },
+      "ivpds_generated_vi": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      },
+      "youtube_calls": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      },
+      "vlsp_ordinary_speech": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      },
+      "ivpds_handwritten_vi": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      }
+    },
+    "test_real_calls": {
+      "all": {
+        "NORMAL": 0,
+        "PHISHING": 7,
+        "total": 7
+      },
+      "adamtc_scam_dialogues": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      },
+      "ivpds_generated_vi": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      },
+      "youtube_calls": {
+        "NORMAL": 0,
+        "PHISHING": 7,
+        "total": 7
+      },
+      "vlsp_ordinary_speech": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      },
+      "ivpds_handwritten_vi": {
+        "NORMAL": 0,
+        "PHISHING": 0,
+        "total": 0
+      }
+    },
+    "validation_vi_context": {
+      "all": {
+        "NORMAL": 34,
+        "PHISHING": 66,
+        "total": 100
+      },
+      "three_or_more_speakers": {
+        "NORMAL": 15,
+        "PHISHING": 28,
+        "total": 43
+      }
+    },
+    "test_vi_context": {
+      "all": {
+        "NORMAL": 18,
+        "PHISHING": 32,
+        "total": 50
+      },
+      "three_or_more_speakers": {
+        "NORMAL": 9,
+        "PHISHING": 16,
+        "total": 25
+      }
+    }
+  },
+  "files": [
+    {
+      "file": "train.jsonl",
+      "rows": 13078,
+      "sha256": "b22d3e6002046f523b42f012ba264a0cbe4d83a820446fa0ca8f3b8c67aadbea"
+    },
+    {
+      "file": "validation.jsonl",
+      "rows": 2433,
+      "sha256": "8e092bbe8edc5c4af075490ed8f376ba2ee166762035e77021e1e4ded0af5495"
+    },
+    {
+      "file": "test.jsonl",
+      "rows": 576,
+      "sha256": "7a3dbbf54e3636a7ebe5414e0f69b4c66135b5425d797acd49755eac7830110f"
+    },
+    {
+      "file": "test_real_calls.jsonl",
+      "rows": 7,
+      "sha256": "ec2d186fd53bbb172c22fcc6c7d81035b43b6f380f40213a6c9a0e94e794efbd"
+    },
+    {
+      "file": "validation_vi_context.jsonl",
+      "rows": 100,
+      "sha256": "c70ba3d65f6b42e7a7e19df80d4c94f002e441aed70a71db23a2ea909b5c5103"
+    },
+    {
+      "file": "test_vi_context.jsonl",
+      "rows": 50,
+      "sha256": "7af533f0b99f70430fb73ecc3e52e643455782a27f5a767a040d172f892c322e"
+    }
+  ],
+  "synthetic_share_of_train_validation_test": {
+    "real_samples": 1887,
+    "synthetic_samples": 14207,
+    "total": 16094,
+    "synthetic_percentage": 88.3
+  }
+}

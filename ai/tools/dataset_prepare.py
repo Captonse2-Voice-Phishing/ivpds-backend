@@ -46,6 +46,8 @@ RULE_TUNING = Path("data/rule_tuning_rows.json")
 GENERATED = Path("data/synthetic/vi_generated.jsonl")
 # Kịch bản bổ sung ở đợt 6 (cùng định dạng) và các cuộc gọi viết tay từng cuộc.
 GENERATED_MORE = Path("data/synthetic/vi_generated_more.jsonl")
+# Đoạn ngắn một người nói (đợt 7): lời nhờ thanh toán đời thường và lời lừa đảo cùng chủ đề.
+GENERATED_SHORT = Path("data/synthetic/vi_generated_short.jsonl")
 HANDWRITTEN = Path("data/synthetic/handwritten_calls.jsonl")
 YOUTUBE_CALLS = RAW / "youtube_calls" / "calls.jsonl"
 ORDINARY_SPEECH = RAW / "vlsp2020_vinai_100h" / "rows.jsonl"
@@ -164,7 +166,7 @@ def load_generated() -> list[dict]:
     mở đầu, vì câu mở đầu thường chỉ là lời chào hay nêu vấn đề mà nhân viên thật cũng nói. Với cặp kịch bản cùng
     chủ đề, bản hợp pháp cũng bỏ hai lượt mở đầu dùng chung: cắt rời ra thì không biết chúng thuộc bản nào.
     """
-    rows = [json.loads(line) for path in (GENERATED, GENERATED_MORE) if path.exists()
+    rows = [json.loads(line) for path in (GENERATED, GENERATED_MORE, GENERATED_SHORT) if path.exists()
             for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
     rng = random.Random(SEED)
     documents = []
@@ -173,10 +175,13 @@ def load_generated() -> list[dict]:
                 "synthetic": True, "rule_tuned": False, "fixed_split": row["split"]}
         turns = row["turns"]
         documents.append({
-            **base, "id": row["id"], "short": False,
+            **base, "id": row["id"], "short": bool(row.get("monologue")),
             "raw_text": " ".join(f"{speaker}: {text}" for speaker, text in turns),
             "speakers": len({speaker for speaker, _ in turns}), "plain": " ".join(text for _, text in turns),
         })
+        if row.get("monologue"):
+            # Đoạn ngắn một người nói đã là một mẫu hoàn chỉnh; không cắt nhỏ thêm.
+            continue
         if row["label"] == 1:
             pool = [text for speaker, text in turns if speaker not in _LISTENER_LABELS][1:]
             wanted = 2

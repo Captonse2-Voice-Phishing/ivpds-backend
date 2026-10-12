@@ -1,0 +1,210 @@
+{
+  "file": "short_monologues.jsonl",
+  "samples": 59,
+  "phishing": 23,
+  "normal": 36,
+  "deployed_model": "phobert-base-r7",
+  "results": {
+    "rule-engine": {
+      "all": {
+        "samples": 59,
+        "accuracy": 0.9322,
+        "phishing": {
+          "precision": 0.9524,
+          "recall": 0.8696,
+          "f1": 0.9091
+        },
+        "normal": {
+          "precision": 0.9211,
+          "recall": 0.9722,
+          "f1": 0.9459
+        },
+        "macro_f1": 0.9275,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 35,
+          "true_normal_pred_phishing": 1,
+          "true_phishing_pred_normal": 3,
+          "true_phishing_pred_phishing": 20
+        },
+        "false_positives": 1,
+        "false_negatives": 3
+      },
+      "by_group": {
+        "đoạn ngắn một người nói - giao hàng, dịch vụ, sửa chữa báo tiền (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - giả danh, yêu cầu cài ứng dụng hoặc giữ bí mật (lừa đảo)": {
+          "samples": 6,
+          "flagged_as_phishing": 4,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - mua bán, chốt đơn (bình thường)": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - người quen mượn tiền, nhờ trả hộ (bình thường)": {
+          "samples": 7,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - nhắc đóng phí, học phí, hóa đơn (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - đòi chuyển tiền kèm đe dọa hoặc thúc ép (lừa đảo)": {
+          "samples": 9,
+          "flagged_as_phishing": 8,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - đòi mã OTP, thông tin thẻ, mật khẩu (lừa đảo)": {
+          "samples": 8,
+          "flagged_as_phishing": 8,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - đặt cọc, giữ chỗ (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        }
+      }
+    },
+    "baseline-tfidf-logreg-r7": {
+      "all": {
+        "samples": 59,
+        "accuracy": 0.9831,
+        "phishing": {
+          "precision": 1.0,
+          "recall": 0.9565,
+          "f1": 0.9778
+        },
+        "normal": {
+          "precision": 0.973,
+          "recall": 1.0,
+          "f1": 0.9863
+        },
+        "macro_f1": 0.982,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 36,
+          "true_normal_pred_phishing": 0,
+          "true_phishing_pred_normal": 1,
+          "true_phishing_pred_phishing": 22
+        },
+        "false_positives": 0,
+        "false_negatives": 1
+      },
+      "by_group": {
+        "đoạn ngắn một người nói - giao hàng, dịch vụ, sửa chữa báo tiền (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - giả danh, yêu cầu cài ứng dụng hoặc giữ bí mật (lừa đảo)": {
+          "samples": 6,
+          "flagged_as_phishing": 6,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - mua bán, chốt đơn (bình thường)": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - người quen mượn tiền, nhờ trả hộ (bình thường)": {
+          "samples": 7,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - nhắc đóng phí, học phí, hóa đơn (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - đòi chuyển tiền kèm đe dọa hoặc thúc ép (lừa đảo)": {
+          "samples": 9,
+          "flagged_as_phishing": 8,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - đòi mã OTP, thông tin thẻ, mật khẩu (lừa đảo)": {
+          "samples": 8,
+          "flagged_as_phishing": 8,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - đặt cọc, giữ chỗ (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        }
+      }
+    },
+    "phobert-base-r7": {
+      "all": {
+        "samples": 59,
+        "accuracy": 0.9492,
+        "phishing": {
+          "precision": 0.8846,
+          "recall": 1.0,
+          "f1": 0.9388
+        },
+        "normal": {
+          "precision": 1.0,
+          "recall": 0.9167,
+          "f1": 0.9565
+        },
+        "macro_f1": 0.9476,
+        "confusion_matrix": {
+          "true_normal_pred_normal": 33,
+          "true_normal_pred_phishing": 3,
+          "true_phishing_pred_normal": 0,
+          "true_phishing_pred_phishing": 23
+        },
+        "false_positives": 3,
+        "false_negatives": 0
+      },
+      "by_group": {
+        "đoạn ngắn một người nói - giao hàng, dịch vụ, sửa chữa báo tiền (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - giả danh, yêu cầu cài ứng dụng hoặc giữ bí mật (lừa đảo)": {
+          "samples": 6,
+          "flagged_as_phishing": 6,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - mua bán, chốt đơn (bình thường)": {
+          "samples": 5,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - người quen mượn tiền, nhờ trả hộ (bình thường)": {
+          "samples": 7,
+          "flagged_as_phishing": 1,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - nhắc đóng phí, học phí, hóa đơn (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 0,
+          "label": "NORMAL"
+        },
+        "đoạn ngắn một người nói - đòi chuyển tiền kèm đe dọa hoặc thúc ép (lừa đảo)": {
+          "samples": 9,
+          "flagged_as_phishing": 9,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - đòi mã OTP, thông tin thẻ, mật khẩu (lừa đảo)": {
+          "samples": 8,
+          "flagged_as_phishing": 8,
+          "label": "PHISHING"
+        },
+        "đoạn ngắn một người nói - đặt cọc, giữ chỗ (bình thường)": {
+          "samples": 8,
+          "flagged_as_phishing": 2,
+          "label": "NORMAL"
+        }
+      }
+    }
+  }
+}

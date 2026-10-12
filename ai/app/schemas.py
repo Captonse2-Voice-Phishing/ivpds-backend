@@ -209,6 +209,8 @@ class RiskComponents(ApiModel):
     # Mức nghiêm trọng cao nhất trong các dấu hiệu (None nếu không có dấu hiệu), và số điểm nó đóng góp.
     highest_severity: str | None
     severity_points: float
+    # Điểm đã bị giữ ở mức MEDIUM vì nội dung quá ngắn và Rule Engine không thấy đủ dấu hiệu (xem app/risk.py).
+    short_text_capped: bool = False
 
 
 class RiskAssessmentResponse(ApiModel):
