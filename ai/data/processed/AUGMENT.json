@@ -1,0 +1,21 @@
+{
+ "seed": 20261013,
+ "share": 0.45,
+ "real_call_copies": 4,
+ "original_rows": 12554,
+ "augmented_rows": 5514,
+ "augmented_by_label": {
+  "NORMAL": 2659,
+  "PHISHING": 2855
+ },
+ "transform_uses": {
+  "interjections": 1350,
+  "dropped_words": 1330,
+  "repeated_words": 1310,
+  "small_talk_before": 1381,
+  "small_talk_after": 1398
+ },
+ "long_ordinary_speech_rows": 500,
+ "small_talk_max_words": 45,
+ "train_rows_after": 18068
+}

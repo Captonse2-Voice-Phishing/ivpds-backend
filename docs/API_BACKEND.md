@@ -364,7 +364,7 @@ Lỗi: `404 CALL_NOT_FOUND`, `409 ANALYSIS_IN_PROGRESS`, `409 CALL_HAS_NO_AUDIO`
     "sttModel": "faster-whisper/phowhisper-medium-int8 (int8, cpu)",
     "modelProbability": 0.999912,
     "nlpModelVersion": "2026.10.09-phobert-base-r6",
-    "rulesetVersion": "2026.10.5",
+    "rulesetVersion": "2026.10.6",
     "riskEngineVersion": "2026.10.2"
   }
 }

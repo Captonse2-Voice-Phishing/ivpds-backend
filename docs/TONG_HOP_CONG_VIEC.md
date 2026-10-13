@@ -427,3 +427,69 @@ Phản hồi từ phiên làm ứng dụng mobile: đoạn ghi âm khoảng 10 g
 - Cái giá của chốt chặn: trên năm bộ cuộc gọi tiếng Việt, 7/80 cuộc lừa đảo chuyển từ HIGH sang MEDIUM (vẫn được cảnh báo "đáng ngờ"); số ca sót không đổi (1).
 - **KNOWN BUG còn lại:** 14/36 đoạn ngắn bình thường vẫn bị báo "đáng ngờ".
 
+## 16. Bộ test lớn 10.358 cuộc gọi (13/10/2026)
+
+Dựng bằng `ai/tools/accuracy_big_build.py`, chấm bằng `ai/tools/accuracy_big_run.py` (NLP Model + Rule Engine + Risk Engine 2026.10.2, đúng như AI service chạy). Báo cáo: `ai/training/reports/accuracy-big-phobert-base-r6.json`. Bộ này đo ở mức transcript, không đo khâu nhận dạng giọng nói; phần lớn là dữ liệu tổng hợp hoặc biến đổi từ dữ liệu tổng hợp.
+
+"Phát hiện" = mức MEDIUM hoặc HIGH; "sót" = cuộc lừa đảo bị xếp LOW; "báo nhầm" = cuộc bình thường bị xếp MEDIUM hoặc HIGH.
+
+| Phần | Số cuộc | Lừa đảo: HIGH / MEDIUM / sót | Bình thường: HIGH / MEDIUM / đúng |
+|---|---|---|---|
+| Kịch bản mới (60 kịch bản chưa có trong huấn luyện) | 4.271 | 2.196 / 354 / **0** | 0 / 116 / 1.605 |
+| Các bộ test gốc | 1.917 | 490 / 26 / **1** | 8 / 36 / 1.356 |
+| Biến đổi (kiểu transcript, từ đệm, rớt từ, lặp từ, chèn chuyện phiếm) | 2.712 | 1.159 / 158 / **57** | 49 / 113 / 1.176 |
+| Ghép hai cuộc gọi | 458 | 210 / 13 / **6** | 0 / 12 / 217 |
+| Lời nói thường ngày thật ghép dài | 1.000 | — | 0 / 1 / 999 |
+| **Tổng** | **10.358** | 4.055 / 551 / **64** trên 4.670 | 57 / 278 / 5.353 trên 5.688 |
+
+Tổng: recall 98,6%, precision 93,2%, F1 0,959. Báo nhầm 5,9% cuộc bình thường (1,0% ở mức HIGH).
+
+Điểm yếu tìm được:
+
+- **Model dễ bị lung lay bởi thay đổi nhỏ.** Chêm từ đệm ("dạ", "thì", "là") làm sót 14/229 cuộc lừa đảo; chèn vài câu chuyện phiếm vào trước làm sót 23/229, vào sau làm sót 15/229. Có câu xác suất tụt từ gần 1 xuống 0 chỉ vì thêm ba từ đệm. Viết kiểu transcript và lặp từ gần như không ảnh hưởng (sót 1/229).
+- **Cuộc gọi bình thường về tiền bạc trong công việc** bị báo "đáng ngờ": kế toán hỏi hóa đơn và lương (66/68), thư viện nhắc trả sách và phí trễ hạn (36/78), thương lái mua nông sản (11/18). 25 trên 30 kịch bản bình thường mới không bị báo nhầm lần nào.
+- **Cuộc gọi thật dài của telesales và nhắc nợ** vẫn bị HIGH (5/8 cuộc gốc, kéo theo 30/48 bản biến đổi).
+- 354 cuộc lừa đảo của kịch bản mới chỉ được MEDIUM, tất cả do chốt chặn cho đoạn ngắn: hội thoại dưới 45 từ mà Rule Engine không thấy đủ dấu hiệu.
+
+So với `phobert-base-r7b` trên cùng bộ: r7b sót ít hơn (29 so với 64) và báo nhầm ít hơn (220 so với 335), nhưng báo nhầm ở mức HIGH nhiều hơn (92 so với 57) và vẫn sót một cuộc gọi lừa đảo thật mà r6 bắt được.
+
+## 17. Bổ sung luật cho Rule Engine và huấn luyện có biến đổi dữ liệu (13/10/2026)
+
+Bộ test lớn được mở rộng lên 12.166 cuộc: thêm phần `perturbed_unseen` (1.808 cuộc) dùng bốn phép biến đổi không có trong huấn luyện (cụm từ đệm dài, đổi chỗ hai từ cạnh nhau, chuyện phiếm ở giữa, mất dấu thanh).
+
+### Rule Engine 2026.10.6 — đã triển khai
+
+- Luật mới: đọc lại mã vừa gửi về máy dù không nói "OTP" (`OTP-5/6/7`); chụp hoặc đọc số trên thẻ ngân hàng (`SI-11/12`); quay video khuôn mặt (`SI-13`); hỏi số dư, số tiền gửi (`SI-14`); bấm link hoặc cài ứng dụng rồi đăng nhập ngân hàng (`SI-15`); mở ứng dụng ngân hàng để người gọi "kiểm tra" (`RA-12`).
+- Thêm từ vựng cho dấu hiệu sẵn có: tài khoản đích đáng ngờ ("của cán bộ", "của thầy", "ký quỹ"...), phí ứng trước, lời bắt giữ bí mật, đe dọa, mồi tài chính, khan hiếm giả; cách xưng "cháu" của người gọi.
+- Sửa phủ định: "đừng tắt máy, chị đọc..." không còn bị hiểu là "đừng đọc".
+- Test: `ai/tests/test_rules_round7.py`; toàn bộ AI 522 test qua.
+- Tác động với model đang dùng trên 10.358 cuộc của bộ test lớn: sót 64 → 53; lừa đảo đạt HIGH 4.055 → 4.210; phía bình thường không đổi (57 HIGH, 278 MEDIUM). Trên năm bộ cuộc gọi tiếng Việt: sót 1 → 0.
+- Lưu ý: các luật được viết sau khi xem ca sai của chính bộ test lớn, nên mức cải thiện trên bộ đó không phải bằng chứng độc lập.
+
+### Huấn luyện đợt 8 và 8b (`tools/dataset_augment.py`) — KHÔNG triển khai, vẫn dùng `phobert-base-r6`
+
+Tập huấn luyện được thêm bản biến đổi của khoảng 45% số cuộc gọi: chêm từ đệm, rớt từ, lặp từ, chèn chuyện phiếm thật.
+
+- **Đợt 8** bị loại: báo nhầm 618/1.000 đoạn lời nói thường ngày ghép dài. Nguyên nhân: model học theo từng đoạn 256 token mang nhãn của cả cuộc gọi; chèn tới sáu câu chuyện phiếm vào trước một cuộc lừa đảo tạo ra các đoạn toàn chuyện phiếm mang nhãn "lừa đảo".
+- **Đợt 8b** sửa lỗi đó (chuyện phiếm tối đa 45 từ, thêm 500 đoạn lời nói thường ngày ghép dài nhãn bình thường).
+
+Kết quả trên 12.166 cuộc, cùng Rule Engine 2026.10.6 và Risk Engine 2026.10.2:
+
+| | `r6` (đang dùng) | `r8b` | trung bình xác suất của hai model |
+|---|---|---|---|
+| Lừa đảo bị sót (5.586 cuộc) | 77 | 58 | 22 |
+| Bình thường bị báo nhầm (6.580 cuộc) | 453 (100 HIGH) | 211 (95 HIGH) | 457 (77 HIGH) |
+| Cuộc gọi lừa đảo thật gốc bị sót (16) | **0** | **1** | 0 |
+| Bản biến đổi của cuộc gọi thật: sót (176) | 8 | 15 | 6 |
+| Kịch bản lừa đảo mới: sót (2.550) | 0 | 8 | 0 |
+| Kịch bản bình thường mới: báo nhầm (1.721) | 116 | 10 | 120 |
+| Biến đổi không được học: sót (916) / báo nhầm (892) | 24 / 118 | 19 / 60 | 9 / 119 |
+| Lời nói thường ngày ghép dài: báo nhầm (1.000) | 1 | 0 | 0 |
+| Precision / Recall / F1 | 0,924 / 0,986 / 0,954 | 0,963 / 0,990 / 0,976 | — |
+
+`r8b` tốt hơn về tổng thể và ít báo nhầm hơn một nửa, nhưng sót một cuộc gọi lừa đảo thật (transcript chất lượng thấp, xác suất từ 1,000 xuống 0,000) và sót nhiều hơn trên các bản biến đổi của cuộc gọi thật. Vì mục tiêu số một là không sót cuộc gọi thật, model đang dùng vẫn là `r6`; `models/phobert-base-r8b` được giữ lại (`AI_NLP_MODEL_NAME=phobert-base-r8b` để dùng thử).
+
+Cột thứ ba là phép tính thử trên kết quả đã lưu, chưa cài vào hệ thống: lấy trung bình xác suất của hai model thì số ca sót giảm mạnh và không sót cuộc gọi thật nào, đổi lại số báo nhầm như `r6` và thời gian chạy model gấp đôi.
+
+`data/processed/train.jsonl` hiện là dữ liệu của đợt 8b (18.068 dòng, có 5.514 dòng biến đổi; chi tiết ở `data/processed/AUGMENT.json`).
+

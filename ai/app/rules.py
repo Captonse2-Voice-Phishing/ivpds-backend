@@ -18,7 +18,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import StrEnum
 
-RULESET_VERSION = "2026.10.5"
+RULESET_VERSION = "2026.10.6"
 
 
 class Indicator(StrEnum):
@@ -144,6 +144,7 @@ _ADVERBS = {"đã", "sẽ", "vừa", "mới", "đang", "cũng", "xin", "muốn",
 _PAST_MARKERS = {"đã", "vừa", "mới"}
 _HARD_NEGATORS = {"đừng", "chớ", "cấm", "chẳng", "chưa"}
 _REASSURANCE = {"lo", "ngại", "sợ", "sao", "vấn"}
+_HANG_UP = {"tắt", "cúp", "ngắt", "gác"}
 _QUESTION_TAG_HEADS = {"được", "phải", "đúng"}
 _OWN = re.compile(r"của (?:chính )?(?:tôi|mình|tui|tớ)(?!\S)")
 _OWN_STRICT = re.compile(r"của (?:chính )?(?:tôi|tui|tớ)(?!\S)")
@@ -180,6 +181,9 @@ def _negated(text: str, match: re.Match[str]) -> bool:
             continue
         # "đừng lo", "không sao" là lời trấn an, không phủ định hành động đứng sau.
         if index + 1 < len(recent) and recent[index + 1] in _REASSURANCE:
+            continue
+        # "đừng tắt máy, chị đọc ..." giữ người nghe trên máy rồi mới ra lệnh; lệnh đứng sau không bị phủ định.
+        if index + 2 < len(recent) and recent[index + 1] in _HANG_UP and recent[index + 2] == "máy":
             continue
         # "được không", "phải không" là đuôi câu hỏi của ý đứng trước, không phủ định ý đứng sau.
         if word == "không" and index > 0 and recent[index - 1] in _QUESTION_TAG_HEADS:
@@ -309,7 +313,7 @@ _OTP = _alt(
 )
 _GIVE_TO_ME = (
     "cho tôi xin", "cho em xin", "cho tôi biết", "cho em biết", "cho tôi", "cho em", "cho anh", "cho chị",
-    "cho mình", "cho bên em", "cho chúng tôi",
+    "cho mình", "cho bên em", "cho chúng tôi", "cho cháu xin", "cho cháu biết", "cho cháu",
 )
 # Các động từ yêu cầu người nghe đưa thông tin ra.
 _ASK_TO_SHARE = _alt(
@@ -323,7 +327,8 @@ _ASK_TO_SHARE_OR_CONFIRM = _alt(
     "xác nhận lại", "xác nhận", "khai báo", "xin", *_GIVE_TO_ME,
 )
 _SHARE_VERBS = _alt("đọc", "gửi lại", "gửi", "báo lại", "báo", "nói", "nhắn", "cung cấp")
-_TO_ME = _alt("cho tôi", "cho em", "cho anh", "cho chị", "cho mình", "cho bên em", "cho chúng tôi", "giúp tôi", "giúp em")
+_TO_ME = _alt("cho tôi", "cho em", "cho anh", "cho chị", "cho mình", "cho bên em", "cho chúng tôi", "giúp tôi", "giúp em",
+              "cho cháu", "giúp cháu")
 _ENTER = _alt("nhập", "điền", "gõ")
 _INTO_LINK = _alt("link", "đường link", "đường dẫn", "trang web", "website", "web", "trang này", "đường link này")
 
@@ -351,6 +356,8 @@ _ADVANCE_FEE = _alt(
     "phí trước bạ", "thuế trúng thưởng", "tiền phạt", "tiền bảo lãnh",
     "tạm ứng viện phí", "tạm ứng", "tiền máu", "phí mở khóa", "phí bảo hiểm khoản vay",
     "thuế nhập khẩu", "cước phí", "khoản cước phí", "phí thuế",
+    "phí gia hạn", "phí công chứng", "phí phạt", "phí giữ suất", "phí thành viên", "phí làm hồ sơ",
+    "phí cập nhật", "phí dịch hồ sơ", "phí phúc khảo", "phí kích hoạt lại", "tiền sắm lễ", "phí giãn nợ",
 )
 # Mục đích vô lý của một khoản nộp thêm: "nạp thêm mười triệu để mở khóa", "chuyển trước để giữ chỗ".
 _UNLOCK_PURPOSE = _alt(
@@ -397,6 +404,10 @@ _SUSPICIOUS_DESTINATION = _alt(
     "tài khoản của chúng tôi", "tài khoản bên em", "tài khoản này", "tài khoản sau", "số tài khoản này",
     "số tài khoản sau", "tài khoản thẩm tra", "tài khoản của viện kiểm sát", "tài khoản cá nhân",
     "tài khoản của bác sĩ", "tài khoản của khoa", "tài khoản sàn",
+    # Tài khoản của một cá nhân được nêu chức danh, hoặc tài khoản có tên gọi nghe như của cơ quan.
+    "tài khoản cán bộ", "tài khoản của cán bộ", "tài khoản của thầy", "tài khoản dược sĩ", "tài khoản của dược sĩ",
+    "tài khoản của trưởng", "tài khoản của nhân viên", "tài khoản kế toán", "tài khoản ký qũy", "tài khoản bảo vệ",
+    "tài khoản phong tỏa", "tài khoản thi hành án", "tài khoản người quen", "tài khoản của người quen",
 )
 # Làm ngay, trả trước: các từ biến một câu nhắc tới tiền thành lời đòi tiền.
 _PAY_NOW = (
@@ -449,6 +460,8 @@ _SCARCITY = _alt(
     "không kịp đâu", "không còn thời gian", "từng phút", "nhận cọc bạn khác",
     "nhận cọc người khác", "đang rất gấp", "đang gấp lắm", "gấp lắm", "cần gấp",
     "lần thông báo cuối cùng", "thông báo cuối cùng", "lần cuối cùng",
+    "hết suất", "danh sách chốt", "chốt tối nay", "còn đúng một", "còn đúng hai", "bán cho người khác",
+    "cho người khác thuê", "tìm bên khác",
 )
 # "kẻo mất tiền", "kẻo hệ thống khóa mất", "không là mất suất": hậu quả nếu chậm trễ.
 _OR_ELSE = (
@@ -475,6 +488,7 @@ _HARM = _alt(
     "gửi cho cả công ty", "trong tay tao", "trong tay bọn tao", "trong tay chúng tao", "trong tay tôi",
     "không gặp lại", "đừng trách", "xử nó",
     "tung clip", "tung ảnh", "muốn nó an toàn", "gọi cho gia đình mày", "gửi cho gia đình mày",
+    "đến tận nhà", "tới tận nhà", "biết chỗ làm của", "hết danh bạ", "cả danh bạ",
 )
 _BAD_OUTCOME = (
     rf"(?:sẽ bị|bị {_alt('khóa', 'phạt', 'truy tố', 'bắt', 'khởi tố', 'cắt', 'hủy', 'mất', 'phong tỏa', 'đình chỉ', 'đóng băng', 'tạm ngưng')}"
@@ -548,7 +562,8 @@ _PRIZE = _alt(
 _GUARANTEE = _alt(
     "cam kết lợi nhuận", "cam kết trúng", "cam kết thu hồi", "không rủi ro", "bao lỗ", "hoàn lại gấp đôi",
     "siêu lợi nhuận", "tỷ lệ thắng", "cam kết không rủi ro", "lỗ tôi chịu", "lỗ bên em đền",
-    "cam kết bảo toàn vốn",
+    "cam kết bảo toàn vốn", "chuyển lại gấp đôi", "trả lại gấp đôi", "lấy về gấp rưỡi", "lãi rất cao",
+    "không trúng em hoàn tiền", "không trúng hoàn tiền",
 )
 _RETURN = _alt("lợi nhuận", "lãi", "hoa hồng", "lãi suất")
 _ODD_CARD = _alt(
@@ -601,6 +616,19 @@ RULES: tuple[Rule, ...] = (
     # Mã được gọi bằng từ chung chung ("mã đó", "dãy số đó"), nên mức thấp hơn khi nói rõ là OTP.
     Rule("OTP-4", Indicator.OTP_REQUEST, Severity.MEDIUM,
          _compile(rf"(?P<verb>{_SHARE_VERBS}) {_gap(3)}{_UNNAMED_CODE}"), _REQUEST_CONTEXT),
+
+    # Mã không được gọi tên nhưng rõ là mã vừa gửi tới máy người nghe: "hệ thống vừa gửi cho anh một mã gồm sáu chữ
+    # số, anh đọc lại cho em". Phải có cả chữ "mã" lẫn dấu hiệu "vừa gửi / gửi về / sáu chữ số", để "mã đơn hàng
+    # anh đọc cho em" (đọc mã đơn cho người giao hàng) không khớp.
+    Rule("OTP-5", Indicator.OTP_REQUEST, Severity.HIGH,
+         _compile(rf"mã {_gap(6)}{_alt('gửi về', 'vừa gửi', 'gửi cho', 'gồm sáu', 'sáu chữ số', 'sáu số')} {_gap(6)}"
+                  rf"(?P<verb>{_alt('đọc lại', 'đọc')}) {_gap(3)}{_TO_ME}"), _REQUEST_CONTEXT),
+    Rule("OTP-6", Indicator.OTP_REQUEST, Severity.HIGH,
+         _compile(rf"{_alt('gửi về', 'vừa gửi', 'gửi cho', 'vừa nhận')} {_gap(6)}mã {_gap(8)}"
+                  rf"(?P<verb>{_alt('đọc lại', 'đọc')}) {_gap(3)}{_TO_ME}"), _REQUEST_CONTEXT),
+    # "Anh đọc mã luôn nhé", "chị đọc mã đi": giục đọc một mã, không nói mã gì. Yếu hơn vì thiếu ngữ cảnh.
+    Rule("OTP-7", Indicator.OTP_REQUEST, Severity.MEDIUM,
+         _compile(rf"{_LISTENER} (?P<verb>đọc) mã {_alt('luôn', 'đi', 'ngay', 'nhanh')}"), _REQUEST_CONTEXT),
 
     # --- MONEY_TRANSFER: đòi người nghe chuyển tiền ---
     Rule("MT-1", Indicator.MONEY_TRANSFER, Severity.MEDIUM,
@@ -744,6 +772,31 @@ RULES: tuple[Rule, ...] = (
                   rf"{_alt('một số thông tin', 'một vài thông tin', 'thông tin cá nhân', 'thông tin chi tiết')}"),
          (_negated, _clause_is_question)),
 
+    # Chụp thẻ ngân hàng gửi cho người gọi, hoặc đọc các số in trên thẻ.
+    Rule("SI-11", Indicator.SENSITIVE_INFORMATION, Severity.HIGH,
+         _compile(rf"(?P<verb>{_alt('chụp ảnh', 'chụp hình', 'chụp')}) {_gap(5)}"
+                  rf"{_alt('thẻ ngân hàng', 'thẻ atm', 'thẻ tín dụng', 'thẻ ghi nợ')}"), _REQUEST_CONTEXT),
+    Rule("SI-12", Indicator.SENSITIVE_INFORMATION, Severity.HIGH,
+         _compile(rf"(?P<verb>đọc) {_gap(3)}{_alt('số trên thẻ', 'số in trên thẻ', 'dãy số trên thẻ', 'số ở mặt trước thẻ')} "
+                  rf"{_alt('atm', 'ngân hàng', 'tín dụng', 'ghi nợ', 'visa', 'thanh toán')}"),
+         _REQUEST_CONTEXT),
+    # Quay video khuôn mặt để gửi đi: dùng để vượt xác thực sinh trắc học.
+    Rule("SI-13", Indicator.SENSITIVE_INFORMATION, Severity.MEDIUM,
+         _compile(rf"(?P<verb>{_alt('quay video', 'quay clip', 'quay phim')}) {_gap(2)}{_alt('khuôn mặt', 'gương mặt')}"),
+         (_negated, _speaker_is_actor, _reported_past)),
+    # Hỏi người nghe còn bao nhiêu tiền, gửi ở đâu: bước thăm dò trước khi bảo chuyển tiền. Người quen hỏi nhau
+    # không nói "cho tôi biết ... còn bao nhiêu tiền" kèm lý do đối chiếu hồ sơ; khách tự hỏi số dư của mình thì bị
+    # loại bởi ``_own_item``.
+    Rule("SI-14", Indicator.SENSITIVE_INFORMATION, Severity.HIGH,
+         _compile(rf"(?P<verb>{_alt('cho tôi biết', 'cho em biết', 'cho cháu biết', 'cho chúng tôi biết', 'kê khai', 'khai báo')}) "
+                  rf"{_gap(10)}{_alt('còn bao nhiêu tiền', 'có bao nhiêu tiền', 'số dư', 'toàn bộ số dư')}"),
+         (_negated, _reported_past, _own_item)),
+    # Mở đường link hoặc cài ứng dụng do người gọi gửi rồi đăng nhập ngân hàng trong đó.
+    Rule("SI-15", Indicator.SENSITIVE_INFORMATION, Severity.HIGH,
+         _compile(rf"(?P<verb>{_OPEN}|{_INSTALL}) {_gap(10)}{_alt('đăng nhập', 'nhập mật khẩu', 'nhập tài khoản', 'nhập số tài khoản')} "
+                  rf"{_gap(2)}{_alt('ngân hàng', 'tài khoản ngân hàng', 'ví')}"),
+         (_negated, _speaker_is_actor, _reported_past)),
+
     # --- AUTHORITY_IMPERSONATION: tự xưng là công an, kiểm sát, tòa án, thuế, bảo hiểm xã hội ---
     Rule("AU-1", Indicator.AUTHORITY_IMPERSONATION, Severity.LOW,
          _compile(rf"{_SELF} (?P<verb>{_alt('là', 'tên là')}) {_gap(1)}{_OFFICER_TITLE}"), (_negated, _asked_as_question)),
@@ -800,7 +853,9 @@ RULES: tuple[Rule, ...] = (
     Rule("SD-2", Indicator.SECRECY_DEMAND, Severity.MEDIUM,
          _compile(_alt("giữ bí mật", "bí mật điều tra", "giữ kín", "không để người khác nghe", "ra chỗ vắng",
                        "chỗ vắng người", "không được nói là", "đừng nói là", "đừng gọi ai", "đừng báo ai",
-                       "đừng nói ai", "đừng kể ai")), (_kept_confidential,)),
+                       "đừng nói ai", "đừng kể ai", "việc này kín", "việc này là mật", "chuyện này kín",
+                       "đừng nói ra", "đừng báo cho", "đừng nói với nhà", "bàn với người khác")),
+         (_kept_confidential,)),
     # "Ghi âm lời khai": bắt người nghe ở một mình, không có người thứ ba, giữ yên tĩnh suốt cuộc gọi.
     Rule("SD-4", Indicator.SECRECY_DEMAND, Severity.MEDIUM,
          _compile(_alt("người thứ ba", "không gian yên tĩnh", "giữ yên tĩnh", "bên cạnh không có")), ()),
@@ -847,6 +902,12 @@ RULES: tuple[Rule, ...] = (
                   rf"{_alt('trang web', 'website', 'event viewer', 'trình xem sự kiện', 'url', 'trình duyệt', 'phần mềm', 'chương trình', 'công cụ')}"),
          (_negated, _speaker_is_actor, _clause_is_question)),
 
+    # "Anh mở ứng dụng ngân hàng lên để em kiểm tra": người gọi muốn nhìn hoặc thao tác trong ứng dụng ngân hàng.
+    Rule("RA-12", Indicator.REMOTE_ACCESS_REQUEST, Severity.MEDIUM,
+         _compile(rf"(?P<verb>mở) {_gap(2)}{_alt('ứng dụng ngân hàng', 'app ngân hàng')} {_gap(4)}để "
+                  rf"{_alt('em', 'tôi', 'cháu', 'bên em')} {_alt('kiểm tra', 'xử lý', 'hướng dẫn', 'xem')}"),
+         (_negated,)),
+
     # --- FINANCIAL_BAIT: lời hứa quá tốt để là thật ---
     Rule("FB-1", Indicator.FINANCIAL_BAIT, Severity.MEDIUM, _compile(_PRIZE), (_negated, _clause_is_question)),
     Rule("FB-2", Indicator.FINANCIAL_BAIT, Severity.MEDIUM, _compile(_GUARANTEE), (_negated,)),
@@ -854,7 +915,8 @@ RULES: tuple[Rule, ...] = (
     # Biệt ngữ của lừa đảo "làm nhiệm vụ": đơn ảo, ứng tiền rồi nhận lại gốc kèm hoa hồng.
     Rule("FB-4", Indicator.FINANCIAL_BAIT, Severity.MEDIUM,
          _compile(_alt("đơn hàng ảo", "đơn ảo", "hoàn lại tiền gốc", "trả gốc và hoa hồng", "gốc và hoa hồng",
-                       "nhận nhiệm vụ", "làm nhiệm vụ", "nhiệm vụ tiếp theo")), (_negated,)),
+                       "nhận nhiệm vụ", "làm nhiệm vụ", "nhiệm vụ tiếp theo", "nạp tiền theo hướng dẫn",
+                       "nạp càng nhiều", "cả gốc lẫn hoa hồng", "gốc lẫn hoa hồng")), (_negated,)),
     # Tự gọi tới báo "được hoàn lại 500 đô la", "đủ điều kiện được hoàn tiền". Chủ shop nói "em hoàn lại
     # tiền chị đã chuyển" không khớp vì không nêu một khoản tiền từ trên trời rơi xuống.
     Rule("FB-5", Indicator.FINANCIAL_BAIT, Severity.MEDIUM,
