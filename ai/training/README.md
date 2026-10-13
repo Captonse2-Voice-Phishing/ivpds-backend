@@ -356,3 +356,15 @@ Sáu case bắt buộc qua API thật: A, B, F là LOW; C, D, E là HIGH (Case C
 **Lưu ý khi chạy lại.** `data/processed/` hiện là dữ liệu của đợt 7b. Để dựng lại đúng dữ liệu đã huấn luyện `phobert-base-r6`, xóa `data/synthetic/vi_generated_short.jsonl` rồi chạy `python -m tools.dataset_prepare`.
 
 Điều rút ra: kết quả giữa hai lần huấn luyện dao động mạnh trên 24 cuộc gọi thật (cùng một cuộc có thể từ 0,999 xuống 0,35). Muốn chọn model chắc chắn hơn cần thêm cuộc gọi thật có nhãn, không phải thêm dữ liệu tổng hợp.
+
+### Đợt 8 và 8b (13/10/2026): biến đổi dữ liệu huấn luyện — KHÔNG triển khai, vẫn dùng `phobert-base-r6`
+
+Chạy: `python -m tools.dataset_prepare`, rồi `python -m tools.dataset_augment`, rồi `training.finetune` với tên `phobert-base-r8b`. `dataset_augment` thêm vào `train.jsonl` các bản chêm từ đệm, rớt từ, lặp từ, chèn chuyện phiếm thật (tối đa 45 từ) của khoảng 45% số cuộc gọi, và 500 đoạn lời nói thường ngày ghép dài nhãn bình thường; thống kê ghi ở `data/processed/AUGMENT.json`. Validation và test không bị biến đổi.
+
+Chấm bằng bộ test lớn: `python -m tools.accuracy_big_build` rồi `python -m tools.accuracy_big_run <model>`; báo cáo ở `training/reports/accuracy-big-<model>.json`. Bảng so sánh `r6`, `r8b` và lý do không triển khai nằm ở mục 17 của `docs/TONG_HOP_CONG_VIEC.md`.
+
+Hai điều rút ra:
+
+- Mỗi đoạn 256 token mang nhãn của cả cuộc gọi. Mọi phép biến đổi thêm nội dung bình thường vào cuộc gọi lừa đảo phải đủ ngắn để không tạo ra đoạn toàn nội dung bình thường mang nhãn lừa đảo (lỗi của đợt 8 đầu tiên).
+- Hai lần huấn luyện gần giống nhau vẫn cho kết luận trái ngược trên cùng một cuộc gọi thật (xác suất 1,000 và 0,000). Với 24 cuộc gọi thật, không thể chọn model chắc chắn; cần thêm cuộc gọi thật có nhãn.
+

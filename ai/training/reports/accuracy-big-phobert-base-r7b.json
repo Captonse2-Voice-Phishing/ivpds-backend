@@ -1,0 +1,2590 @@
+{
+ "model": "2026.10.12-phobert-base-r7b",
+ "ruleset": "2026.10.5",
+ "risk_engine": "2026.10.2",
+ "detected_means": "risk level MEDIUM or HIGH",
+ "overall": {
+  "total": 10358,
+  "scam": {
+   "total": 4670,
+   "HIGH": 4119,
+   "MEDIUM": 522,
+   "LOW": 29
+  },
+  "normal": {
+   "total": 5688,
+   "HIGH": 92,
+   "MEDIUM": 128,
+   "LOW": 5468
+  },
+  "risk_engine": {
+   "scam_missed": 29,
+   "normal_flagged": 220,
+   "normal_flagged_high": 92,
+   "precision": 0.9547,
+   "recall": 0.9938,
+   "f1": 0.9739,
+   "accuracy": 0.976
+  },
+  "model_only": {
+   "scam_missed": 58,
+   "normal_flagged": 148,
+   "accuracy": 0.9801
+  },
+  "capped_by_short_text_guard": 513
+ },
+ "by_part": {
+  "new_scenarios": {
+   "total": 4271,
+   "scam": {
+    "total": 2550,
+    "HIGH": 2196,
+    "MEDIUM": 354,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 1721,
+    "HIGH": 0,
+    "MEDIUM": 19,
+    "LOW": 1702
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 19,
+    "normal_flagged_high": 0,
+    "precision": 0.9926,
+    "recall": 1.0,
+    "f1": 0.9963,
+    "accuracy": 0.9956
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 16,
+    "accuracy": 0.9963
+   },
+   "capped_by_short_text_guard": 359
+  },
+  "original": {
+   "total": 1917,
+   "scam": {
+    "total": 517,
+    "HIGH": 488,
+    "MEDIUM": 28,
+    "LOW": 1
+   },
+   "normal": {
+    "total": 1400,
+    "HIGH": 10,
+    "MEDIUM": 24,
+    "LOW": 1366
+   },
+   "risk_engine": {
+    "scam_missed": 1,
+    "normal_flagged": 34,
+    "normal_flagged_high": 10,
+    "precision": 0.9382,
+    "recall": 0.9981,
+    "f1": 0.9672,
+    "accuracy": 0.9817
+   },
+   "model_only": {
+    "scam_missed": 2,
+    "normal_flagged": 20,
+    "accuracy": 0.9885
+   },
+   "capped_by_short_text_guard": 31
+  },
+  "perturbed": {
+   "total": 2712,
+   "scam": {
+    "total": 1374,
+    "HIGH": 1212,
+    "MEDIUM": 137,
+    "LOW": 25
+   },
+   "normal": {
+    "total": 1338,
+    "HIGH": 76,
+    "MEDIUM": 70,
+    "LOW": 1192
+   },
+   "risk_engine": {
+    "scam_missed": 25,
+    "normal_flagged": 146,
+    "normal_flagged_high": 76,
+    "precision": 0.9023,
+    "recall": 0.9818,
+    "f1": 0.9404,
+    "accuracy": 0.9369
+   },
+   "model_only": {
+    "scam_missed": 50,
+    "normal_flagged": 106,
+    "accuracy": 0.9425
+   },
+   "capped_by_short_text_guard": 123
+  },
+  "mixed": {
+   "total": 458,
+   "scam": {
+    "total": 229,
+    "HIGH": 223,
+    "MEDIUM": 3,
+    "LOW": 3
+   },
+   "normal": {
+    "total": 229,
+    "HIGH": 4,
+    "MEDIUM": 12,
+    "LOW": 213
+   },
+   "risk_engine": {
+    "scam_missed": 3,
+    "normal_flagged": 16,
+    "normal_flagged_high": 4,
+    "precision": 0.9339,
+    "recall": 0.9869,
+    "f1": 0.9597,
+    "accuracy": 0.9585
+   },
+   "model_only": {
+    "scam_missed": 6,
+    "normal_flagged": 4,
+    "accuracy": 0.9782
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "long_ordinary_speech": {
+   "total": 1000,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 1000,
+    "HIGH": 2,
+    "MEDIUM": 3,
+    "LOW": 995
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 5,
+    "normal_flagged_high": 2,
+    "precision": 0.0,
+    "recall": null,
+    "f1": null,
+    "accuracy": 0.995
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 2,
+    "accuracy": 0.998
+   },
+   "capped_by_short_text_guard": 0
+  }
+ },
+ "by_group": {
+  "long_ordinary_speech / lời nói thường ngày thật ghép dài": {
+   "total": 1000,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 1000,
+    "HIGH": 2,
+    "MEDIUM": 3,
+    "LOW": 995
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 5,
+    "normal_flagged_high": 2,
+    "precision": 0.0,
+    "recall": null,
+    "f1": null,
+    "accuracy": 0.995
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 2,
+    "accuracy": 0.998
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "mixed / bình thường ghép với lừa đảo": {
+   "total": 229,
+   "scam": {
+    "total": 229,
+    "HIGH": 223,
+    "MEDIUM": 3,
+    "LOW": 3
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 3,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 0.9869,
+    "f1": 0.9934,
+    "accuracy": 0.9869
+   },
+   "model_only": {
+    "scam_missed": 6,
+    "normal_flagged": 0,
+    "accuracy": 0.9738
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "mixed / hai cuộc bình thường ghép lại": {
+   "total": 229,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 229,
+    "HIGH": 4,
+    "MEDIUM": 12,
+    "LOW": 213
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 16,
+    "normal_flagged_high": 4,
+    "precision": 0.0,
+    "recall": null,
+    "f1": null,
+    "accuracy": 0.9301
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 4,
+    "accuracy": 0.9825
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / bảo vệ, lễ tân báo có khách, bưu phẩm (bình thường)": {
+   "total": 52,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 52,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 52
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / chùa, nhà thờ, tổ chức cộng đồng thông báo (bình thường)": {
+   "total": 40,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 40,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 40
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / con dặn bố mẹ về lừa đảo qua mạng (bình thường)": {
+   "total": 3,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 3,
+    "HIGH": 0,
+    "MEDIUM": 2,
+    "LOW": 1
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 2,
+    "normal_flagged_high": 0,
+    "precision": 0.0,
+    "recall": null,
+    "f1": null,
+    "accuracy": 0.3333
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / cô giáo mầm non báo con ốm (bình thường)": {
+   "total": 9,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 9,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 9
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / công ty tài chính nhắc nợ thật (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / dịch vụ chuyển nhà báo giá (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / gia sư trao đổi lịch và học phí (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / giả ban quản lý chung cư đổi tài khoản thu (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 84,
+    "MEDIUM": 1,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 1
+  },
+  "new_scenarios / giả bán vé concert, vé bóng đá (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 73,
+    "MEDIUM": 12,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 12
+  },
+  "new_scenarios / giả bán điện thoại giá rẻ trên mạng (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 72,
+    "MEDIUM": 13,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 13
+  },
+  "new_scenarios / giả cho thuê nhà giá rẻ cọc trước khi xem (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 80,
+    "MEDIUM": 5,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 5
+  },
+  "new_scenarios / giả cán bộ địa chính cập nhật sổ đỏ (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 85,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / giả công ty tài chính dọa nợ của người thân (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 75,
+    "MEDIUM": 10,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 10
+  },
+  "new_scenarios / giả cấp đổi bằng lái xe trực tuyến (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 85,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / giả cứu hộ tài khoản mạng xã hội (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 79,
+    "MEDIUM": 6,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 6
+  },
+  "new_scenarios / giả gọi vốn kinh doanh chung, hụi (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 47,
+    "MEDIUM": 38,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 38
+  },
+  "new_scenarios / giả hải quan sân bay giữ người thân (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 49,
+    "MEDIUM": 36,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 36
+  },
+  "new_scenarios / giả kỹ thuật viên camera, wifi (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 83,
+    "MEDIUM": 2,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 2
+  },
+  "new_scenarios / giả luật sư báo thừa kế (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 68,
+    "MEDIUM": 17,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 17
+  },
+  "new_scenarios / giả mời nhận quà tri ân của siêu thị (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 80,
+    "MEDIUM": 5,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 5
+  },
+  "new_scenarios / giả ngân hàng cập nhật sinh trắc học (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 85,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / giả nhân viên chứng khoán khóa tài khoản (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 85,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / giả nhân viên ngân hàng mời vay lãi suất không phần trăm (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 83,
+    "MEDIUM": 2,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 2
+  },
+  "new_scenarios / giả nhân viên nhà thuốc, bảo hiểm y tế hoàn tiền viện phí (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 52,
+    "MEDIUM": 33,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 33
+  },
+  "new_scenarios / giả nhân viên ví điện tử nâng cấp tài khoản (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 77,
+    "MEDIUM": 8,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 8
+  },
+  "new_scenarios / giả nhân viên y tế bán thuốc đặc trị cho người thân (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 62,
+    "MEDIUM": 23,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 23
+  },
+  "new_scenarios / giả nhân viên điện máy trả góp (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 76,
+    "MEDIUM": 9,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 9
+  },
+  "new_scenarios / giả thanh tra môi trường, phòng cháy phạt cơ sở kinh doanh (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 79,
+    "MEDIUM": 6,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 6
+  },
+  "new_scenarios / giả thầy cúng giải hạn (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 64,
+    "MEDIUM": 21,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 21
+  },
+  "new_scenarios / giả trung tâm bảo hành điện thoại khóa máy (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 74,
+    "MEDIUM": 11,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 11
+  },
+  "new_scenarios / giả trợ cấp người cao tuổi (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 85,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / giả tuyển người mẫu nhí, casting (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 64,
+    "MEDIUM": 21,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 21
+  },
+  "new_scenarios / giả tòa nhà văn phòng, đối tác đòi tiền đặt cọc thầu (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 80,
+    "MEDIUM": 5,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 5
+  },
+  "new_scenarios / giả tư vấn du học, visa (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 85,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / giả tổ chức thi cử, cấp chứng chỉ (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 41,
+    "MEDIUM": 44,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 44
+  },
+  "new_scenarios / giả xe công nghệ hoàn tiền chuyến (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 73,
+    "MEDIUM": 12,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 12
+  },
+  "new_scenarios / giả đăng kiểm xe (lừa đảo)": {
+   "total": 85,
+   "scam": {
+    "total": 85,
+    "HIGH": 71,
+    "MEDIUM": 14,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 14
+  },
+  "new_scenarios / hàng xóm nhờ việc (bình thường)": {
+   "total": 8,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 8,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 8
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / hội cựu sinh viên, họp lớp (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / khảo sát chất lượng dịch vụ (bình thường)": {
+   "total": 32,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 32,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 32
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / kế toán công ty hỏi hóa đơn, lương (bình thường)": {
+   "total": 68,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 68,
+    "HIGH": 0,
+    "MEDIUM": 17,
+    "LOW": 51
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 17,
+    "normal_flagged_high": 0,
+    "precision": 0.0,
+    "recall": null,
+    "f1": null,
+    "accuracy": 0.75
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 16,
+    "accuracy": 0.7647
+   },
+   "capped_by_short_text_guard": 5
+  },
+  "new_scenarios / môi giới bất động sản mời xem dự án (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / ngân hàng thật mời mở thẻ tín dụng (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / người mua nhà, chủ nhà hẹn công chứng (bình thường)": {
+   "total": 36,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 36,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 36
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / nha khoa nhắc lịch tái khám (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / nhà tuyển dụng trao đổi lương và ngày đi làm (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / nhân viên bảo hiểm thật giải quyết bồi thường (bình thường)": {
+   "total": 80,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 80,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 80
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / nhân viên cũ, bạn cũ hỏi vay có giấy tờ (bình thường)": {
+   "total": 23,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 23,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 23
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / nhóm bạn rủ đi du lịch góp tiền (bình thường)": {
+   "total": 73,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 73,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 73
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / phòng khám thú y nhắc lịch (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / sửa điện thoại, máy tính báo giá (bình thường)": {
+   "total": 40,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 40,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 40
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / thư viện, nhà sách nhắc trả sách (bình thường)": {
+   "total": 78,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 78,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 78
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / thương lái mua nông sản (bình thường)": {
+   "total": 18,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 18,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 18
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / trung tâm hiến máu nhắc lịch (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / trung tâm đăng kiểm, bảo dưỡng xe nhắc hạn (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / trường đại học thông báo nhập học (bình thường)": {
+   "total": 22,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 22,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 22
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / tài xế công nghệ gọi đón khách (bình thường)": {
+   "total": 45,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 45,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 45
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / vợ chồng bàn chuyện tiền nhà (bình thường)": {
+   "total": 28,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 28,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 28
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / đặt bánh sinh nhật, đặt hoa (bình thường)": {
+   "total": 85,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 85,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 85
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "new_scenarios / đồng nghiệp bàn giao công việc (bình thường)": {
+   "total": 46,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 46,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 46
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "original / context_pairs": {
+   "total": 46,
+   "scam": {
+    "total": 20,
+    "HIGH": 20,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 26,
+    "HIGH": 1,
+    "MEDIUM": 3,
+    "LOW": 22
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 4,
+    "normal_flagged_high": 1,
+    "precision": 0.8333,
+    "recall": 1.0,
+    "f1": 0.9091,
+    "accuracy": 0.913
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 1,
+    "accuracy": 0.9783
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "original / everyday_calls": {
+   "total": 56,
+   "scam": {
+    "total": 12,
+    "HIGH": 12,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 44,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 44
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "original / handwritten_holdout": {
+   "total": 106,
+   "scam": {
+    "total": 56,
+    "HIGH": 42,
+    "MEDIUM": 14,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 50,
+    "HIGH": 1,
+    "MEDIUM": 1,
+    "LOW": 48
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 2,
+    "normal_flagged_high": 1,
+    "precision": 0.9655,
+    "recall": 1.0,
+    "f1": 0.9824,
+    "accuracy": 0.9811
+   },
+   "model_only": {
+    "scam_missed": 1,
+    "normal_flagged": 1,
+    "accuracy": 0.9811
+   },
+   "capped_by_short_text_guard": 13
+  },
+  "original / real_calls": {
+   "total": 24,
+   "scam": {
+    "total": 16,
+    "HIGH": 13,
+    "MEDIUM": 2,
+    "LOW": 1
+   },
+   "normal": {
+    "total": 8,
+    "HIGH": 4,
+    "MEDIUM": 1,
+    "LOW": 3
+   },
+   "risk_engine": {
+    "scam_missed": 1,
+    "normal_flagged": 5,
+    "normal_flagged_high": 4,
+    "precision": 0.75,
+    "recall": 0.9375,
+    "f1": 0.8333,
+    "accuracy": 0.75
+   },
+   "model_only": {
+    "scam_missed": 1,
+    "normal_flagged": 4,
+    "accuracy": 0.7917
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "original / short_monologues": {
+   "total": 59,
+   "scam": {
+    "total": 23,
+    "HIGH": 20,
+    "MEDIUM": 3,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 36,
+    "HIGH": 0,
+    "MEDIUM": 1,
+    "LOW": 35
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 1,
+    "normal_flagged_high": 0,
+    "precision": 0.9583,
+    "recall": 1.0,
+    "f1": 0.9787,
+    "accuracy": 0.9831
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 3
+  },
+  "original / short_requests": {
+   "total": 36,
+   "scam": {
+    "total": 18,
+    "HIGH": 11,
+    "MEDIUM": 7,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 18,
+    "HIGH": 1,
+    "MEDIUM": 3,
+    "LOW": 14
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 4,
+    "normal_flagged_high": 1,
+    "precision": 0.8182,
+    "recall": 1.0,
+    "f1": 0.9,
+    "accuracy": 0.8889
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 4,
+    "accuracy": 0.8889
+   },
+   "capped_by_short_text_guard": 9
+  },
+  "original / short_sentences": {
+   "total": 37,
+   "scam": {
+    "total": 14,
+    "HIGH": 13,
+    "MEDIUM": 1,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 23,
+    "HIGH": 0,
+    "MEDIUM": 3,
+    "LOW": 20
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 3,
+    "normal_flagged_high": 0,
+    "precision": 0.8235,
+    "recall": 1.0,
+    "f1": 0.9032,
+    "accuracy": 0.9189
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 3,
+    "accuracy": 0.9189
+   },
+   "capped_by_short_text_guard": 4
+  },
+  "original / test": {
+   "total": 576,
+   "scam": {
+    "total": 288,
+    "HIGH": 288,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 288,
+    "HIGH": 0,
+    "MEDIUM": 8,
+    "LOW": 280
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 8,
+    "normal_flagged_high": 0,
+    "precision": 0.973,
+    "recall": 1.0,
+    "f1": 0.9863,
+    "accuracy": 0.9861
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 1,
+    "accuracy": 0.9983
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "original / test_vi_context": {
+   "total": 50,
+   "scam": {
+    "total": 32,
+    "HIGH": 32,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 18,
+    "HIGH": 0,
+    "MEDIUM": 2,
+    "LOW": 16
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 2,
+    "normal_flagged_high": 0,
+    "precision": 0.9412,
+    "recall": 1.0,
+    "f1": 0.9697,
+    "accuracy": 0.96
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 1,
+    "accuracy": 0.98
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "original / user_gendata": {
+   "total": 38,
+   "scam": {
+    "total": 38,
+    "HIGH": 37,
+    "MEDIUM": 1,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "normal_flagged_high": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 0,
+    "accuracy": 1.0
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "original / vlsp_ordinary_speech": {
+   "total": 889,
+   "scam": {
+    "total": 0,
+    "HIGH": 0,
+    "MEDIUM": 0,
+    "LOW": 0
+   },
+   "normal": {
+    "total": 889,
+    "HIGH": 3,
+    "MEDIUM": 2,
+    "LOW": 884
+   },
+   "risk_engine": {
+    "scam_missed": 0,
+    "normal_flagged": 5,
+    "normal_flagged_high": 3,
+    "precision": 0.0,
+    "recall": null,
+    "f1": null,
+    "accuracy": 0.9944
+   },
+   "model_only": {
+    "scam_missed": 0,
+    "normal_flagged": 5,
+    "accuracy": 0.9944
+   },
+   "capped_by_short_text_guard": 2
+  },
+  "perturbed / chuyện phiếm thật ở sau": {
+   "total": 452,
+   "scam": {
+    "total": 229,
+    "HIGH": 223,
+    "MEDIUM": 4,
+    "LOW": 2
+   },
+   "normal": {
+    "total": 223,
+    "HIGH": 19,
+    "MEDIUM": 11,
+    "LOW": 193
+   },
+   "risk_engine": {
+    "scam_missed": 2,
+    "normal_flagged": 30,
+    "normal_flagged_high": 19,
+    "precision": 0.8833,
+    "recall": 0.9913,
+    "f1": 0.9342,
+    "accuracy": 0.9292
+   },
+   "model_only": {
+    "scam_missed": 11,
+    "normal_flagged": 22,
+    "accuracy": 0.927
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "perturbed / chuyện phiếm thật ở trước": {
+   "total": 452,
+   "scam": {
+    "total": 229,
+    "HIGH": 218,
+    "MEDIUM": 9,
+    "LOW": 2
+   },
+   "normal": {
+    "total": 223,
+    "HIGH": 25,
+    "MEDIUM": 8,
+    "LOW": 190
+   },
+   "risk_engine": {
+    "scam_missed": 2,
+    "normal_flagged": 33,
+    "normal_flagged_high": 25,
+    "precision": 0.8731,
+    "recall": 0.9913,
+    "f1": 0.9285,
+    "accuracy": 0.9226
+   },
+   "model_only": {
+    "scam_missed": 6,
+    "normal_flagged": 27,
+    "accuracy": 0.927
+   },
+   "capped_by_short_text_guard": 0
+  },
+  "perturbed / chêm từ đệm": {
+   "total": 452,
+   "scam": {
+    "total": 229,
+    "HIGH": 189,
+    "MEDIUM": 25,
+    "LOW": 15
+   },
+   "normal": {
+    "total": 223,
+    "HIGH": 9,
+    "MEDIUM": 11,
+    "LOW": 203
+   },
+   "risk_engine": {
+    "scam_missed": 15,
+    "normal_flagged": 20,
+    "normal_flagged_high": 9,
+    "precision": 0.9145,
+    "recall": 0.9345,
+    "f1": 0.9244,
+    "accuracy": 0.9226
+   },
+   "model_only": {
+    "scam_missed": 24,
+    "normal_flagged": 14,
+    "accuracy": 0.9159
+   },
+   "capped_by_short_text_guard": 19
+  },
+  "perturbed / kiểu transcript (chữ thường, không dấu câu)": {
+   "total": 452,
+   "scam": {
+    "total": 229,
+    "HIGH": 200,
+    "MEDIUM": 28,
+    "LOW": 1
+   },
+   "normal": {
+    "total": 223,
+    "HIGH": 7,
+    "MEDIUM": 14,
+    "LOW": 202
+   },
+   "risk_engine": {
+    "scam_missed": 1,
+    "normal_flagged": 21,
+    "normal_flagged_high": 7,
+    "precision": 0.9157,
+    "recall": 0.9956,
+    "f1": 0.954,
+    "accuracy": 0.9513
+   },
+   "model_only": {
+    "scam_missed": 2,
+    "normal_flagged": 14,
+    "accuracy": 0.9646
+   },
+   "capped_by_short_text_guard": 29
+  },
+  "perturbed / lặp từ (6%)": {
+   "total": 452,
+   "scam": {
+    "total": 229,
+    "HIGH": 207,
+    "MEDIUM": 19,
+    "LOW": 3
+   },
+   "normal": {
+    "total": 223,
+    "HIGH": 10,
+    "MEDIUM": 14,
+    "LOW": 199
+   },
+   "risk_engine": {
+    "scam_missed": 3,
+    "normal_flagged": 24,
+    "normal_flagged_high": 10,
+    "precision": 0.904,
+    "recall": 0.9869,
+    "f1": 0.9436,
+    "accuracy": 0.9403
+   },
+   "model_only": {
+    "scam_missed": 3,
+    "normal_flagged": 17,
+    "accuracy": 0.9558
+   },
+   "capped_by_short_text_guard": 24
+  },
+  "perturbed / rớt từ (7%)": {
+   "total": 452,
+   "scam": {
+    "total": 229,
+    "HIGH": 175,
+    "MEDIUM": 52,
+    "LOW": 2
+   },
+   "normal": {
+    "total": 223,
+    "HIGH": 6,
+    "MEDIUM": 12,
+    "LOW": 205
+   },
+   "risk_engine": {
+    "scam_missed": 2,
+    "normal_flagged": 18,
+    "normal_flagged_high": 6,
+    "precision": 0.9265,
+    "recall": 0.9913,
+    "f1": 0.9578,
+    "accuracy": 0.9558
+   },
+   "model_only": {
+    "scam_missed": 4,
+    "normal_flagged": 12,
+    "accuracy": 0.9646
+   },
+   "capped_by_short_text_guard": 51
+  }
+ }
+}
